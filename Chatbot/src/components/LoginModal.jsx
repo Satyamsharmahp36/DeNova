@@ -9,7 +9,7 @@ import { useAppContext } from '../Appcontext';
 
 const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
   const navigate = useNavigate();
-  const { setUserName } = useAppContext();
+  const { setPresentUserName } = useAppContext();
   const [loginData, setLoginData] = useState({
     username: '',
     password: ''
@@ -35,14 +35,14 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
         // OAuth login successful
         const { username, name } = event.data.userData;
         
-        // Update context and cookies
-        setUserName(username);
-        Cookies.set('userName', username);
+        // Update context and cookies - use presentUserName for logged-in user
+        setPresentUserName(username);
+        Cookies.set('presentUserName', username);
         Cookies.set('name', name);
         
         // Close modal and redirect
         onClose();
-        navigate('/');
+        navigate('/discover');
         setGoogleLoading(false);
       } else {
         // OAuth login failed
@@ -56,7 +56,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
     return () => {
       window.removeEventListener('message', handleOAuthMessage);
     };
-  }, [navigate, setUserName, onClose]);
+  }, [navigate, setPresentUserName, onClose]);
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true);
@@ -106,15 +106,15 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND}/login`, loginData);
       
       if (response.data.message === "Login successful") {
-        // Update app context
-        setUserName(loginData.username);
+        // Update app context - use presentUserName for logged-in user
+        setPresentUserName(loginData.username);
         
         // Set cookies
-        Cookies.set('userName', loginData.username);
+        Cookies.set('presentUserName', loginData.username);
         
         // Close modal and redirect
         onClose();
-        navigate('/');
+        navigate('/discover');
       }
     } catch (error) {
       if (error.response?.status === 401) {

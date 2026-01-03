@@ -9,7 +9,7 @@ import { useAppContext } from '../Appcontext';
 
 const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const navigate = useNavigate();
-  const { setUserName } = useAppContext();
+  const { setPresentUserName } = useAppContext();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -142,13 +142,13 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND}/signup`, signupData);
 
       if (response.data.message === "User created successfully") {
-        // Set user context and cookies
-        setUserName(formData.username);
-        Cookies.set('userName', formData.username);
+        // Set user context and cookies - use presentUserName for logged-in user
+        setPresentUserName(formData.username);
+        Cookies.set('presentUserName', formData.username);
         
         // Close modal and redirect
         onClose();
-        navigate('/');
+        navigate('/discover');
       }
     } catch (error) {
       if (error.response?.status === 400) {

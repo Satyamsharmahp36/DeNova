@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+eimport React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -19,7 +19,7 @@ import { useAppContext } from '../Appcontext';
 
 const DiscoverPage = () => {
   const navigate = useNavigate();
-  const { userData, userName } = useAppContext();
+  const { presentUserData, presentUserName } = useAppContext();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -120,12 +120,12 @@ const DiscoverPage = () => {
   }, [navigate]);
 
   const handleMyAssistant = useCallback(() => {
-    if (userName) {
-      navigate(`/home/${userName}`);
+    if (presentUserName) {
+      navigate(`/home/${presentUserName}`);
     } else {
       navigate('/');
     }
-  }, [userName, navigate]);
+  }, [presentUserName, navigate]);
 
   const getInitials = useCallback((name) => {
     if (!name) return '?';
@@ -203,15 +203,15 @@ const DiscoverPage = () => {
           </motion.button>
         </nav>
 
-        {userData?.user && (
+        {presentUserData?.user && (
           <div className="p-4 border-t border-gray-800">
             <div className="flex items-center gap-3 px-3 py-2">
-              <div className={`w-10 h-10 rounded-full ${getAvatarColor(userData.user.username)} flex items-center justify-center text-white font-semibold text-sm`}>
-                {getInitials(userData.user.name)}
+              <div className={`w-10 h-10 rounded-full ${getAvatarColor(presentUserData.user.username)} flex items-center justify-center text-white font-semibold text-sm`}>
+                {getInitials(presentUserData.user.name)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{userData.user.name}</p>
-                <p className="text-xs text-gray-500 truncate">@{userData.user.username}</p>
+                <p className="text-sm font-medium text-white truncate">{presentUserData.user.name}</p>
+                <p className="text-xs text-gray-500 truncate">@{presentUserData.user.username}</p>
               </div>
             </div>
           </div>

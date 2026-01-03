@@ -50,11 +50,11 @@ import EmailDashboard from "./AdminComponents/EmailDashboard";
 import ReminderPanel from "./AdminComponents/ReminderPanel";
 import WhatsAppIntegration from "./WhatsAppIntegration";
 
-const AdminPanel = ({ onClose }) => {
+const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline = false }) => {
   const { userData, refreshUserData } = useAppContext();
 
   // Original state management
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(externalAuth);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -139,13 +139,19 @@ const AdminPanel = ({ onClose }) => {
   } = useAdminPanelTasks(userData);
 
   useEffect(() => {
-    setIsAuthenticated(false);
-    setPassword("");
+    // If externally authenticated, skip internal auth
+    if (!externalAuth) {
+      setIsAuthenticated(false);
+      setPassword("");
+    } else {
+      setIsAuthenticated(true);
+      fetchTasks();
+    }
     setTasks([]);
     setLoading(false);
     setError(null);
     setPasswordError("");
-  }, []);
+  }, [externalAuth]);
 
   // Add effect to keep tasks in sync with userData
   useEffect(() => {
@@ -611,8 +617,8 @@ const AdminPanel = ({ onClose }) => {
     }).format(date);
   };
 
-  // Login form
-  if (!isAuthenticated) {
+  // Login form (only show if not externally authenticated)
+  if (!isAuthenticated && !externalAuth) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -669,6 +675,168 @@ const AdminPanel = ({ onClose }) => {
           </div>
         </div>
       </motion.div>
+    );
+  }
+
+  // Inline mode - render without modal wrapper
+  if (isInline) {
+    return (
+      <div className="h-full flex flex-col bg-gray-900 text-white overflow-hidden">
+        <style>{scrollbarStyles}</style>
+        {/* Main Content Area */}
+        <div className="flex flex-col flex-1 overflow-hidden">
+          {/* Sidebar Navigation */}
+          <MainTabNavigator
+            activeView={activeView}
+            handleTabChange={handleTabChange}
+            userData={userData}
+            handleSelfTaskToggle={handleSelfTaskToggle}
+            setShowCalendarScheduler={setShowCalendarScheduler}
+            handleChatIntegration={handleChatIntegration}
+            handleEmailDashboard={() => setShowEmailDashboard(true)}
+            handleWhatsAppIntegration={handleWhatsAppIntegration}
+          />
+
+          {/* Content Area */}
+          <div className="flex-1 overflow-auto p-3">
+            {error && (
+              <NotificationMessage type="error" title="Error" message={error} />
+            )}
+
+            {successMessage && (
+              <NotificationMessage
+                type="success"
+                title="Success"
+                message={successMessage}
+              />
+            )}
+
+            {activeView === "tasks" && (
+              <>
+                <TaskControls
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  statusFilter={statusFilter}
+                  setStatusFilter={setStatusFilter}
+                  sortOrder={sortOrder}
+                  setSortOrder={setSortOrder}
+                  viewMode={viewMode}
+                  handleViewModeToggle={handleViewModeToggle}
+                  taskCategories={taskCategories}
+                  handleCategoryToggle={handleCategoryToggle}
+                />
+                <TaskList
+                  tasks={tasks}
+                  loading={loading}
+                  error={error}
+                  sortedTasks={sortedTasks}
+                  expandedTask={expandedTask}
+                  expandedUser={expandedUser}
+                  userDescriptions={userDescriptions}
+                  viewMode={viewMode}
+                  searchTerm={searchTerm}
+                  statusFilter={statusFilter}
+                  sortOrder={sortOrder}
+                  taskCategories={taskCategories}
+                  handleExpandTask={handleExpandTask}
+                  handleViewUserDetails={handleViewUserDetails}
+                  handleOpenMeetingLink={handleOpenMeetingLink}
+                  handleViewMeetingDetails={handleViewMeetingDetails}
+                  handleScheduleMeeting={handleScheduleMeeting}
+                  handleCreateBotAssistant={handleCreateBotAssistant}
+                  toggleTaskStatus={toggleTaskStatus}
+                  creatingBot={creatingBot}
+                  formatDate={formatDate}
+                  getStatusColor={getStatusColor}
+                  getStatusIcon={getStatusIcon}
+                  getMeetingCardStyle={getMeetingCardStyle}
+                  renderDescription={renderDescription}
+                  setExpandedTask={setExpandedTask}
+                  setExpandedUser={setExpandedUser}
+                  setUserDescriptions={setUserDescriptions}
+                  userData={userData}
+                />
+              </>
+            )}
+
+            {activeView === "workflow" && (
+              <DailyWorkflow
+                userData={userData}
+                onRefresh={handleRefreshUserData}
+              />
+            )}
+
+            {activeView === "access" && showAccessManagement && (
+              <AccessManagement
+                userData={userData}
+                onUpdate={handleAccessManagementUpdate}
+                onClose={() => {
+                  setActiveView("tasks");
+                  setShowAccessManagement(false);
+                }}
+              />
+            )}
+
+            {activeView === "analytics" && showVisitorAnalytics && (
+              <VisitorAnalytics
+                userData={userData}
+                onClose={() => {
+                  setShowVisitorAnalytics(false);
+                  setActiveView("tasks");
+                }}
+              />
+            )}
+
+            {activeView === "reminders" && (
+              <ReminderPanel
+                userId={userData.user.id}
+                reminders={reminders}
+                onAddReminder={handleAddReminder}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Overlays */}
+        <AdminPanelOverlays
+          showSelfTask={showSelfTask}
+          handleSelfTaskToggle={handleSelfTaskToggle}
+          handleRefreshUserData={handleRefreshUserData}
+          setShowSelfTask={setShowSelfTask}
+          userData={userData}
+          showScheduler={showScheduler}
+          meetingDetails={meetingDetails}
+          handleFormSubmit={handleFormSubmit}
+          handleCloseScheduler={handleCloseScheduler}
+          showCalendarScheduler={showCalendarScheduler}
+          calendarData={calendarData}
+          showMeetingDetailsPopup={showMeetingDetailsPopup}
+          selectedMeeting={selectedMeeting}
+          setShowMeetingDetailsPopup={setShowMeetingDetailsPopup}
+        />
+
+        <IntegrationDashboard
+          isOpen={showIntegrationDashboard}
+          onClose={() => setShowIntegrationDashboard(false)}
+          userData={userData}
+        />
+
+        <EmailDashboard
+          isOpen={showEmailDashboard}
+          onClose={() => setShowEmailDashboard(false)}
+          userData={userData}
+        />
+
+        <WhatsAppIntegration
+          isOpen={showWhatsAppIntegration}
+          onClose={() => setShowWhatsAppIntegration(false)}
+        />
+
+        <NotificationToast
+          notification={notification}
+          setNotification={setNotification}
+        />
+      </div>
     );
   }
 

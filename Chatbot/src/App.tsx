@@ -370,7 +370,7 @@ function AIBotLandingPage() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { userName, setUserName } = useAppContext();
+  const { presentUserName, setPresentUserName } = useAppContext();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   // Show promotion popup after 3 seconds
@@ -391,14 +391,14 @@ function AIBotLandingPage() {
   };
 
   const handleLogout = () => {
-    Cookies.remove('userName');
-    setUserName(null);
+    Cookies.remove('presentUserName');
+    setPresentUserName(null);
     setShowProfileMenu(false);
     navigate('/');
   };
 
   const handleConnectClick = () => {
-    if (userName) {
+    if (presentUserName) {
       navigate('/discover');
     } else {
       setShowLoginModal(true);
@@ -422,7 +422,7 @@ function AIBotLandingPage() {
                 Contact
               </button>
               
-              {userName ? (
+              {presentUserName ? (
                 // Show profile menu when logged in
                 <div className="relative">
                   <button
@@ -430,9 +430,9 @@ function AIBotLandingPage() {
                     className="flex items-center gap-2 px-2 lg:px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors"
                   >
                     <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-                      {userName.charAt(0).toUpperCase()}
+                      {presentUserName.charAt(0).toUpperCase()}
                     </div>
-                    <span className="hidden lg:block text-gray-900 dark:text-white font-medium text-sm lg:text-base">{userName}</span>
+                    <span className="hidden lg:block text-gray-900 dark:text-white font-medium text-sm lg:text-base">{presentUserName}</span>
                   </button>
                   
                   {showProfileMenu && (
@@ -502,13 +502,13 @@ function AIBotLandingPage() {
                   Contact
                 </button>
                 
-                {userName ? (
+                {presentUserName ? (
                   <>
                     <div className="px-4 py-2 flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-                        {userName.charAt(0).toUpperCase()}
+                        {presentUserName.charAt(0).toUpperCase()}
                       </div>
-                      <span className="text-gray-900 dark:text-white font-medium">{userName}</span>
+                      <span className="text-gray-900 dark:text-white font-medium">{presentUserName}</span>
                     </div>
                     <button
                       onClick={() => {
@@ -719,25 +719,10 @@ function AIBotLandingPage() {
 
 export default function App() {
   const [userVerifiedData, setUserVerifiedData] = useState<any>(null);
-  const { userName, setUserName, isInitialized } = useAppContext();
-
-  useEffect(() => {
-    if (!isInitialized) return;
-    
-    const cookieUserName = Cookies.get('userName');
-    if (cookieUserName && !userName) {
-      setUserName(cookieUserName);
-    }
-  }, [isInitialized, userName, setUserName]);
 
   const handleUserVerified = useCallback((data: any) => {
     setUserVerifiedData(data);
   }, []);
-
-  const handleLogout = () => {
-    Cookies.remove('userName');
-    setUserName(null);
-  };
 
   return (
     <BrowserRouter>

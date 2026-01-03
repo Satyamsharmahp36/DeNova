@@ -552,7 +552,7 @@ const ChatBot = () => {
 
   if (!isInitialized || !currentUserData?.user) {
     return (
-      <div className="flex flex-col h-screen md:h-11/12 lg:max-w-1/2 lg:rounded-xl md:pt-0 pt-16 text-xl bg-gray-900 text-white shadow-2xl overflow-hidden items-center justify-center">
+      <div className="flex flex-col h-full w-full bg-gray-900 text-white overflow-hidden items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -565,7 +565,7 @@ const ChatBot = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen md:h-11/12 lg:max-w-1/2 lg:rounded-xl md:pt-0 pt-16 text-xl bg-gray-900 text-white shadow-2xl overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-gray-900 text-white overflow-hidden">
       <style>{scrollbarStyles}</style>
 
       <div className="bg-gray-800 py-4 rounded-t-xl px-6 flex justify-between items-center border-b border-gray-700">
