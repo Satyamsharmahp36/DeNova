@@ -47,8 +47,9 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
 
     setIsPosting(true);
     try {
-      const response = await axios.post('http://localhost:4000/api/linkedin/posts', {
-        content: generatedPost
+      const response = await axios.post('http://localhost:4000/api/linkedin/posts/create', {
+        content: generatedPost,
+        visibility: 'public'
       });
 
       if (response.data.success) {
@@ -58,7 +59,8 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error('Error posting to LinkedIn:', error);
-      toast.error('Failed to post to LinkedIn. Make sure you have connected your LinkedIn account.');
+      const errorMsg = error.response?.data?.message || error.message;
+      toast.error(`Failed to post to LinkedIn: ${errorMsg}`);
     } finally {
       setIsPosting(false);
     }
