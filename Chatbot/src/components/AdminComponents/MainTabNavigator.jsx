@@ -10,7 +10,8 @@ import {
   MessageCircle,
   Users,
   Slack,
-  Mail
+  Mail,
+  Linkedin
 } from "lucide-react";
 
 const MainTabNavigator = ({ 
@@ -20,8 +21,8 @@ const MainTabNavigator = ({
   handleSelfTaskToggle, 
   setShowCalendarScheduler, 
   handleChatIntegration, 
-  handleEmailDashboard, 
   handleWhatsAppIntegration,
+  handleLinkedInPosting,
   handleEmailIntegration,
   handleEmailCatchup
 }) => {
@@ -145,18 +146,18 @@ const MainTabNavigator = ({
             Chat Integration
           </button>
           <button
-            onClick={handleEmailDashboard}
-            className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center gap-2 text-sm"
-          >
-            <Mail className="w-4 h-4" />
-            Email Dashboard
-          </button>
-          <button
             onClick={handleWhatsAppIntegration}
             className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 text-sm"
           >
             <MessageCircle className="w-4 h-4" />
             WhatsApp Integration
+          </button>
+          <button
+            onClick={handleLinkedInPosting}
+            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Linkedin className="w-4 h-4" />
+            LinkedIn Posting
           </button>
           <button
             onClick={handleEmailIntegration}

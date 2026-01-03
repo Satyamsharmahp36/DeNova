@@ -51,6 +51,7 @@ import ReminderPanel from "./AdminComponents/ReminderPanel";
 import WhatsAppIntegration from "./WhatsAppIntegration";
 import EmailIntegration from "./EmailIntegration";
 import EmailCatchup from "./EmailCatchup";
+import LinkedInPosting from "./LinkedInPosting";
 
 const AdminPanel = ({ onClose }) => {
   const { userData, refreshUserData } = useAppContext();
@@ -82,6 +83,7 @@ const AdminPanel = ({ onClose }) => {
     useState(false);
   const [showEmailDashboard, setShowEmailDashboard] = useState(false);
   const [showWhatsAppIntegration, setShowWhatsAppIntegration] = useState(false);
+  const [showLinkedInPosting, setShowLinkedInPosting] = useState(false);
   const [showEmailIntegration, setShowEmailIntegration] = useState(false);
   const [showEmailCatchup, setShowEmailCatchup] = useState(false);
   const [reminders, setReminders] = useState([]);
@@ -291,6 +293,10 @@ const AdminPanel = ({ onClose }) => {
 
   const handleWhatsAppIntegration = () => {
     setShowWhatsAppIntegration(true);
+  };
+
+  const handleLinkedInPosting = () => {
+    setShowLinkedInPosting(true);
   };
 
   const handleEmailIntegration = () => {
@@ -712,8 +718,8 @@ const AdminPanel = ({ onClose }) => {
             handleSelfTaskToggle={handleSelfTaskToggle}
             setShowCalendarScheduler={setShowCalendarScheduler}
             handleChatIntegration={handleChatIntegration}
-            handleEmailDashboard={() => setShowEmailDashboard(true)}
             handleWhatsAppIntegration={handleWhatsAppIntegration}
+            handleLinkedInPosting={handleLinkedInPosting}
             handleEmailIntegration={handleEmailIntegration}
             handleEmailCatchup={handleEmailCatchup}
           />
@@ -862,6 +868,12 @@ const AdminPanel = ({ onClose }) => {
       <WhatsAppIntegration
         isOpen={showWhatsAppIntegration}
         onClose={() => setShowWhatsAppIntegration(false)}
+      />
+
+      {/* LinkedIn Posting */}
+      <LinkedInPosting
+        isOpen={showLinkedInPosting}
+        onClose={() => setShowLinkedInPosting(false)}
       />
 
       {/* Email Integration */}
