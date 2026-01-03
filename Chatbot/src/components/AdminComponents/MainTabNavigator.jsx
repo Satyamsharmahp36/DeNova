@@ -11,7 +11,8 @@ import {
   Users,
   Slack,
   Mail,
-  Linkedin
+  Linkedin,
+  Twitter
 } from "lucide-react";
 
 const MainTabNavigator = ({ 
@@ -23,6 +24,7 @@ const MainTabNavigator = ({
   handleChatIntegration, 
   handleWhatsAppIntegration,
   handleLinkedInPosting,
+  handleTwitterPosting,
   handleEmailIntegration,
   handleEmailCatchup
 }) => {
@@ -158,6 +160,13 @@ const MainTabNavigator = ({
           >
             <Linkedin className="w-4 h-4" />
             LinkedIn Posting
+          </button>
+          <button
+            onClick={handleTwitterPosting}
+            className="w-full px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Twitter className="w-4 h-4" />
+            Twitter/X Posting
           </button>
           <button
             onClick={handleEmailIntegration}
