@@ -1,31 +1,25 @@
-// ai-enhancement-service.js - Google Gemini powered content generation
-import { GoogleGenerativeAI } from '@google/generative-ai';
+// ai-enhancement-service.js - Groq powered content generation
+import Groq from 'groq-sdk';
 import { config } from 'dotenv';
 
 config();
 
 export class AIEnhancementService {
     constructor() {
-        if (!process.env.GEMINI_API_KEY) {
-            throw new Error('GEMINI_API_KEY is required in environment variables');
+        if (!process.env.GROQ_API_KEY) {
+            throw new Error('GROQ_API_KEY is required in environment variables');
         }
         
-        this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        this.model = this.genAI.getGenerativeModel({ 
-            model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
-            generationConfig: {
-                temperature: parseFloat(process.env.GENERATION_TEMPERATURE || '0.7'),
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 1024,
-            }
+        this.groq = new Groq({
+            apiKey: process.env.GROQ_API_KEY
         });
+        this.model = 'llama-3.3-70b-versatile';
         
-        console.log('🤖 AI Enhancement Service Initialized with Google Gemini');
-        console.log(`   Model: ${process.env.GEMINI_MODEL || 'gemini-2.0-flash'}`);
+        console.log('🤖 AI Enhancement Service Initialized with Groq');
+        console.log(`   Model: ${this.model}`);
     }
 
-    // Generate LinkedIn post content using Gemini
+    // Generate LinkedIn post content using Groq
 async generateLinkedInPost(topic, options = {}) {
     try {
         const {
@@ -66,8 +60,23 @@ Return ONLY the final LinkedIn post content ready to be posted. Do not include a
 
 LinkedIn Post:`;
 
-        const result = await this.model.generateContent(prompt);
-        let generatedContent = result.response.text().trim();
+        const completion = await this.groq.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a professional LinkedIn content creator. Generate engaging, authentic LinkedIn posts that provide value to readers. Return ONLY the final post content without any explanations or meta-commentary."
+                },
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            model: this.model,
+            temperature: 0.7,
+            max_tokens: 1024
+        });
+
+        let generatedContent = completion.choices[0]?.message?.content?.trim() || '';
 
         // CLEANUP: Remove any accidental meta-commentary
         generatedContent = this.cleanUpGeneratedContent(generatedContent);
@@ -81,10 +90,10 @@ LinkedIn Post:`;
             emojis: this.extractEmojis(generatedContent),
             tone: tone,
             topic: topic,
-            model: 'gemini-2.0-flash'
+            model: this.model
         };
     } catch (error) {
-        throw new Error(`Gemini post generation failed: ${error.message}`);
+        throw new Error(`Groq post generation failed: ${error.message}`);
     }
 }
 
@@ -180,8 +189,23 @@ IMPORTANT: Return ONLY the enhanced post content. No explanations, analysis, or 
 Enhanced Post:`;
         }
 
-        const result = await this.model.generateContent(prompt);
-        let enhancedContent = result.response.text().trim();
+        const completion = await this.groq.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a professional LinkedIn content enhancer. Return ONLY the enhanced post content without any explanations or meta-commentary."
+                },
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            model: this.model,
+            temperature: 0.7,
+            max_tokens: 1024
+        });
+
+        let enhancedContent = completion.choices[0]?.message?.content?.trim() || '';
         
         // ADDITIONAL CLEANUP: Remove any accidental meta-commentary
         enhancedContent = this.cleanUpGeneratedContent(enhancedContent);
@@ -193,28 +217,11 @@ Enhanced Post:`;
             enhancement: enhancement,
             improvements: await this.analyzeImprovements(originalContent, enhancedContent),
             wordCountChange: this.countWords(enhancedContent) - this.countWords(originalContent),
-            model: 'gemini-2.0-flash'
+            model: this.model
         };
     } catch (error) {
-        throw new Error(`Gemini content enhancement failed: ${error.message}`);
+        throw new Error(`Groq content enhancement failed: ${error.message}`);
     }
-}
-
-// ADD THIS NEW METHOD to clean up generated content
-cleanUpGeneratedContent(content) {
-    // Remove common AI meta-commentary patterns
-    const cleanContent = content
-        .replace(/\*\*Improvements Made:\*\*[\s\S]*$/i, '') // Remove "Improvements Made" section
-        .replace(/This revised post is[\s\S]*$/i, '') // Remove analysis at the end
-        .replace(/Remember to[\s\S]*$/i, '') // Remove "Remember to" suggestions
-        .replace(/\*\*[^*]*\*\*\s*[\s\S]*?(?=\n\n|\n$|$)/g, '') // Remove bullet point explanations
-        .replace(/^[\s\S]*?Enhanced Post:\s*/i, '') // Remove "Enhanced Post:" prefix
-        .replace(/^[\s\S]*?Improved Post:\s*/i, '') // Remove "Improved Post:" prefix
-        .replace(/^Here are[\s\S]*?:\s*/i, '') // Remove "Here are options" text
-        .replace(/\*\*Option \d+[^:]*:\*\*[\s\S]*?(?=\*\*Option|\n\n|$)/g, '') // Remove multiple options
-        .trim();
-    
-    return cleanContent;
 }
 
     // Generate achievement post using Gemini
@@ -255,10 +262,17 @@ Return ONLY the final LinkedIn post content ready to be posted. No explanations,
 
 Achievement Post:`;
 
-        const result = await this.model.generateContent(prompt);
-        let generatedContent = result.response.text().trim();
+        const completion = await this.groq.chat.completions.create({
+            messages: [
+                { role: "system", content: "You are a professional LinkedIn content creator. Return ONLY the final post content." },
+                { role: "user", content: prompt }
+            ],
+            model: this.model,
+            temperature: 0.7,
+            max_tokens: 1024
+        });
 
-        // Clean up any accidental meta-commentary
+        let generatedContent = completion.choices[0]?.message?.content?.trim() || '';
         generatedContent = this.cleanUpGeneratedContent(generatedContent);
 
         return {
@@ -270,10 +284,10 @@ Achievement Post:`;
             wordCount: this.countWords(generatedContent),
             hashtags: this.extractHashtags(generatedContent),
             emojis: this.extractEmojis(generatedContent),
-            model: 'gemini-2.0-flash'
+            model: this.model
         };
     } catch (error) {
-        throw new Error(`Gemini achievement post generation failed: ${error.message}`);
+        throw new Error(`Groq achievement post generation failed: ${error.message}`);
     }
 }
 
@@ -386,10 +400,17 @@ Return ONLY the enhanced post content. No explanations or analysis.
 Enhanced Post:`;
         }
 
-        const result = await this.model.generateContent(prompt);
-        let enhancedContent = result.response.text().trim();
+        const completion = await this.groq.chat.completions.create({
+            messages: [
+                { role: "system", content: "You are a professional LinkedIn content enhancer. Return ONLY the enhanced post content." },
+                { role: "user", content: prompt }
+            ],
+            model: this.model,
+            temperature: 0.7,
+            max_tokens: 1024
+        });
 
-        // Clean up any accidental meta-commentary
+        let enhancedContent = completion.choices[0]?.message?.content?.trim() || '';
         enhancedContent = this.cleanUpGeneratedContent(enhancedContent);
 
         return {
@@ -399,10 +420,10 @@ Enhanced Post:`;
             enhancement: enhancement,
             improvements: await this.analyzeImprovements(originalContent, enhancedContent),
             wordCountChange: this.countWords(enhancedContent) - this.countWords(originalContent),
-            model: 'gemini-2.0-flash'
+            model: this.model
         };
     } catch (error) {
-        throw new Error(`Gemini content enhancement failed: ${error.message}`);
+        throw new Error(`Groq content enhancement failed: ${error.message}`);
     }
 }
 
@@ -427,18 +448,27 @@ Please provide a comprehensive analysis including:
 
 Format your response clearly with each section labeled.`;
 
-            const result = await this.model.generateContent(prompt);
-            const analysis = result.response.text().trim();
+            const completion = await this.groq.chat.completions.create({
+                messages: [
+                    { role: "system", content: "You are a LinkedIn message analyst. Provide detailed insights." },
+                    { role: "user", content: prompt }
+                ],
+                model: this.model,
+                temperature: 0.7,
+                max_tokens: 1024
+            });
+
+            const analysis = completion.choices[0]?.message?.content?.trim() || '';
 
             return {
                 success: true,
                 originalMessage: messageContent,
                 analysis: analysis,
                 timestamp: new Date().toISOString(),
-                model: 'gemini-2.0-flash'
+                model: this.model
             };
         } catch (error) {
-            throw new Error(`Gemini message analysis failed: ${error.message}`);
+            throw new Error(`Groq message analysis failed: ${error.message}`);
         }
     }
 
@@ -468,8 +498,17 @@ RESPONSE STYLE GUIDELINES:
 
 Create a response that feels natural, helpful, and maintains professional relationships.`;
 
-            const result = await this.model.generateContent(prompt);
-            const responseContent = result.response.text().trim();
+            const completion = await this.groq.chat.completions.create({
+                messages: [
+                    { role: "system", content: "You are a professional LinkedIn communicator. Generate natural, helpful responses." },
+                    { role: "user", content: prompt }
+                ],
+                model: this.model,
+                temperature: 0.7,
+                max_tokens: 1024
+            });
+
+            const responseContent = completion.choices[0]?.message?.content?.trim() || '';
 
             return {
                 success: true,
@@ -477,10 +516,10 @@ Create a response that feels natural, helpful, and maintains professional relati
                 suggestedResponse: responseContent,
                 responseType: responseType,
                 wordCount: this.countWords(responseContent),
-                model: 'gemini-2.0-flash'
+                model: this.model
             };
         } catch (error) {
-            throw new Error(`Gemini response generation failed: ${error.message}`);
+            throw new Error(`Groq response generation failed: ${error.message}`);
         }
     }
 
@@ -519,38 +558,44 @@ STRUCTURE:
 
 Make it authentic, inspiring, and celebration-worthy while staying humble and grateful.`;
 
-            const result = await this.model.generateContent(prompt);
-            const generatedContent = result.response.text().trim();
+            const completion = await this.groq.chat.completions.create({
+                messages: [
+                    { role: "system", content: "You are a professional LinkedIn content creator. Return ONLY the final post content." },
+                    { role: "user", content: prompt }
+                ],
+                model: this.model,
+                temperature: 0.7,
+                max_tokens: 1024
+            });
+
+            const generatedContent = completion.choices[0]?.message?.content?.trim() || '';
 
             return {
                 success: true,
                 content: generatedContent,
-                type: 'hackindia_achievement',
+                type: 'hackindia',
                 status: status,
                 teamName: teamName,
                 wordCount: this.countWords(generatedContent),
                 hashtags: this.extractHashtags(generatedContent),
                 emojis: this.extractEmojis(generatedContent),
-                suggestedMedia: [
-                    'Team photo from hackathon',
-                    'Project demo screenshot',
-                    'HackIndia logo or certificate',
-                    'Code snippet or architecture diagram'
-                ],
                 engagementTips: [
-                    'Post during peak hours (10 AM - 3 PM IST)',
+                    'Post during peak hours (9-11 AM or 5-7 PM IST)',
                     'Tag team members and mentors',
+                    'Use all relevant hashtags',
+                    'Add images or videos from the event',
+                    'Respond to all comments within first hour',
                     'Share in relevant tech groups',
                     'Follow up with comments to boost engagement'
                 ],
-                model: 'gemini-2.0-flash'
+                model: this.model
             };
         } catch (error) {
-            throw new Error(`Gemini HackIndia post generation failed: ${error.message}`);
+            throw new Error(`Groq HackIndia post generation failed: ${error.message}`);
         }
     }
 
-    // Generate tech insight post using Gemini
+    // Generate tech insight post using Groq
     async generateTechInsightPost(topic, insight, context = {}) {
         try {
             const prompt = `Create a thought leadership LinkedIn post about this tech insight:
@@ -581,23 +626,32 @@ STRUCTURE:
 
 Make it informative, engaging, and valuable for tech professionals.`;
 
-            const result = await this.model.generateContent(prompt);
-            const generatedContent = result.response.text().trim();
+            const completion = await this.groq.chat.completions.create({
+                messages: [
+                    { role: "system", content: "You are a tech thought leader. Create informative, engaging LinkedIn posts." },
+                    { role: "user", content: prompt }
+                ],
+                model: this.model,
+                temperature: 0.7,
+                max_tokens: 1024
+            });
+
+            const generatedContent = completion.choices[0]?.message?.content?.trim() || '';
 
             return {
                 success: true,
                 content: generatedContent,
-                type: 'tech_insight',
+                type: 'tech-insight',
                 topic: topic,
                 insight: insight,
                 context: context,
                 wordCount: this.countWords(generatedContent),
                 hashtags: this.extractHashtags(generatedContent),
-                engagementPotential: 'high', // Tech insights typically get good engagement
-                model: 'gemini-2.0-flash'
+                engagementPotential: 'high',
+                model: this.model
             };
         } catch (error) {
-            throw new Error(`Gemini tech insight post generation failed: ${error.message}`);
+            throw new Error(`Groq tech insight post generation failed: ${error.message}`);
         }
     }
 
@@ -638,18 +692,25 @@ Make it informative, engaging, and valuable for tech professionals.`;
         return improvements;
     }
 
-    // Test Gemini connection
+    // Test Groq connection
     async testConnection() {
         try {
-            const result = await this.model.generateContent("Say 'Hello from Gemini!' and confirm you're working properly for LinkedIn content generation.");
+            const completion = await this.groq.chat.completions.create({
+                messages: [
+                    { role: "user", content: "Say 'Hello from Groq!' and confirm you're working properly for LinkedIn content generation." }
+                ],
+                model: this.model,
+                max_tokens: 100
+            });
+
             return {
                 success: true,
-                message: 'Gemini AI service is working properly',
-                response: result.response.text(),
-                model: process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+                message: 'Groq AI service is working properly',
+                response: completion.choices[0]?.message?.content || '',
+                model: this.model
             };
         } catch (error) {
-            throw new Error(`Gemini connection test failed: ${error.message}`);
+            throw new Error(`Groq connection test failed: ${error.message}`);
         }
     }
 }
