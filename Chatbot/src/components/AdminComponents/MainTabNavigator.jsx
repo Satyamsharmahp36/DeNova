@@ -25,6 +25,7 @@ const MainTabNavigator = ({
   handleWhatsAppIntegration,
   handleLinkedInPosting,
   handleTwitterPosting,
+  handleAddIntegration,
   handleEmailIntegration,
   handleEmailCatchup
 }) => {
@@ -167,6 +168,13 @@ const MainTabNavigator = ({
           >
             <Twitter className="w-4 h-4" />
             Twitter/X Posting
+          </button>
+          <button
+            onClick={handleAddIntegration}
+            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold"
+          >
+            <Plus className="w-4 h-4" />
+            ⚡ Add Integration
           </button>
           <button
             onClick={handleEmailIntegration}

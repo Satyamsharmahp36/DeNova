@@ -53,6 +53,7 @@ import EmailIntegration from "./EmailIntegration";
 import EmailCatchup from "./EmailCatchup";
 import LinkedInPosting from "./LinkedInPosting";
 import TwitterPosting from "./TwitterPosting";
+import AddIntegration from "./AddIntegration";
 
 const AdminPanel = ({ onClose }) => {
   const { userData, refreshUserData } = useAppContext();
@@ -86,6 +87,7 @@ const AdminPanel = ({ onClose }) => {
   const [showWhatsAppIntegration, setShowWhatsAppIntegration] = useState(false);
   const [showLinkedInPosting, setShowLinkedInPosting] = useState(false);
   const [showTwitterPosting, setShowTwitterPosting] = useState(false);
+  const [showAddIntegration, setShowAddIntegration] = useState(false);
   const [showEmailIntegration, setShowEmailIntegration] = useState(false);
   const [showEmailCatchup, setShowEmailCatchup] = useState(false);
   const [reminders, setReminders] = useState([]);
@@ -303,6 +305,10 @@ const AdminPanel = ({ onClose }) => {
 
   const handleTwitterPosting = () => {
     setShowTwitterPosting(true);
+  };
+
+  const handleAddIntegration = () => {
+    setShowAddIntegration(true);
   };
 
   const handleEmailIntegration = () => {
@@ -727,6 +733,7 @@ const AdminPanel = ({ onClose }) => {
             handleWhatsAppIntegration={handleWhatsAppIntegration}
             handleLinkedInPosting={handleLinkedInPosting}
             handleTwitterPosting={handleTwitterPosting}
+            handleAddIntegration={handleAddIntegration}
             handleEmailIntegration={handleEmailIntegration}
             handleEmailCatchup={handleEmailCatchup}
           />
@@ -887,6 +894,12 @@ const AdminPanel = ({ onClose }) => {
       <TwitterPosting
         isOpen={showTwitterPosting}
         onClose={() => setShowTwitterPosting(false)}
+      />
+
+      {/* Add Integration */}
+      <AddIntegration
+        isOpen={showAddIntegration}
+        onClose={() => setShowAddIntegration(false)}
       />
 
       {/* Email Integration */}

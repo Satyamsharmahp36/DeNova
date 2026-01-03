@@ -1,0 +1,30 @@
+{
+  "name": "unipile-integration-service",
+  "version": "1.0.0",
+  "description": "Unipile Hosted Auth integration service for dynamic account connections",
+  "type": "module",
+  "main": "unipile-server.js",
+  "scripts": {
+    "start": "node unipile-server.js",
+    "dev": "nodemon unipile-server.js"
+  },
+  "keywords": [
+    "unipile",
+    "oauth",
+    "integration",
+    "linkedin",
+    "whatsapp",
+    "email"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
