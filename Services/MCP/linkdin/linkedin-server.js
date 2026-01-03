@@ -69,6 +69,7 @@ app.get('/', (req, res) => {
             enhancePost: 'POST /api/linkedin/posts/enhance',
             
             // AI Features
+            generatePost: 'POST /api/ai/posts/generate',
             generateAchievement: 'POST /api/ai/posts/achievement',
             generateInsight: 'POST /api/ai/posts/insight',
             generateUpdate: 'POST /api/ai/posts/update',
@@ -1147,6 +1148,53 @@ app.post('/api/linkedin/posts/enhance', async (req, res) => {
 });
 
 // ============= AI POST GENERATION ENDPOINTS =============
+
+/**
+ * POST /api/ai/posts/generate - Generate LinkedIn post from topic (GENERIC)
+ */
+app.post('/api/ai/posts/generate', async (req, res) => {
+    try {
+        const { topic, options = {} } = req.body;
+        
+        if (!topic) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required field: topic',
+                example: {
+                    topic: "AI in healthcare",
+                    options: {
+                        tone: "professional",
+                        length: "medium",
+                        includeHashtags: true,
+                        includeEmojis: true
+                    }
+                },
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        const result = await aiService.generateLinkedInPost(topic, options);
+        
+        res.json({
+            success: true,
+            message: 'LinkedIn post generated successfully',
+            data: result,
+            actions: {
+                createPost: 'POST /api/linkedin/posts/create',
+                enhance: 'POST /api/linkedin/posts/enhance'
+            },
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('❌ Generate post error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to generate LinkedIn post',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
 
 /**
  * POST /api/ai/posts/achievement - Generate achievement post
