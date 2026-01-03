@@ -473,4 +473,74 @@ router.post('/login', async (req, res) => {
     }
   });
   
+  // Get all user cards for discovery feed (public profiles)
+  router.get('/users/discover', async (req, res) => {
+    try {
+      const { search, limit = 20, skip = 0, sort = 'recent' } = req.query;
+      
+      // Build query - exclude meeting bots and get only real users
+      let query = { plan: { $ne: 'meeting' } };
+      
+      // Add search filter if provided
+      if (search) {
+        query.$or = [
+          { username: { $regex: search, $options: 'i' } },
+          { name: { $regex: search, $options: 'i' } }
+        ];
+      }
+      
+      // Determine sort order
+      let sortOption = {};
+      switch (sort) {
+        case 'popular':
+          sortOption = { 'visitorAnalytics.totalVisits': -1 };
+          break;
+        case 'recent':
+        default:
+          sortOption = { createdAt: -1 };
+          break;
+      }
+      
+      // Fetch users with only required fields for cards
+      const users = await User.find(query)
+        .select('username name createdAt visitorAnalytics.totalVisits visitorAnalytics.uniqueVisitors')
+        .sort(sortOption)
+        .skip(parseInt(skip))
+        .limit(parseInt(limit))
+        .lean();
+      
+      // Get total count for pagination
+      const total = await User.countDocuments(query);
+      
+      // Transform data for frontend
+      const userCards = users.map(user => ({
+        username: user.username,
+        name: user.name,
+        createdAt: user.createdAt,
+        stats: {
+          totalVisits: user.visitorAnalytics?.totalVisits || 0,
+          uniqueVisitors: user.visitorAnalytics?.uniqueVisitors || 0
+        }
+      }));
+      
+      res.json({
+        success: true,
+        users: userCards,
+        pagination: {
+          total,
+          limit: parseInt(limit),
+          skip: parseInt(skip),
+          hasMore: parseInt(skip) + users.length < total
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching discover users:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Error fetching users', 
+        error: error.message 
+      });
+    }
+  });
+
   module.exports=router;

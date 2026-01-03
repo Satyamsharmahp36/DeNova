@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Cookies from 'js-cookie';
 import HomePage from './components/HomePage';
 import UserVerificationPage from './components/UserVerificationPage';
+import DiscoverPage from './components/DiscoverPage';
 import { useAppContext } from './Appcontext';
 
 const UserChatRoute = ({ onUserVerified }) => {
@@ -169,6 +170,20 @@ const AppContent = () => {
             <Route 
               path="home/:username" 
               element={<UserChatRoute onUserVerified={handleUserVerified} />} 
+            />
+            
+            <Route 
+              path="/home" 
+              element={
+                <motion.div
+                  key="discover"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <DiscoverPage />
+                </motion.div>
+              } 
             />
           </Routes>
         )}
