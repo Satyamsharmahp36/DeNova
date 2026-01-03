@@ -49,6 +49,9 @@ import IntegrationDashboard from "./AdminComponents/IntegrationDashboard";
 import EmailDashboard from "./AdminComponents/EmailDashboard";
 import ReminderPanel from "./AdminComponents/ReminderPanel";
 import WhatsAppIntegration from "./WhatsAppIntegration";
+import LinkedInIntegration from "./LinkedInIntegration";
+import EmailIntegration from "./EmailIntegration";
+import EmailCatchup from "./EmailCatchup";
 
 const AdminPanel = ({ onClose }) => {
   const { userData, refreshUserData } = useAppContext();
@@ -80,6 +83,9 @@ const AdminPanel = ({ onClose }) => {
     useState(false);
   const [showEmailDashboard, setShowEmailDashboard] = useState(false);
   const [showWhatsAppIntegration, setShowWhatsAppIntegration] = useState(false);
+  const [showLinkedInIntegration, setShowLinkedInIntegration] = useState(false);
+  const [showEmailIntegration, setShowEmailIntegration] = useState(false);
+  const [showEmailCatchup, setShowEmailCatchup] = useState(false);
   const [reminders, setReminders] = useState([]);
 
   // New state for UI improvements
@@ -287,6 +293,18 @@ const AdminPanel = ({ onClose }) => {
 
   const handleWhatsAppIntegration = () => {
     setShowWhatsAppIntegration(true);
+  };
+
+  const handleLinkedInIntegration = () => {
+    setShowLinkedInIntegration(true);
+  };
+
+  const handleEmailIntegration = () => {
+    setShowEmailIntegration(true);
+  };
+
+  const handleEmailCatchup = () => {
+    setShowEmailCatchup(true);
   };
 
   const handleAccessManagementUpdate = async (updatedData) => {
@@ -702,6 +720,9 @@ const AdminPanel = ({ onClose }) => {
             handleChatIntegration={handleChatIntegration}
             handleEmailDashboard={() => setShowEmailDashboard(true)}
             handleWhatsAppIntegration={handleWhatsAppIntegration}
+            handleLinkedInIntegration={handleLinkedInIntegration}
+            handleEmailIntegration={handleEmailIntegration}
+            handleEmailCatchup={handleEmailCatchup}
           />
 
           {/* Content Area */}
@@ -848,6 +869,24 @@ const AdminPanel = ({ onClose }) => {
       <WhatsAppIntegration
         isOpen={showWhatsAppIntegration}
         onClose={() => setShowWhatsAppIntegration(false)}
+      />
+
+      {/* LinkedIn Integration */}
+      <LinkedInIntegration
+        isOpen={showLinkedInIntegration}
+        onClose={() => setShowLinkedInIntegration(false)}
+      />
+
+      {/* Email Integration */}
+      <EmailIntegration
+        isOpen={showEmailIntegration}
+        onClose={() => setShowEmailIntegration(false)}
+      />
+
+      {/* Email Catchup */}
+      <EmailCatchup
+        isOpen={showEmailCatchup}
+        onClose={() => setShowEmailCatchup(false)}
       />
 
       {/* Notifications */}

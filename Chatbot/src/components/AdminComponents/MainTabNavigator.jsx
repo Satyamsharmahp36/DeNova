@@ -10,10 +10,23 @@ import {
   MessageCircle,
   Users,
   Slack,
-  Mail
+  Mail,
+  Linkedin
 } from "lucide-react";
 
-const MainTabNavigator = ({ activeView, handleTabChange, userData, handleSelfTaskToggle, setShowCalendarScheduler, handleChatIntegration, handleEmailDashboard, handleWhatsAppIntegration }) => {
+const MainTabNavigator = ({ 
+  activeView, 
+  handleTabChange, 
+  userData, 
+  handleSelfTaskToggle, 
+  setShowCalendarScheduler, 
+  handleChatIntegration, 
+  handleEmailDashboard, 
+  handleWhatsAppIntegration,
+  handleLinkedInIntegration,
+  handleEmailIntegration,
+  handleEmailCatchup
+}) => {
   return (
     <div className="md:w-64 bg-gray-900 p-4 flex-shrink-0 border-r border-gray-700">
       <nav>
@@ -146,6 +159,27 @@ const MainTabNavigator = ({ activeView, handleTabChange, userData, handleSelfTas
           >
             <MessageCircle className="w-4 h-4" />
             WhatsApp Integration
+          </button>
+          <button
+            onClick={handleLinkedInIntegration}
+            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Linkedin className="w-4 h-4" />
+            LinkedIn Integration
+          </button>
+          <button
+            onClick={handleEmailIntegration}
+            className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Mail className="w-4 h-4" />
+            Email Integration
+          </button>
+          <button
+            onClick={handleEmailCatchup}
+            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold shadow-lg"
+          >
+            <Mail className="w-4 h-4" />
+            ✨ AI Email Catchup
           </button>
           <li>
   <button
