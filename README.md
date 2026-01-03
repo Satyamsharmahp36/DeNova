@@ -1,187 +1,189 @@
-# ChatMATE - Your Personalized AI Assistant
+# ChatMate 🤖🔗  
+### AI-Powered Web3 Virtual Assistant on Solana
 
-## 🚀 Introduction
+ChatMate is an **AI-native virtual assistant** integrated with **Solana** that allows users to automate communication, scheduling, and services — while **owning their identity, permissions, and payments through their wallet**.
 
-Welcome to **ChatMATE**, our submission for **HackIndia 2025** — a personalized AI assistant that acts as your digital twin when you're unavailable. Whether you're a busy professional, a college student, or someone who needs a virtual presence, ChatMATE has got you covered!
+Unlike traditional AI assistants, ChatMate is **wallet-first, permission-controlled, and payment-enabled**, making it a true **AI-integrated decentralized application (dApp)**.
 
-## 🎯 Problem We're Solving
+---
 
-In today's fast-paced world, people often struggle to manage multiple tasks simultaneously. Professionals miss meetings, students forget important deadlines, and important information gets lost in the shuffle. ChatMATE addresses this by creating a personalized AI assistant that represents you, handles queries, manages your schedule, and even joins meetings on your behalf.
+## 🚀 Why ChatMate?
 
-## 💡 What is ChatMATE?
+Modern AI assistants can act on behalf of users — sending messages, scheduling meetings, posting content — but they lack:
+- User ownership
+- Verifiable permissions
+- Native payments
+- Privacy guarantees
 
-ChatMATE is a comprehensive AI-powered assistant that:
+**ChatMate solves this by using Solana as the trust layer.**
 
-- **Acts as your digital twin** - Answers questions based on data you've fed into it
-- **Manages your schedule** - Sets up meetings and sends reminders
-- **Attends meetings for you** - Records, transcribes, and summarizes meetings
-- **Multilingual support** - Communicates in multiple languages
-- **Context-aware** - Understands your preferences, schedule, and responsibilities
+---
 
-## 🤖 Core Features
+## 🧠 Core Features
 
-### 1. Personalized AI Training
-Feed ChatMATE with your personal data, professional information, or academic details to create a virtual representation of yourself.
+### 🔐 Wallet & NFC-Based Login
+- Login using Solana wallets (Phantom / Solflare)
+- Optional NFC-based deep-link login
+- No email, no passwords
+- Wallet = decentralized identity
 
-### 2. Meeting Management
-Schedule, record, transcribe, and summarize meetings with intelligent follow-up capabilities.
+---
 
-### 3. Task & Reminder System
-Never miss a deadline or important event with smart, context-aware reminders.
+### 🤖 AI-Powered Automation
+ChatMate can:
+- Send WhatsApp & LinkedIn messages
+- Schedule meetings
+- Answer questions about people, tasks, and events
+- Automate recurring actions (future scope)
 
-### 4. Contextual Question Answering
-Visitors can ask your AI about you, your work, availability, and more.
+AI interprets user intent and executes actions **only after verifying on-chain permissions**.
 
-## 💬 Sample Interactions
+---
 
-Here are some examples of how you can interact with ChatMATE:
+### 🔗 On-Chain Permission Control (Solana)
+Users control what ChatMate is allowed to do.
 
-### Scheduling Meetings
-```
-User: "Schedule a meeting with Sarah about the marketing proposal at 2 PM today"
-ChatMATE: "I've scheduled a meeting with Sarah at 2 PM today about the marketing proposal. The Google Calendar invite has been sent to both of you."
-```
+Permissions include:
+- Message sending
+- Meeting scheduling
+- Automation limits
+- Paid access control
 
-### Training Your Assistant
-```
-User: "Save this information: I'm working on Project Phoenix which is due on May 15th"
-ChatMATE: "Information saved. I now know you're working on Project Phoenix with a May 15th deadline."
+Permissions are stored and verified via Solana, ensuring:
+- User ownership
+- Verifiable authorization
+- No silent AI actions
 
-User: "Add to my profile that I prefer morning meetings between 9-11 AM"
-ChatMATE: "Added to your profile. I'll prioritize scheduling meetings between 9-11 AM when possible."
-```
+---
 
-### For Visitors Interacting with Your Assistant
-```
-Visitor: "What projects is [Your Name] currently working on?"
-ChatMATE: "[Your Name] is currently working on Project Phoenix, which has a deadline of May 15th."
+### 💳 Wallet-Native Crypto Payments
+ChatMate enables **direct crypto payments** inside the app.
 
-Visitor: "When is [Your Name] available for a meeting this week?"
-ChatMATE: "[Your Name] prefers morning meetings between 9-11 AM. They have availability on Tuesday and Thursday mornings this week."
-```
+Use cases:
+- Pay-to-connect with tutors, mentors, or professionals
+- Book sessions or consultations
+- Unlock premium AI-assisted services
 
-### Meeting Companion Features
-```
-User: "Summarize my meeting with the design team from yesterday"
-ChatMATE: "In your meeting with the design team yesterday, you discussed the new UI mockups. Action items include: 1) Sarah to refine the homepage design by Friday, 2) You to provide feedback on color schemes by Wednesday, 3) Next review scheduled for Monday at 10 AM."
-```
+Supported:
+- SOL
+- USDC (SPL Token)
 
-### College/Academic Use Case
-```
-User: "What are my upcoming assignment deadlines?"
-ChatMATE: "You have a Data Structures assignment due tomorrow at midnight and a Physics lab report due on Friday at 5 PM."
+No Web2 payment gateways required.
 
-User: "Remind me about important topics from yesterday's Machine Learning lecture"
-ChatMATE: "From yesterday's Machine Learning lecture, the important topics were: Gradient Descent optimization, Overfitting prevention techniques, and Cross-validation methods."
-```
+---
 
-## 🛠️ Technical Stack
+### 🎓 Pay-to-Connect Example
+1. User searches for a Web3 tutor
+2. ChatMate AI finds the profile
+3. Wallet prompts payment
+4. Payment is verified on Solana
+5. Chat access or meeting is unlocked
 
-- **Frontend**: React + TailwindCSS + Framer Motion
-- **Backend**: Flask for python + NodeJS
-- **AI Models**: Whisper/deepGram (for transcription from audio) + Gemini (for conversation and generation) + LangChain (for AI integration)
-- **Meeting Integration**: Google Meet APIs
-- **Calendar Integration**: Google Calendar APIs
-- **Persistent Storage**: MongoDB
+Payments are **AI-orchestrated and wallet-native**.
 
-## 📋 Flow Architecture
+---
 
-1. **User Registration & Profile Creation**
-   - Create account
-   - Define use case (Professional/Student/Custom)
-   - Configure preferences
-   
-2. **Data Ingestion & Training**
-   - Upload personal information
-   - Connect calendars
-   - Add projects/courses/responsibilities
-   - All data securely embedded and stored
-   
-3. **Assistant Deployment**
-   - Unique URL for visitors to interact with your assistant
-   - Integration with calendar and communication tools
-   
-4. **Meeting Companion Bot**
-   - Joins meetings 5 minutes before start time
-   - Records video and audio
-   - Transcribes conversations using Whisper
-   - Generates summaries using LangChain
-   - Extracts action items and key points
-   
-5. **Intelligent Reminders**
-   - Context-aware notifications
-   - Deadline alerts
-   - Meeting preparations
+### 🧾 On-Chain Payment Proofs
+- Only transaction hashes are stored on-chain
+- No private messages or user data
+- Enables verifiable proof of service
 
-## 🚀 Getting Started
+---
 
-### Prerequisites
-- Python 3.8+
-- Node.js 16+
-- MongoDB
-- API keys for LLM services
+### 🗂️ Encrypted Decentralized User Data
+- User data is encrypted using wallet public keys
+- Stored on decentralized storage (IPFS / similar)
+- ChatMate cannot access data without wallet authorization
 
-### Installation
+On-chain:
+- Wallet → Encrypted data pointer (CID)
 
-The bot here uses a gmail account so you need to enter you gmail email and password and pass it on as ENV. 
+---
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/chatmate.git
+### 🪪 Optional Session NFT (MVP Extension)
+- Non-transferable (Soulbound) NFT
+- Represents:
+  - Paid session access
+  - Service entitlement
+  - Time-limited permissions
 
-# Backend setup
-cd Backend
-npm install
-npm run start 
+---
 
-# Frontend setup
-cd ./frontend
-npm install
-npm run start
+## 🏗️ Architecture Overview
 
-cd ./Chatbot
-npm install
-npm start
+User Wallet / NFC
+↓
+Solana Identity & Payments
+↓
+Permission Verification
+↓
+ChatMate AI Engine
+↓
+Encrypted Decentralized Storage
 
-#Services 
-cd Services 
-./build.sh
- docker run -it -p 5000:5000\
-   -e GMAIL_USER_EMAIL=yourbot@email.com \
-   -e GMAIL_USER_PASSWORD=YOUR_PASSWORD \
-   -e GOOGLE_API_KEY="<----YOUR API KEY---->" \
-   -e SERVER_API=BACKEND_URL \
-   -e MAX_WAIT_TIME_IN_MINUTES=1 \
-   -v $PWD/storage:/app/storage \
-   gmeet
 
-```
+---
 
-## 🔒 Privacy & Security
+## 🛠️ Tech Stack
 
-ChatMATE takes your privacy seriously:
-- All data is encrypted at rest and in transit
-- Fine-grained control over what information your assistant can share
-- Option to set expiration dates for sensitive information
-- Clear data deletion policies
+**Frontend**
+- React / Next.js
+- Solana Wallet Adapter
 
-## 👥 About Us
+**Backend**
+- Node.js
+- AI Orchestration Layer
+- Payment Verification Service
 
-We are a team of three passionate developers from Chitkara University, Baddi:
-- Anshul Kashyap
-- Satyam Sharma
-- Swasti Mohanty
+**Blockchain**
+- Solana
+- SPL Tokens (SOL / USDC)
+- Optional Solana Programs for permissions
 
-We're excited to bring ChatMATE to HackIndia 2025 and revolutionize how people manage their digital presence!
+**Storage**
+- IPFS / Decentralized storage
+- Encrypted user data
 
-## 📄 License
+---
 
-Fork it, clone it, ship it.
+## 🎯 Hackathon Scope (MVP)
 
-Just don’t say you wrote it while blasting lofi and drinking chai under a red LED light at 3:00 AM.
-We earned that vibe.😄
+✔ Wallet login  
+✔ AI assistant with automation  
+✔ Crypto payments (SOL / USDC)  
+✔ Pay-to-connect flow  
+✔ Permission-controlled actions  
+✔ Encrypted decentralized storage  
 
-### 📺 HackIndia 2025 Playlist
+---
 
-[![HackIndia 2025](https://img.youtube.com/vi/qT3nN6Z7E6g/0.jpg)](https://www.youtube.com/playlist?list=PLk6JpwF5Q-tCm4R03DcabNGV08RXTPUnu)
+## 🔮 Future Roadmap
+
+- Smart contract-based automation rules
+- Subscription-based services
+- DAO-governed AI permissions
+- ChatMate credits (SPL token)
+- Cross-agent AI collaboration
+
+---
+
+## 🏆 Why This Matters
+
+ChatMate demonstrates how **AI and Web3 naturally complement each other**:
+- AI executes
+- Blockchain authorizes
+- Wallets own identity & value
+
+> **ChatMate is not just an AI assistant — it is a wallet-owned digital agent.**
+
+---
+
+## 📍 Built For
+**DeNova Hackathon – Solana Track**  
+Shipyard, Bengaluru 🇮🇳
+
+---
+
+## 👥 Team
+Built with ❤️ by Solana builders exploring the future of AI-integrated dApps.
 
