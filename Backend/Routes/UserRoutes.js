@@ -79,7 +79,7 @@ router.post('/register', async (req, res) => {
         email: email || `meeting-${username}@example.com`, // Fallback for email
         mobileNo: mobileNo || "0000000000", // Fallback for mobile
         username, 
-        password,
+        password: hashedPassword,  // Use hashed password!
         groqApiKey,
         prompt: prompt || '',
         plan: plan || 'free',
@@ -138,7 +138,14 @@ router.post('/login', async (req, res) => {
       const user = await User.findOne({ username });
       if (!user) return res.status(400).json({ message: "Invalid username or password" });
       
-      const isMatch = await bcrypt.compare(password, user.password);
+      // Try bcrypt comparison first (for properly hashed passwords)
+      let isMatch = await bcrypt.compare(password, user.password);
+      
+      // Fallback: Check if password matches plain text (for old users)
+      if (!isMatch && password === user.password) {
+        isMatch = true;
+      }
+      
       if (!isMatch) return res.status(400).json({ message: "Invalid username or password" });
       
       res.json({ message: "Login successful", userId: user._id, plan: user.plan });

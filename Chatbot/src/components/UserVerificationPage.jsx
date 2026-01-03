@@ -46,7 +46,7 @@ const UserVerificationPage = ({ onUserVerified }) => {
         onUserVerified(data);
         
         // Navigate to the user's home page
-        navigate(`home/${username.trim()}`);
+        navigate(`/home/${username.trim()}`);
       } else {
         setErrorMessage('User not found. Please try a different username.');
         setTimeout(() => setErrorMessage(''), 3000);
