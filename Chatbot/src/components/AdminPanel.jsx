@@ -49,7 +49,6 @@ import IntegrationDashboard from "./AdminComponents/IntegrationDashboard";
 import EmailDashboard from "./AdminComponents/EmailDashboard";
 import ReminderPanel from "./AdminComponents/ReminderPanel";
 import WhatsAppIntegration from "./WhatsAppIntegration";
-import LinkedInIntegration from "./LinkedInIntegration";
 import EmailIntegration from "./EmailIntegration";
 import EmailCatchup from "./EmailCatchup";
 
@@ -83,7 +82,6 @@ const AdminPanel = ({ onClose }) => {
     useState(false);
   const [showEmailDashboard, setShowEmailDashboard] = useState(false);
   const [showWhatsAppIntegration, setShowWhatsAppIntegration] = useState(false);
-  const [showLinkedInIntegration, setShowLinkedInIntegration] = useState(false);
   const [showEmailIntegration, setShowEmailIntegration] = useState(false);
   const [showEmailCatchup, setShowEmailCatchup] = useState(false);
   const [reminders, setReminders] = useState([]);
@@ -293,10 +291,6 @@ const AdminPanel = ({ onClose }) => {
 
   const handleWhatsAppIntegration = () => {
     setShowWhatsAppIntegration(true);
-  };
-
-  const handleLinkedInIntegration = () => {
-    setShowLinkedInIntegration(true);
   };
 
   const handleEmailIntegration = () => {
@@ -720,7 +714,6 @@ const AdminPanel = ({ onClose }) => {
             handleChatIntegration={handleChatIntegration}
             handleEmailDashboard={() => setShowEmailDashboard(true)}
             handleWhatsAppIntegration={handleWhatsAppIntegration}
-            handleLinkedInIntegration={handleLinkedInIntegration}
             handleEmailIntegration={handleEmailIntegration}
             handleEmailCatchup={handleEmailCatchup}
           />
@@ -869,12 +862,6 @@ const AdminPanel = ({ onClose }) => {
       <WhatsAppIntegration
         isOpen={showWhatsAppIntegration}
         onClose={() => setShowWhatsAppIntegration(false)}
-      />
-
-      {/* LinkedIn Integration */}
-      <LinkedInIntegration
-        isOpen={showLinkedInIntegration}
-        onClose={() => setShowLinkedInIntegration(false)}
       />
 
       {/* Email Integration */}
