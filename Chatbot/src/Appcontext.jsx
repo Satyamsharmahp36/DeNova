@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import Cookies from 'js-cookie';
 
 const AppContext = createContext();
@@ -11,11 +11,21 @@ export const AppProvider = ({ children }) => {
   const [presentUserName, setPresentUserName] = useState(() => Cookies.get('presentUserName') || null);
   const [per, setPer] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
+  
+  const fetchingUserRef = useRef(false);
+  const fetchingPresentUserRef = useRef(false);
+  const hasInitializedRef = useRef(false);
+  const lastFetchedUserRef = useRef(null);
+  const lastFetchedPresentUserRef = useRef(null);
 
-  // Helper function to refresh user data
-  const refreshUserData = async () => {
+  // Helper function to refresh user data - MEMOIZED
+  const refreshUserData = useCallback(async (force = false) => {
+    if (!userName) return null;
+    if (fetchingUserRef.current) return null;
+    if (!force && lastFetchedUserRef.current === userName) return null;
+    
     try {
-      if (!userName) return null;
+      fetchingUserRef.current = true;
       
       const response = await fetch(`${import.meta.env.VITE_BACKEND}/verify-user/${userName}`, {
         method: "GET",
@@ -27,6 +37,7 @@ export const AppProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
+        lastFetchedUserRef.current = userName;
         return data;
       } else {
         console.error(`Failed to refresh user data: ${response.status}`);
@@ -35,13 +46,19 @@ export const AppProvider = ({ children }) => {
     } catch (error) {
       console.error("Error refreshing user data:", error);
       return null;
+    } finally {
+      fetchingUserRef.current = false;
     }
-  };
+  }, [userName]);
 
-  // Helper function to refresh present user data
-  const refreshPresentUserData = async () => {
+  // Helper function to refresh present user data - MEMOIZED
+  const refreshPresentUserData = useCallback(async (force = false) => {
+    if (!presentUserName) return null;
+    if (fetchingPresentUserRef.current) return null;
+    if (!force && lastFetchedPresentUserRef.current === presentUserName) return null;
+    
     try {
-      if (!presentUserName) return null;
+      fetchingPresentUserRef.current = true;
       
       const response = await fetch(`${import.meta.env.VITE_BACKEND}/verify-user/${presentUserName}`, {
         method: "GET",
@@ -53,6 +70,7 @@ export const AppProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         setPresentUserData(data);
+        lastFetchedPresentUserRef.current = presentUserName;
         return data;
       } else {
         console.error(`Failed to refresh present user data: ${response.status}`);
@@ -61,50 +79,70 @@ export const AppProvider = ({ children }) => {
     } catch (error) {
       console.error("Error refreshing present user data:", error);
       return null;
+    } finally {
+      fetchingPresentUserRef.current = false;
     }
-  };
+  }, [presentUserName]);
 
-  // Initial data fetch on mount
+  // Initial data fetch on mount ONLY
   useEffect(() => {
+    if (hasInitializedRef.current) return;
+    
     const initializeData = async () => {
+      hasInitializedRef.current = true;
+      
       try {
-        // Fetch both user data and present user data in parallel
-        await Promise.all([
-          userName && refreshUserData(),
-          presentUserName && refreshPresentUserData()
-        ]);
+        const promises = [];
+        if (userName) promises.push(refreshUserData());
+        if (presentUserName) promises.push(refreshPresentUserData());
+        
+        if (promises.length > 0) {
+          await Promise.all(promises);
+        }
         
         setIsInitialized(true);
       } catch (error) {
         console.error("Error initializing data:", error);
-        setIsInitialized(true); // Set initialized even on error to prevent infinite loading
+        setIsInitialized(true);
       }
     };
 
     initializeData();
-  }, []); // Run only on mount
+  }, []);
 
-  // Watch for userName changes
+  // Watch for userName changes - ONLY update cookie and fetch if changed AFTER initialization
   useEffect(() => {
+    if (!isInitialized) return;
+    
     if (userName) {
-      Cookies.set('userName', userName, { expires: 7 }); // Set cookie to expire in 7 days
-      refreshUserData();
+      Cookies.set('userName', userName, { expires: 7 });
+      // Only fetch if username actually changed
+      if (lastFetchedUserRef.current !== userName) {
+        refreshUserData();
+      }
     } else {
       Cookies.remove('userName');
       setUserData(null);
+      lastFetchedUserRef.current = null;
     }
-  }, [userName]);
+  }, [userName, isInitialized]);
 
-  // Watch for presentUserName changes
+  // Watch for presentUserName changes - ONLY update cookie and fetch if changed AFTER initialization
   useEffect(() => {
+    if (!isInitialized) return;
+    
     if (presentUserName) {
-      Cookies.set('presentUserName', presentUserName, { expires: 7 }); // Set cookie to expire in 7 days
-      refreshPresentUserData();
+      Cookies.set('presentUserName', presentUserName, { expires: 7 });
+      // Only fetch if presentUserName actually changed
+      if (lastFetchedPresentUserRef.current !== presentUserName) {
+        refreshPresentUserData();
+      }
     } else {
       Cookies.remove('presentUserName');
       setPresentUserData(null);
+      lastFetchedPresentUserRef.current = null;
     }
-  }, [presentUserName]);
+  }, [presentUserName, isInitialized]);
 
   return (
     <AppContext.Provider

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState, useCallback } from "react";
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import { motion } from 'framer-motion';
 import Cookies from 'js-cookie';
@@ -318,9 +318,13 @@ const UserChatRoute = ({ onUserVerified }: { onUserVerified: (data: any) => void
   const [loading, setLoading] = useState(true);
   const [userExists, setUserExists] = useState(false);
   const { setUserName, isInitialized } = useAppContext();
+  const hasFetchedRef = useRef(false);
   
   useEffect(() => {
+    if (hasFetchedRef.current || !isInitialized) return;
+    
     const verifyUser = async () => {
+      hasFetchedRef.current = true;
       try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND}/verify-user/${username}`);
         const data = await response.json();
@@ -337,10 +341,8 @@ const UserChatRoute = ({ onUserVerified }: { onUserVerified: (data: any) => void
       }
     };
     
-    if (isInitialized) {
-      verifyUser();
-    }
-  }, [username, setUserName, isInitialized, onUserVerified]);
+    verifyUser();
+  }, [username, isInitialized]);
   
   if (!isInitialized || loading) {
     return (
@@ -621,9 +623,9 @@ export default function App() {
     }
   }, [isInitialized, userName, setUserName]);
 
-  const handleUserVerified = (data: any) => {
+  const handleUserVerified = useCallback((data: any) => {
     setUserVerifiedData(data);
-  };
+  }, []);
 
   const handleLogout = () => {
     Cookies.remove('userName');

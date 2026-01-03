@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import VisitorAnalytics from './AdminComponents/VisitorAnalytics';
 import PropTypes from 'prop-types';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -56,6 +56,7 @@ const HomePage = ({ onLogout }) => {
   const [passwordError, setPasswordError] = useState('');
   const [tempUserData, setTempUserData] = useState(null);
   const [isUserDataLoaded, setIsUserDataLoaded] = useState(false);
+  const hasLoadedProfileRef = useRef(false);
 
   const backgroundBubbles = useMemo(() => {
     return [...Array(20)].map((_, i) => ({
@@ -86,7 +87,6 @@ const HomePage = ({ onLogout }) => {
         setProfileOwnerName(data.user?.name || username);
         setIsProfileOwnerLoaded(true);
         setIsUserDataLoaded(true);
-        await refreshUserData(); // Refresh context after setting local state
         return true;
       }
       return false;
@@ -109,7 +109,6 @@ const HomePage = ({ onLogout }) => {
       const data = await response.json();
       if (response.ok) {
         setTempUserData(data);
-        await refreshPresentUserData(); // Refresh present user data in context
         return true;
       }
       return false;
@@ -139,29 +138,46 @@ const HomePage = ({ onLogout }) => {
   };
 
   useEffect(() => {
+    if (hasLoadedProfileRef.current) return;
+    
     const initializeData = async () => {
-    // Check if user is already authenticated via context
-      if (presentUserName && presentUserData) {
-      setIsPresentUserAuthenticated(true);
-    }
-
-    if (username) {
+      // First, load the profile owner data
+      let profileData = null;
+      
+      if (username) {
+        hasLoadedProfileRef.current = true;
         const success = await fetchProfileOwner(username);
         if (success) {
-          await refreshUserData(); // Ensure context is updated after successful fetch
           setIsUserDataLoaded(true);
         }
-    } else if (userData) {
-      setProfileOwnerData(userData);
-      setProfileOwnerName(userData.user?.name || '');
-      setIsProfileOwnerLoaded(true);
+      } else if (userData) {
+        hasLoadedProfileRef.current = true;
+        setProfileOwnerData(userData);
+        setProfileOwnerName(userData.user?.name || '');
+        setIsProfileOwnerLoaded(true);
         setIsUserDataLoaded(true);
-        await refreshUserData(); // Refresh context to ensure it's up to date
-    }
+      }
     };
 
     initializeData();
-  }, [username, userData?.user?.username, presentUserName]);
+  }, [username]);
+
+  // Auto-authenticate logged-in users and go straight to chat
+  useEffect(() => {
+    if (!isProfileOwnerLoaded || !profileOwnerData) return;
+    
+    // If user is already logged in (has presentUserName from cookie/context)
+    if (presentUserName && presentUserData) {
+      // Check if they have access
+      const hasAccess = checkAccessPermission(presentUserName);
+      if (hasAccess) {
+        setIsPresentUserAuthenticated(true);
+        // Auto-start chat for logged-in users
+        setShowChatBot(true);
+        trackVisitor();
+      }
+    }
+  }, [isProfileOwnerLoaded, profileOwnerData, presentUserName, presentUserData]);
 
   const handlePresentUserSubmit = async (e) => {
     e.preventDefault();
@@ -212,9 +228,9 @@ const HomePage = ({ onLogout }) => {
       const isPasswordValid = await verifyPassword(presentUserName.trim(), password.trim());
       
       if (isPasswordValid) {
-        // Set cookie and trigger context update
+        // Set cookie and update context via setPresentUserName
         Cookies.set('presentUserName', presentUserName.trim());
-        await refreshPresentUserData(); // Wait for context to update
+        setPresentUserName(presentUserName.trim()); // This triggers context refresh
         
         setIsPresentUserAuthenticated(true);
         setShowPasswordModal(false);
