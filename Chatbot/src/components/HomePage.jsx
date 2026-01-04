@@ -199,39 +199,26 @@ const HomePage = ({ onLogout }) => {
   const assistantOwnerWallet = profileOwnerData?.user?.walletAddress;
 
   const chatBotView = (
-    <div className="h-screen flex bg-gray-950">
+    <div className="h-screen flex bg-neutral-950">
       {/* Left Sidebar - Minimal Navigation */}
-      <div className="w-14 bg-gray-900/50 border-r border-gray-800/50 flex flex-col items-center py-4">
+      <div className="w-16 bg-neutral-900 border-r border-neutral-800 flex flex-col items-center py-4 gap-2">
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={navigateToDiscover}
-          className="text-gray-500 hover:text-white p-2.5 rounded-xl hover:bg-gray-800/50 transition-all"
+          className="text-neutral-400 hover:text-white p-3 rounded-lg hover:bg-neutral-800 transition-all group"
           title="Back to Discover"
         >
           <ArrowLeft className="w-5 h-5" />
         </motion.button>
         
         <div className="flex-1" />
-
-        {/* Tip Button in sidebar - only show when viewing others' assistant */}
-        {isViewingOthersAssistant && assistantOwnerWallet && (
-          <div className="mb-3">
-            <TipButton 
-              recipientWallet={assistantOwnerWallet}
-              recipientName={profileOwnerName}
-              onSuccess={(amount, sig) => {
-                console.log(`Tipped ${amount} SOL, tx: ${sig}`);
-              }}
-            />
-          </div>
-        )}
         
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleLogout}
-          className="text-gray-500 hover:text-red-400 p-2.5 rounded-xl hover:bg-gray-800/50 transition-all"
+          className="text-neutral-400 hover:text-red-400 p-3 rounded-lg hover:bg-red-500/10 transition-all"
           title="Logout"
         >
           <LogOut className="w-5 h-5" />
@@ -247,7 +234,7 @@ const HomePage = ({ onLogout }) => {
 
         {/* Right Panel - Admin/Settings */}
         <motion.div 
-          className="bg-gray-900/80 border-l border-gray-800/50 flex flex-col overflow-y-scroll"
+          className="bg-neutral-900 border-l border-neutral-800 flex flex-col overflow-y-scroll"
           initial={false}
           animate={{ 
             width: showAdminPanel ? 720 : 280,
@@ -257,19 +244,19 @@ const HomePage = ({ onLogout }) => {
           {!showAdminPanel && !showPasswordPrompt ? (
             // Settings Button State - Collapsed view
             <div className="flex-1 flex flex-col">
-              <div className="p-4 border-b border-gray-800/50">
-                <h3 className="text-gray-400 text-xs font-medium uppercase tracking-wider">Quick Actions</h3>
+              <div className="p-4 border-b border-neutral-800">
+                <h3 className="text-neutral-500 text-xs font-semibold uppercase tracking-wider">Quick Actions</h3>
               </div>
               <div className="flex-1 flex flex-col items-center justify-center p-6 gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gray-800/50 flex items-center justify-center mb-2">
-                  <Home className="w-8 h-8 text-gray-500" />
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 flex items-center justify-center mb-2">
+                  <Home className="w-8 h-8 text-emerald-400" />
                 </div>
-                <p className="text-gray-500 text-sm text-center mb-4">Access admin settings and manage your assistant</p>
+                <p className="text-neutral-400 text-sm text-center mb-4">Access admin settings and manage your assistant</p>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSettingsClick}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all font-medium shadow-lg shadow-blue-600/20"
+                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg transition-all font-medium shadow-lg shadow-emerald-500/20"
                 >
                   Open Settings
                 </motion.button>
@@ -278,15 +265,15 @@ const HomePage = ({ onLogout }) => {
           ) : showPasswordPrompt ? (
             // Password Prompt State
             <div className="flex-1 flex flex-col">
-              <div className="p-4 border-b border-gray-800/50 flex items-center justify-between">
-                <h3 className="text-white font-medium">Authentication</h3>
+              <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+                <h3 className="text-white font-semibold">Authentication</h3>
                 <button
                   onClick={() => {
                     setShowPasswordPrompt(false);
                     setAdminPassword('');
                     setPasswordError('');
                   }}
-                  className="text-gray-500 hover:text-white p-1 rounded-lg hover:bg-gray-800/50 transition-all"
+                  className="text-neutral-400 hover:text-white p-1.5 rounded-lg hover:bg-neutral-800 transition-all"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -295,19 +282,19 @@ const HomePage = ({ onLogout }) => {
               </div>
               <div className="flex-1 flex items-center justify-center p-6">
                 <div className="w-full max-w-xs">
-                  <div className="w-16 h-16 rounded-2xl bg-gray-800/50 flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 border border-violet-500/30 flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-8 h-8 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <p className="text-gray-400 text-sm text-center mb-6">Enter your admin password to access settings</p>
+                  <p className="text-neutral-400 text-sm text-center mb-6">Enter your admin password to access settings</p>
                   <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <input
                       type="password"
                       value={adminPassword}
                       onChange={(e) => setAdminPassword(e.target.value)}
                       placeholder="Enter password"
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all"
+                      className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
                       autoFocus
                     />
                     {passwordError && (
@@ -315,7 +302,7 @@ const HomePage = ({ onLogout }) => {
                     )}
                     <button
                       type="submit"
-                      className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all font-medium shadow-lg shadow-blue-600/20"
+                      className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg transition-all font-medium shadow-lg shadow-emerald-500/20"
                     >
                       Unlock
                     </button>
@@ -325,12 +312,12 @@ const HomePage = ({ onLogout }) => {
             </div>
           ) : (
             // Admin Panel State - Expanded view
-            <div className="flex-1 flex flex-col ">
-              <div className="p-4 border-b border-gray-800/50 flex items-center justify-between">
-                <h2 className="text-white font-medium">Admin Panel</h2>
+            <div className="flex-1 flex flex-col">
+              <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+                <h2 className="text-white font-semibold">Admin Panel</h2>
                 <button
                   onClick={() => setShowAdminPanel(false)}
-                  className="text-gray-500 hover:text-white p-1.5 rounded-lg hover:bg-gray-800/50 transition-all"
+                  className="text-neutral-400 hover:text-white p-1.5 rounded-lg hover:bg-neutral-800 transition-all"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -37,6 +37,7 @@ import AdminModal from "./AdminModal";
 import MessageContent from "./MessageContent";
 import languages from "../services/languages";
 import { useAppContext } from "../Appcontext";
+import TipButton from "./TipButton";
 
 const ChatBot = () => {
   const {
@@ -552,37 +553,53 @@ const ChatBot = () => {
 
   if (!isInitialized || !currentUserData?.user) {
     return (
-      <div className="flex flex-col h-full w-full bg-gray-900 text-white overflow-hidden items-center justify-center">
+      <div className="flex flex-col h-full w-full bg-neutral-950 text-white overflow-hidden items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
-          <Loader2 className="w-8 h-8 text-blue-500" />
+          <Loader2 className="w-8 h-8 text-emerald-500" />
         </motion.div>
-        <p className="mt-4 text-gray-400">Initializing chat...</p>
+        <p className="mt-4 text-neutral-400">Initializing chat...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full w-full bg-gray-900 text-white overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-neutral-950 text-white overflow-hidden">
       <style>{scrollbarStyles}</style>
 
-      <div className="bg-gray-800 py-4 rounded-t-xl px-6 flex justify-between items-center border-b border-gray-700">
-        <div className="flex items-center">
-          <Bot className="w-6 h-6 text-blue-400 mr-2" />
-          <h1 className="text-xl font-bold">
-            {" "}
-            {currentUserData.user.name}'s AI Assistant
-          </h1>
+      <div className="bg-neutral-900 py-4 px-6 flex justify-between items-center border-b border-neutral-800">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <Bot className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold text-white">
+              {currentUserData.user.name}'s Assistant
+            </h1>
+            <p className="text-xs text-neutral-500">AI-powered chat</p>
+          </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* Show TipButton when viewing someone else's assistant */}
+          {presentUserName && currentUserData?.user?.username && presentUserName !== currentUserData.user.username && currentUserData.user.walletAddress && (
+            <TipButton 
+              recipientWallet={currentUserData.user.walletAddress}
+              recipientName={currentUserData.user.name}
+              onSuccess={(amount, sig) => {
+                console.log(`Successfully tipped ${amount} SOL to ${currentUserData.user.name}`);
+                console.log(`Transaction signature: ${sig}`);
+              }}
+            />
+          )}
+          
           <div className="relative" ref={languageDropdownRef}>
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={toggleLanguageDropdown}
-              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center gap-2"
+              className="px-3 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors flex items-center gap-2 text-sm"
             >
               <Globe className="w-4 h-4" />
               <span className="hidden sm:inline">{selectedLanguage.name}</span>
@@ -590,23 +607,23 @@ const ChatBot = () => {
             </motion.button>
 
             {showLanguageDropdown && (
-              <div className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 overflow-hidden z-10">
+              <div className="absolute right-0 mt-2 w-56 bg-neutral-800 rounded-lg shadow-xl border border-neutral-700 overflow-hidden z-10">
                 <div className="max-h-64 overflow-y-auto">
                   {languages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => handleLanguageSelect(language)}
-                      className={`w-full px-4 py-2 text-left hover:bg-gray-700 flex items-center ${
+                      className={`w-full px-4 py-2 text-left hover:bg-neutral-700 flex items-center text-sm transition-colors ${
                         selectedLanguage.code === language.code
-                          ? "bg-blue-900"
-                          : ""
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "text-neutral-300"
                       }`}
                     >
                       {language.code === selectedLanguage.code && (
-                        <CheckCircle className="w-4 h-4 mr-2 text-blue-400" />
+                        <CheckCircle className="w-4 h-4 mr-2 text-emerald-400" />
                       )}
                       <span className="mr-1">{language.name}</span>
-                      <span className="text-sm text-gray-400">
+                      <span className="text-xs text-neutral-500">
                         ({language.native})
                       </span>
                     </button>
@@ -617,19 +634,19 @@ const ChatBot = () => {
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setShowContributionForm(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg transition-all flex items-center gap-2 text-sm font-medium shadow-lg shadow-emerald-500/20"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Contribute</span>
           </motion.button>
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setShowSettings(true)}
-            className="p-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+            className="p-2 bg-neutral-800 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-700 transition-colors"
           >
             <Settings className="w-5 h-5" />
           </motion.button>
@@ -646,7 +663,7 @@ const ChatBot = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-green-900 bg-opacity-20 border border-green-500 rounded-lg p-3 text-green-300 flex items-center"
+              className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 text-emerald-400 flex items-center"
             >
               <CheckCircle className="w-5 h-5 mr-2" />
               Knowledge base updated successfully! I'm now equipped with the
@@ -661,14 +678,14 @@ const ChatBot = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-blue-900 bg-opacity-20 border border-blue-500 rounded-lg p-3 text-blue-300 flex items-center"
+              className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 text-blue-400 flex items-center"
             >
               <Info className="w-5 h-5 mr-2" />
               Detected {detectedLanguage.name} ({detectedLanguage.native}).
               Translation is active.
               <button
                 onClick={() => setShowTranslationInfo(false)}
-                className="ml-auto text-blue-300 hover:text-blue-100"
+                className="ml-auto text-blue-400 hover:text-blue-200"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -689,15 +706,15 @@ const ChatBot = () => {
             <div
               className={`max-w-[80%] rounded-lg p-3 shadow-md ${
                 message.type === "user"
-                  ? "bg-blue-600 text-white rounded-br-none"
-                  : "bg-gray-800 text-white rounded-bl-none border border-gray-700"
+                  ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-br-none"
+                  : "bg-neutral-900 text-white rounded-bl-none border border-neutral-800"
               }`}
             >
               <div className="flex items-center mb-1">
                 {message.type === "bot" ? (
-                  <Bot className="w-4 h-4 mr-2 text-blue-400" />
+                  <Bot className="w-4 h-4 mr-2 text-emerald-400" />
                 ) : (
-                  <User className="w-4 h-4 mr-2 text-blue-300" />
+                  <User className="w-4 h-4 mr-2 text-emerald-300" />
                 )}
                 <div className="text-xs opacity-70">
                   {message.type === "bot"
@@ -713,7 +730,7 @@ const ChatBot = () => {
                   )}
                   {message.originalLanguage &&
                     message.originalLanguage !== "en" && (
-                      <span className="ml-2 text-xs bg-blue-900 px-2 py-0.5 rounded-full">
+                      <span className="ml-2 text-xs bg-blue-500/20 px-2 py-0.5 rounded-full">
                         {languages.find(
                           (l) => l.code === message.originalLanguage
                         )?.name || message.originalLanguage}
@@ -730,9 +747,9 @@ const ChatBot = () => {
                     transition={{ duration: 1.5, repeat: Infinity }}
                     className="flex items-center gap-2"
                   >
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
                   </motion.div>
                 ) : (
                   <MessageContent content={message.content} />
@@ -748,9 +765,9 @@ const ChatBot = () => {
             transition={{ duration: 0.3 }}
             className="flex items-start justify-start"
           >
-            <div className="max-w-[80%] rounded-lg p-3 shadow-md bg-gray-800 text-white rounded-bl-none border border-gray-700">
+            <div className="max-w-[80%] rounded-lg p-3 shadow-md bg-neutral-900 text-white rounded-bl-none border border-neutral-800">
               <div className="flex items-center mb-1">
-                <Bot className="w-4 h-4 mr-2 text-blue-400" />
+                <Bot className="w-4 h-4 mr-2 text-emerald-400" />
                 <div className="text-xs opacity-70">Assistant</div>
               </div>
               <div className="text-sm">
@@ -759,9 +776,9 @@ const ChatBot = () => {
                   transition={{ duration: 1.5, repeat: Infinity }}
                   className="flex items-center gap-2"
                 >
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
                 </motion.div>
               </div>
             </div>
@@ -771,8 +788,8 @@ const ChatBot = () => {
       </div>
 
       <div>
-        <div className="flex items-end p-4 border-t border-gray-700">
-          <div className="relative flex items-center w-full rounded-lg bg-gray-800 p-2">
+        <div className="flex items-end p-4 border-t border-neutral-800">
+          <div className="relative flex items-center w-full rounded-lg bg-neutral-900 border border-neutral-800 p-3">
             <textarea
               ref={inputRef}
               value={input}
@@ -782,7 +799,7 @@ const ChatBot = () => {
               }}
               onKeyDown={handleKeyPress}
               placeholder={`Ask me anything about ${currentUserData.user.name} ...`}
-              className="flex-1 bg-transparent outline-none resize-none text-white placeholder-gray-400 max-h-32"
+              className="flex-1 bg-transparent outline-none resize-none text-white placeholder-neutral-500 max-h-32"
               rows={1}
               disabled={isActivelyListening} // Only disable when actively listening
             />
@@ -794,9 +811,9 @@ const ChatBot = () => {
                 whileTap={{ scale: 0.9 }}
                 onClick={handleMicClick}
                 disabled={isLoading || !browserSupportsSpeechRecognition}
-                className={`p-2 rounded-full ${
-                  listening ? "bg-blue-600" : "bg-gray-700"
-                } text-white hover:bg-blue-700 transition-colors`}
+                className={`p-2 rounded-lg ${
+                  listening ? "bg-gradient-to-r from-emerald-500 to-emerald-600" : "bg-neutral-800"
+                } text-white hover:bg-emerald-600 transition-all`}
                 aria-label={
                   listening ? "Stop voice input" : "Start voice input"
                 }
@@ -815,9 +832,9 @@ const ChatBot = () => {
                     setVoiceEnabled((prev) => !prev);
                   }
                 }}
-                className={`p-2 rounded-full ${
-                  voiceEnabled ? "bg-green-600" : "bg-gray-600"
-                } text-white hover:bg-green-700 transition-colors`}
+                className={`p-2 rounded-lg ${
+                  voiceEnabled ? "bg-emerald-600" : "bg-neutral-700"
+                } text-white hover:bg-emerald-700 transition-colors`}
                 aria-pressed={voiceEnabled}
                 aria-label={
                   isSpeaking 
@@ -857,20 +874,20 @@ const ChatBot = () => {
 
             {/* Updated voice transcript UI */}
             {isActivelyListening && (
-              <div className="absolute bottom-14 left-2 right-2 bg-gray-900 rounded-xl shadow-lg border border-blue-700 z-10 p-3 flex items-center gap-2">
-                <span className="flex-1 text-blue-400">
+              <div className="absolute bottom-14 left-2 right-2 bg-neutral-900 rounded-lg shadow-xl border border-emerald-500/30 z-10 p-3 flex items-center gap-2">
+                <span className="flex-1 text-emerald-400">
                   {transcript || (listening ? "Listening..." : "")}
                 </span>
                 <button
                   onClick={handleVoiceSend}
                   disabled={!transcript.trim()}
-                  className="px-3 py-1 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+                  className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg text-sm font-medium hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50 transition-all"
                 >
                   Use Text
                 </button>
                 <button
                   onClick={handleVoiceCancel}
-                  className="px-3 py-1 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600"
+                  className="px-3 py-1 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -879,11 +896,11 @@ const ChatBot = () => {
 
             {/* Send Button - removed isVoiceInput from disabled condition */}
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleSendMessage}
-              disabled={isLoading || input.trim() === ""} // REMOVED isVoiceInput condition
-              className="p-2 ml-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+              disabled={isLoading || input.trim() === ""}
+              className="p-2.5 ml-2 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
             >
               {isLoading ? (
                 <motion.div
