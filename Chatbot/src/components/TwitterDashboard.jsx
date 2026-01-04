@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { 
   X, Send, Sparkles, Loader2, Calendar, Clock, Plus, Trash2, 
-  RefreshCw, Twitter, Edit3, Check, AlertCircle
+  RefreshCw, Twitter, Edit3, Check, AlertCircle, Wallet, Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useSolana } from '../hooks/useSolana';
 
 const TWITTER_API_BASE = import.meta.env.VITE_TWITTER_API_BASE || 'http://localhost:9000';
 
 const TwitterDashboard = ({ isOpen, onClose }) => {
+  const { isConnected, walletAddress, connect, signAction, formatAddress } = useSolana();
   const [activeTab, setActiveTab] = useState('post');
   const [context, setContext] = useState('');
   const [generatedTweet, setGeneratedTweet] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
+  const [isSigningAction, setIsSigningAction] = useState(false);
   const [characterCount, setCharacterCount] = useState(0);
   
   // Scheduling state
@@ -92,6 +95,25 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
       toast.error('Tweet exceeds 280 characters');
       return;
     }
+
+    // Wallet signature gate for security
+    if (!isConnected) {
+      toast.error('Please connect your wallet to authorize this action');
+      return;
+    }
+    
+    setIsSigningAction(true);
+    try {
+      // Request wallet signature before posting
+      await signAction('TWITTER_POST', `Publishing tweet: "${generatedTweet.substring(0, 50)}..."`);
+      toast.success('Action authorized!');
+    } catch (signError) {
+      console.error('Signature rejected:', signError);
+      toast.error('Action cancelled - wallet signature required');
+      setIsSigningAction(false);
+      return;
+    }
+    setIsSigningAction(false);
 
     setIsPosting(true);
     try {

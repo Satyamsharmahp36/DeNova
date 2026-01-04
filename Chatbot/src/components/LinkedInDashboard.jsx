@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { 
   X, Send, Sparkles, Loader2, Calendar, Clock, Plus, Trash2, 
-  RefreshCw, Linkedin, Edit3, Check, AlertCircle
+  RefreshCw, Linkedin, Edit3, Check, AlertCircle, Wallet, Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useSolana } from '../hooks/useSolana';
 
 const LINKEDIN_API_BASE = import.meta.env.VITE_LINKEDIN_API_BASE || 'http://localhost:4000';
 
 const LinkedInDashboard = ({ isOpen, onClose }) => {
+  const { isConnected, walletAddress, connect, signAction, formatAddress } = useSolana();
   const [activeTab, setActiveTab] = useState('post');
   const [topic, setTopic] = useState('');
   const [generatedPost, setGeneratedPost] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
+  const [isSigningAction, setIsSigningAction] = useState(false);
   
   // Scheduling state
   const [scheduledPosts, setScheduledPosts] = useState([]);
@@ -85,6 +88,25 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
       toast.error('No content to publish');
       return;
     }
+
+    // Wallet signature gate for security
+    if (!isConnected) {
+      toast.error('Please connect your wallet to authorize this action');
+      return;
+    }
+    
+    setIsSigningAction(true);
+    try {
+      // Request wallet signature before posting
+      await signAction('LINKEDIN_POST', `Publishing post: "${generatedPost.substring(0, 50)}..."`);
+      toast.success('Action authorized!');
+    } catch (signError) {
+      console.error('Signature rejected:', signError);
+      toast.error('Action cancelled - wallet signature required');
+      setIsSigningAction(false);
+      return;
+    }
+    setIsSigningAction(false);
 
     setIsPosting(true);
     try {
