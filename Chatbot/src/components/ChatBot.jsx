@@ -913,7 +913,6 @@ const ChatBot = ({ hideSettings = false, hideHeader = false }) => {
         >
           <div
             ref={modalRef}
-            className="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full p-6 border border-gray-700"
             className="bg-neutral-900 rounded-lg shadow-xl max-w-md w-full p-6 border border-neutral-800/50"
             onClick={(e) => e.stopPropagation()}
             data-testid="delete-modal-content"
