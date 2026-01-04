@@ -153,6 +153,67 @@ router.post('/login', async (req, res) => {
       res.status(500).json({ message: "Error logging in", error: error.message });
     }
   });
+
+// Phantom Wallet Login/Register
+router.post('/wallet-auth', async (req, res) => {
+  try {
+    const { walletAddress, signature, message } = req.body;
+    
+    if (!walletAddress) {
+      return res.status(400).json({ message: "Wallet address is required" });
+    }
+
+    // Check if user exists with this wallet
+    let user = await User.findOne({ walletAddress });
+    
+    if (user) {
+      // User exists - login
+      return res.json({ 
+        message: "Login successful", 
+        isNewUser: false,
+        user: {
+          username: user.username,
+          name: user.name,
+          walletAddress: user.walletAddress
+        }
+      });
+    } else {
+      // New user - create account with wallet
+      // Generate username from wallet address
+      const shortWallet = walletAddress.slice(0, 4) + '...' + walletAddress.slice(-4);
+      const username = 'wallet_' + walletAddress.slice(0, 8).toLowerCase();
+      
+      // Check if generated username exists
+      const existingUsername = await User.findOne({ username });
+      const finalUsername = existingUsername ? username + '_' + Date.now().toString(36) : username;
+      
+      const newUser = new User({
+        name: shortWallet,
+        email: `${walletAddress.slice(0, 10)}@wallet.local`,
+        mobileNo: '0000000000',
+        username: finalUsername,
+        password: walletAddress, // Use wallet address as password placeholder
+        walletAddress: walletAddress,
+        plan: 'free'
+      });
+      
+      await newUser.save();
+      
+      return res.json({
+        message: "Account created successfully",
+        isNewUser: true,
+        user: {
+          username: newUser.username,
+          name: newUser.name,
+          walletAddress: newUser.walletAddress
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Wallet auth error:', error);
+    res.status(500).json({ message: "Error with wallet authentication", error: error.message });
+  }
+});
   
   router.post('/verify-password', async (req, res) => {
     try {
@@ -210,13 +271,86 @@ router.post('/login', async (req, res) => {
           taskSchedulingEnabled:user.taskSchedulingEnabled,
           visitors:user.visitors,
           visitorAnalytics:user.visitorAnalytics,
-          google:user.google
+          google:user.google,
+          walletAddress: user.walletAddress,
+          accessFee: user.accessFee,
+          totalEarnings: user.totalEarnings
         } 
       });
     } catch (error) {
       res.status(500).json({ message: "Error verifying user", error: error.message });
     }
   });
+
+// Update access fee for pay-to-connect
+router.post('/update-access-fee', async (req, res) => {
+  try {
+    const { username, accessFee } = req.body;
+    
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+    
+    const user = await User.findOneAndUpdate(
+      { username },
+      { accessFee: accessFee || 0 },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    res.json({ 
+      message: "Access fee updated", 
+      accessFee: user.accessFee 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating access fee", error: error.message });
+  }
+});
+
+// Record payment/tip (called after successful blockchain transaction)
+router.post('/record-payment', async (req, res) => {
+  try {
+    const { recipientUsername, payerWallet, amount, txSignature, paymentType } = req.body;
+    
+    if (!recipientUsername || !amount || !txSignature) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    
+    // Update recipient's total earnings
+    const recipient = await User.findOneAndUpdate(
+      { username: recipientUsername },
+      { $inc: { totalEarnings: amount } },
+      { new: true }
+    );
+    
+    if (!recipient) {
+      return res.status(404).json({ message: "Recipient not found" });
+    }
+    
+    // If this is an access payment, grant access to the payer
+    if (paymentType === 'access' && payerWallet) {
+      // Find payer by wallet and add to recipient's access list
+      const payer = await User.findOne({ walletAddress: payerWallet });
+      if (payer && !recipient.accessList.includes(payer.username)) {
+        await User.findOneAndUpdate(
+          { username: recipientUsername },
+          { $addToSet: { accessList: payer.username } }
+        );
+      }
+    }
+    
+    res.json({ 
+      message: "Payment recorded", 
+      totalEarnings: recipient.totalEarnings,
+      txSignature 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error recording payment", error: error.message });
+  }
+});
 
   router.get('/users/count', async (req, res) => {
     try {

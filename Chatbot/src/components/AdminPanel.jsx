@@ -49,6 +49,11 @@ import IntegrationDashboard from "./AdminComponents/IntegrationDashboard";
 import EmailDashboard from "./AdminComponents/EmailDashboard";
 import ReminderPanel from "./AdminComponents/ReminderPanel";
 import WhatsAppIntegration from "./WhatsAppIntegration";
+import EmailIntegration from "./EmailIntegration";
+import EmailCatchup from "./EmailCatchup";
+import LinkedInPosting from "./LinkedInPosting";
+import TwitterPosting from "./TwitterPosting";
+import AddIntegration from "./AddIntegration";
 
 const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline = false }) => {
   const { userData, refreshUserData } = useAppContext();
@@ -80,6 +85,11 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
     useState(false);
   const [showEmailDashboard, setShowEmailDashboard] = useState(false);
   const [showWhatsAppIntegration, setShowWhatsAppIntegration] = useState(false);
+  const [showLinkedInPosting, setShowLinkedInPosting] = useState(false);
+  const [showTwitterPosting, setShowTwitterPosting] = useState(false);
+  const [showAddIntegration, setShowAddIntegration] = useState(false);
+  const [showEmailIntegration, setShowEmailIntegration] = useState(false);
+  const [showEmailCatchup, setShowEmailCatchup] = useState(false);
   const [reminders, setReminders] = useState([]);
 
   // New state for UI improvements
@@ -293,6 +303,26 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
 
   const handleWhatsAppIntegration = () => {
     setShowWhatsAppIntegration(true);
+  };
+
+  const handleLinkedInPosting = () => {
+    setShowLinkedInPosting(true);
+  };
+
+  const handleTwitterPosting = () => {
+    setShowTwitterPosting(true);
+  };
+
+  const handleAddIntegration = () => {
+    setShowAddIntegration(true);
+  };
+
+  const handleEmailIntegration = () => {
+    setShowEmailIntegration(true);
+  };
+
+  const handleEmailCatchup = () => {
+    setShowEmailCatchup(true);
   };
 
   const handleAccessManagementUpdate = async (updatedData) => {
@@ -868,8 +898,12 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             handleSelfTaskToggle={handleSelfTaskToggle}
             setShowCalendarScheduler={setShowCalendarScheduler}
             handleChatIntegration={handleChatIntegration}
-            handleEmailDashboard={() => setShowEmailDashboard(true)}
             handleWhatsAppIntegration={handleWhatsAppIntegration}
+            handleLinkedInPosting={handleLinkedInPosting}
+            handleTwitterPosting={handleTwitterPosting}
+            handleAddIntegration={handleAddIntegration}
+            handleEmailIntegration={handleEmailIntegration}
+            handleEmailCatchup={handleEmailCatchup}
           />
 
           {/* Content Area */}
@@ -1016,6 +1050,36 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
       <WhatsAppIntegration
         isOpen={showWhatsAppIntegration}
         onClose={() => setShowWhatsAppIntegration(false)}
+      />
+
+      {/* LinkedIn Posting */}
+      <LinkedInPosting
+        isOpen={showLinkedInPosting}
+        onClose={() => setShowLinkedInPosting(false)}
+      />
+
+      {/* Twitter Posting */}
+      <TwitterPosting
+        isOpen={showTwitterPosting}
+        onClose={() => setShowTwitterPosting(false)}
+      />
+
+      {/* Add Integration */}
+      <AddIntegration
+        isOpen={showAddIntegration}
+        onClose={() => setShowAddIntegration(false)}
+      />
+
+      {/* Email Integration */}
+      <EmailIntegration
+        isOpen={showEmailIntegration}
+        onClose={() => setShowEmailIntegration(false)}
+      />
+
+      {/* Email Catchup */}
+      <EmailCatchup
+        isOpen={showEmailCatchup}
+        onClose={() => setShowEmailCatchup(false)}
       />
 
       {/* Notifications */}

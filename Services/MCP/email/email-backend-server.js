@@ -4,11 +4,13 @@ import cors from 'cors';
 import axios from 'axios';
 import { config } from 'dotenv';
 import { UnipileEmailService } from './unipile-email-service.js';
+import { AIEmailAnalyzer } from './ai-email-analyzer.js';
 
 config();
 
 const app = express();
 const emailService = new UnipileEmailService();
+const aiAnalyzer = new AIEmailAnalyzer();
 
 // Middleware
 app.use(cors());
@@ -152,6 +154,136 @@ app.get('/api/emails/accounts', async (req, res) => {
         });
     }
 });
+
+// ============= SPECIAL ROUTES (MUST BE BEFORE DYNAMIC ROUTES) =============
+
+/**
+ * GET /api/emails/catchup - AI-powered email catchup with smart analysis
+ */
+app.get('/api/emails/catchup', async (req, res) => {
+    try {
+        console.log('🤖 Starting AI-powered email catchup...');
+        
+        // Fetch recent emails from all accounts
+        const emailsResult = await emailService.getRecentEmailsForCatchup(10);
+        
+        if (!emailsResult.success || emailsResult.emails.length === 0) {
+            return res.json({
+                success: true,
+                message: '📭 No recent emails found',
+                data: {
+                    totalAccounts: emailsResult.accountsChecked || 0,
+                    accounts: emailsResult.accounts || [],
+                    totalEmails: 0,
+                    unreadCount: 0,
+                    importantCount: 0,
+                    importantEmails: [],
+                    allEmails: [],
+                    summary: 'Your inbox is clear! No recent emails to review.',
+                    overallInsight: 'All caught up! 🎉'
+                },
+                timestamp: new Date().toISOString()
+            });
+        }
+        
+        console.log(`📧 Analyzing ${emailsResult.emails.length} emails with AI...`);
+        
+        // Analyze emails with AI
+        const analysis = await aiAnalyzer.analyzeEmails(emailsResult.emails);
+        
+        // Generate detailed summary if there are important emails
+        let detailedSummary = analysis.summary;
+        if (analysis.importantEmails.length > 0) {
+            const summaryResult = await aiAnalyzer.generateDetailedSummary(analysis.importantEmails);
+            if (summaryResult.success) {
+                detailedSummary = summaryResult.summary;
+            }
+        }
+        
+        res.json({
+            success: true,
+            message: `🤖 AI analysis complete: ${analysis.importantCount} important email${analysis.importantCount !== 1 ? 's' : ''} found`,
+            data: {
+                totalAccounts: emailsResult.accountsChecked,
+                accounts: emailsResult.accounts.map(acc => ({
+                    id: acc.id,
+                    email: acc.email,
+                    type: acc.type,
+                    status: acc.status
+                })),
+                totalEmails: analysis.totalEmails,
+                unreadCount: analysis.unreadCount,
+                importantCount: analysis.importantCount,
+                importantEmails: analysis.importantEmails.map(email => ({
+                    id: email.id,
+                    from: email.fromName || email.from,
+                    subject: email.subject,
+                    preview: email.preview,
+                    date: email.date,
+                    isUnread: !email.isRead,
+                    accountEmail: email.accountEmail,
+                    aiReason: email.aiReason,
+                    aiPriority: email.aiPriority
+                })),
+                allEmails: emailsResult.emails.map(email => ({
+                    id: email.id,
+                    from: email.fromName || email.from,
+                    subject: email.subject,
+                    preview: email.preview,
+                    date: email.date,
+                    isUnread: !email.isRead,
+                    accountEmail: email.accountEmail
+                })),
+                summary: detailedSummary,
+                overallInsight: analysis.overallInsight
+            },
+            timestamp: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('❌ Email catchup failed:', error.message);
+        res.status(500).json({
+            success: false,
+            message: '❌ Failed to perform email catchup',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+/**
+ * GET /api/emails/unread/all - Get all unread emails from all accounts
+ */
+app.get('/api/emails/unread/all', async (req, res) => {
+    try {
+        const { limit = 20 } = req.query;
+        
+        console.log('📧 Fetching unread emails from all accounts...');
+        const result = await emailService.getUnreadEmailsFromAllAccounts(parseInt(limit));
+        
+        res.json({
+            success: true,
+            message: `📧 Found ${result.total} unread email${result.total !== 1 ? 's' : ''}`,
+            data: result.emails,
+            summary: {
+                total: result.total,
+                totalFound: result.totalFound,
+                accountsChecked: result.accountsChecked
+            },
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('❌ Get unread emails failed:', error.message);
+        res.status(500).json({
+            success: false,
+            message: '❌ Failed to fetch unread emails',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// ============= DYNAMIC ROUTES (MUST BE AFTER SPECIFIC ROUTES) =============
 
 /**
  * GET /api/emails/:accountId - Get emails with FULL enhanced processing

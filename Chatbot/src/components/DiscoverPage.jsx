@@ -1,4 +1,4 @@
-eimport React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -13,22 +13,28 @@ import {
   Loader2,
   Sparkles,
   Eye,
-  MessageSquare
+  MessageSquare,
+  LogOut,
+  Settings,
+  ChevronUp
 } from 'lucide-react';
+import Cookies from 'js-cookie';
 import { useAppContext } from '../Appcontext';
 
 const DiscoverPage = () => {
   const navigate = useNavigate();
-  const { presentUserData, presentUserName } = useAppContext();
+  const { presentUserData, presentUserName, setPresentUserName } = useAppContext();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('recent');
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const searchTimeoutRef = useRef(null);
   const observerRef = useRef(null);
   const loadMoreRef = useRef(null);
+  const profileMenuRef = useRef(null);
 
   const filters = useMemo(() => [
     { id: 'recent', label: 'Recent', icon: Clock },
@@ -114,6 +120,18 @@ const DiscoverPage = () => {
       }
     };
   }, [hasMore, loadingMore, loading, users.length, fetchUsers]);
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleCardClick = useCallback((username) => {
     navigate(`/home/${username}`);
@@ -204,16 +222,58 @@ const DiscoverPage = () => {
         </nav>
 
         {presentUserData?.user && (
-          <div className="p-4 border-t border-gray-800">
-            <div className="flex items-center gap-3 px-3 py-2">
+          <div className="p-4 border-t border-gray-800 relative" ref={profileMenuRef}>
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-800/50 transition-all cursor-pointer"
+            >
               <div className={`w-10 h-10 rounded-full ${getAvatarColor(presentUserData.user.username)} flex items-center justify-center text-white font-semibold text-sm`}>
                 {getInitials(presentUserData.user.name)}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 text-left">
                 <p className="text-sm font-medium text-white truncate">{presentUserData.user.name}</p>
                 <p className="text-xs text-gray-500 truncate">@{presentUserData.user.username}</p>
               </div>
-            </div>
+              <ChevronUp className={`w-4 h-4 text-gray-500 transition-transform ${showProfileMenu ? 'rotate-0' : 'rotate-180'}`} />
+            </motion.button>
+
+            <AnimatePresence>
+              {showProfileMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute bottom-full left-4 right-4 mb-2 bg-gray-800 border border-gray-700 rounded-xl shadow-xl overflow-hidden"
+                >
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      navigate(`/home/${presentUserName}`);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-all"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span className="text-sm">Settings</span>
+                  </button>
+                  <div className="border-t border-gray-700" />
+                  <button
+                    onClick={() => {
+                      Cookies.remove('presentUserName');
+                      setPresentUserName(null);
+                      setShowProfileMenu(false);
+                      navigate('/');
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-all"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm">Logout</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
       </aside>

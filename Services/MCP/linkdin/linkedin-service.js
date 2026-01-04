@@ -609,12 +609,24 @@ async createLinkedInPost(content, options = {}) {
             headers: this.getHeaders()
         });
 
-        console.log('📝 LinkedIn post created successfully:', JSON.stringify(response.data, null, 2));
+        console.log('📝 LinkedIn post API response:', JSON.stringify(response.data, null, 2));
+        console.log('📝 Response status:', response.status);
+        
+        // FIXED: Unipile returns "post_id" not "id"
+        const postId = response.data.post_id || response.data.id;
+        console.log('📝 Post ID from response:', postId);
+
+        // Check if post was actually created
+        if (!postId) {
+            console.warn('⚠️ Warning: No post ID returned from Unipile API. Post may not have been created.');
+        } else {
+            console.log('✅ LinkedIn post created successfully with ID:', postId);
+        }
 
         return {
             success: true,
-            postId: response.data.id,
-            url: response.data.url || `https://linkedin.com/posts/activity-${response.data.id}`,
+            postId: postId,
+            url: response.data.url || (postId ? `https://www.linkedin.com/feed/update/urn:li:activity:${postId}` : 'Post created but URL unavailable'),
             createdAt: response.data.created_at || new Date().toISOString()
         };
     } catch (error) {

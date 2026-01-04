@@ -255,6 +255,9 @@ export class UnipileEmailService {
             let accounts = [];
             if (Array.isArray(response.data)) {
                 accounts = response.data;
+            } else if (response.data && response.data.items && Array.isArray(response.data.items)) {
+                // Unipile returns { object: 'AccountList', items: [...] }
+                accounts = response.data.items;
             } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
                 accounts = response.data.data;
             } else if (response.data && response.data.accounts && Array.isArray(response.data.accounts)) {
@@ -268,20 +271,29 @@ export class UnipileEmailService {
                 };
             }
 
+            // Filter for email accounts (GOOGLE_OAUTH, MICROSOFT_OAUTH, etc.) - exclude LINKEDIN, WHATSAPP
             const emailAccounts = accounts.filter(account => {
-                const provider = account.provider?.toLowerCase() || '';
-                return ['gmail', 'outlook', 'yahoo', 'imap', 'microsoft', 'google', 'email'].includes(provider);
+                const type = account.type?.toUpperCase() || '';
+                return type.includes('GOOGLE') || 
+                       type.includes('MICROSOFT') || 
+                       type.includes('OUTLOOK') ||
+                       type.includes('GMAIL') ||
+                       type.includes('IMAP') ||
+                       type.includes('EMAIL');
             });
+
+            console.log(`📧 Found ${emailAccounts.length} email accounts out of ${accounts.length} total accounts`);
 
             return {
                 success: true,
                 accounts: emailAccounts.map(account => ({
                     id: account.id,
-                    provider: account.provider,
-                    email: account.identifier || account.email || account.username,
+                    type: account.type,
+                    email: account.name || account.identifier || account.email || 'Unknown',
                     name: account.name || account.display_name || 'Unknown',
-                    status: account.status || 'unknown',
-                    createdAt: account.created_at || account.createdAt || new Date().toISOString()
+                    status: account.status || 'active',
+                    createdAt: account.created_at || account.createdAt || new Date().toISOString(),
+                    sources: account.sources || []
                 })),
                 total: emailAccounts.length
             };
@@ -483,5 +495,131 @@ async sendEmail(accountId, to, subject, body, options = {}) {
         throw new Error(`Failed to send email: ${error.response?.data?.detail || error.response?.data?.message || error.message}`);
     }
 }
+
+    /**
+     * Get recent emails from all accounts for AI catchup analysis
+     * Fetches 10 emails per account (not 10 total)
+     */
+    async getRecentEmailsForCatchup(limitPerAccount = 10) {
+        try {
+            // Get all email accounts
+            const accountsResult = await this.getEmailAccounts();
+            
+            if (!accountsResult.success || accountsResult.accounts.length === 0) {
+                return {
+                    success: false,
+                    emails: [],
+                    total: 0,
+                    accountsChecked: 0,
+                    accounts: []
+                };
+            }
+
+            console.log(`📧 Fetching top ${limitPerAccount} recent emails from ${accountsResult.accounts.length} accounts for AI catchup...`);
+
+            const allRecentEmails = [];
+
+            // Fetch emails from each account
+            for (const account of accountsResult.accounts) {
+                try {
+                    console.log(`📧 Fetching recent emails for account: ${account.email} (${account.id})`);
+                    
+                    const result = await this.getAllEmails(account.id, {
+                        limit: limitPerAccount,
+                        offset: 0
+                    });
+
+                    if (result.emails && result.emails.length > 0) {
+                        // Add account info to each email
+                        const emailsWithAccount = result.emails.map(email => ({
+                            ...email,
+                            accountEmail: account.email,
+                            accountType: account.type
+                        }));
+                        allRecentEmails.push(...emailsWithAccount);
+                        console.log(`✅ Found ${result.emails.length} recent emails for ${account.email}`);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Failed to fetch emails from account ${account.email}:`, error.message);
+                }
+            }
+
+            // Sort by date (newest first) - no overall limit, keep all emails from all accounts
+            allRecentEmails.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            console.log(`📧 Total emails found: ${allRecentEmails.length} (${limitPerAccount} per account) for AI analysis`);
+
+            return {
+                success: true,
+                emails: allRecentEmails,
+                total: allRecentEmails.length,
+                totalFound: allRecentEmails.length,
+                accountsChecked: accountsResult.accounts.length,
+                accounts: accountsResult.accounts
+            };
+        } catch (error) {
+            console.error('❌ Get recent emails error:', error.message);
+            throw new Error(`Failed to fetch recent emails: ${error.message}`);
+        }
+    }
+
+    /**
+     * Get unread emails from all accounts
+     */
+    async getUnreadEmailsFromAllAccounts(limit = 20) {
+        try {
+            const accountsResult = await this.getEmailAccounts();
+            
+            if (!accountsResult.success || accountsResult.accounts.length === 0) {
+                return {
+                    success: false,
+                    emails: [],
+                    total: 0,
+                    accountsChecked: 0
+                };
+            }
+
+            console.log(`📧 Fetching unread emails from ${accountsResult.accounts.length} accounts...`);
+
+            const allUnreadEmails = [];
+
+            for (const account of accountsResult.accounts) {
+                try {
+                    const result = await this.getAllEmails(account.id, {
+                        limit: limit,
+                        offset: 0,
+                        isRead: false
+                    });
+
+                    if (result.emails && result.emails.length > 0) {
+                        // Filter for truly unread emails (no read_date)
+                        const unreadEmails = result.emails.filter(email => !email.isRead);
+                        const emailsWithAccount = unreadEmails.map(email => ({
+                            ...email,
+                            accountEmail: account.email,
+                            accountType: account.type
+                        }));
+                        allUnreadEmails.push(...emailsWithAccount);
+                    }
+                } catch (error) {
+                    console.warn(`⚠️ Failed to fetch unread emails from account ${account.email}:`, error.message);
+                }
+            }
+
+            // Sort by date (newest first)
+            allUnreadEmails.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            return {
+                success: true,
+                emails: allUnreadEmails.slice(0, limit),
+                total: Math.min(allUnreadEmails.length, limit),
+                totalFound: allUnreadEmails.length,
+                accountsChecked: accountsResult.accounts.length
+            };
+        } catch (error) {
+            console.error('❌ Get unread emails error:', error.message);
+            throw new Error(`Failed to fetch unread emails: ${error.message}`);
+        }
+    }
 
 }

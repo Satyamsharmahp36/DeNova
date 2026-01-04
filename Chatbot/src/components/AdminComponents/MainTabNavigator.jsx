@@ -10,10 +10,25 @@ import {
   MessageCircle,
   Users,
   Slack,
-  Mail
+  Mail,
+  Linkedin,
+  Twitter
 } from "lucide-react";
 
-const MainTabNavigator = ({ activeView, handleTabChange, userData, handleSelfTaskToggle, setShowCalendarScheduler, handleChatIntegration, handleEmailDashboard, handleWhatsAppIntegration }) => {
+const MainTabNavigator = ({ 
+  activeView, 
+  handleTabChange, 
+  userData, 
+  handleSelfTaskToggle, 
+  setShowCalendarScheduler, 
+  handleChatIntegration, 
+  handleWhatsAppIntegration,
+  handleLinkedInPosting,
+  handleTwitterPosting,
+  handleAddIntegration,
+  handleEmailIntegration,
+  handleEmailCatchup
+}) => {
   return (
     <div className="md:w-64 bg-gray-900 p-4 flex-shrink-0 border-r border-gray-700">
       <nav>
@@ -134,18 +149,46 @@ const MainTabNavigator = ({ activeView, handleTabChange, userData, handleSelfTas
             Chat Integration
           </button>
           <button
-            onClick={handleEmailDashboard}
-            className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center gap-2 text-sm"
-          >
-            <Mail className="w-4 h-4" />
-            Email Dashboard
-          </button>
-          <button
             onClick={handleWhatsAppIntegration}
             className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 text-sm"
           >
             <MessageCircle className="w-4 h-4" />
             WhatsApp Integration
+          </button>
+          <button
+            onClick={handleLinkedInPosting}
+            className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Linkedin className="w-4 h-4" />
+            LinkedIn Posting
+          </button>
+          <button
+            onClick={handleTwitterPosting}
+            className="w-full px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Twitter className="w-4 h-4" />
+            Twitter/X Posting
+          </button>
+          <button
+            onClick={handleAddIntegration}
+            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold"
+          >
+            <Plus className="w-4 h-4" />
+            ⚡ Add Integration
+          </button>
+          <button
+            onClick={handleEmailIntegration}
+            className="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 text-sm"
+          >
+            <Mail className="w-4 h-4" />
+            Email Integration
+          </button>
+          <button
+            onClick={handleEmailCatchup}
+            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold shadow-lg"
+          >
+            <Mail className="w-4 h-4" />
+            ✨ AI Email Catchup
           </button>
           <li>
   <button

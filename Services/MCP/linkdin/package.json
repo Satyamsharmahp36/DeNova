@@ -2,7 +2,7 @@
   "name": "linkedin-ai-server",
   "version": "1.0.0",
   "type": "module",
-  "description": "LinkedIn AI-Enhanced Server with Gemini Integration",
+  "description": "LinkedIn AI-Enhanced Server with Groq Integration",
   "main": "linkedin-server.js",
   "scripts": {
     "start": "node linkedin-server.js",
@@ -13,13 +13,13 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "axios": "^1.5.0",
-    "@google/generative-ai": "^0.7.1",
+    "groq-sdk": "^0.37.0",
     "form-data": "^4.0.0",
     "multer": "^1.4.5-lts.1",
     "sharp": "^0.32.6",
     "moment": "^2.29.4"
   },
-  "keywords": ["linkedin", "ai", "gemini", "automation", "social-media", "unipile"],
+  "keywords": ["linkedin", "ai", "groq", "automation", "social-media", "unipile"],
   "author": "Satyam Sharma",
   "license": "MIT"
 }

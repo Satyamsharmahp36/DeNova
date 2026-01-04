@@ -95,6 +95,9 @@ const userSchema = new mongoose.Schema({
       refreshToken: { type: String },
       tokenExpiryDate: { type: Date },
     },
+    walletAddress: { type: String, unique: true, sparse: true },
+    accessFee: { type: Number, default: 0 }, // Fee in SOL for pay-to-connect (0 = free)
+    totalEarnings: { type: Number, default: 0 }, // Total SOL earned from tips/access fees
     createdAt: { type: Date, default: Date.now }
   });
   

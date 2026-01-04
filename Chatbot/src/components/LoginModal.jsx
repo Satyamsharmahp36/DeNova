@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, X, Sparkles, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, X, Sparkles, ArrowRight, Wallet } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -18,6 +18,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [walletLoading, setWalletLoading] = useState(false);
 
   useEffect(() => {
     // Listen for OAuth callback message
@@ -72,6 +73,55 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
       `width=${width},height=${height},left=${left},top=${top}`
     );
   };
+
+  const handlePhantomLogin = useCallback(async () => {
+    setWalletLoading(true);
+    setErrors({});
+    
+    try {
+      // Check if Phantom is installed
+      const { solana } = window;
+      
+      if (!solana?.isPhantom) {
+        setErrors({ general: 'Phantom wallet not found. Please install Phantom extension.' });
+        setWalletLoading(false);
+        return;
+      }
+
+      // Connect to Phantom
+      const response = await solana.connect();
+      const walletAddress = response.publicKey.toString();
+      
+      // Authenticate with backend
+      const authResponse = await axios.post(
+        `${import.meta.env.VITE_BACKEND}/wallet-auth`,
+        { walletAddress }
+      );
+      
+      if (authResponse.data.user) {
+        const { username, name } = authResponse.data.user;
+        
+        // Update context and cookies
+        setPresentUserName(username);
+        Cookies.set('presentUserName', username);
+        Cookies.set('name', name);
+        Cookies.set('walletAddress', walletAddress);
+        
+        // Close modal and redirect
+        onClose();
+        navigate('/discover');
+      }
+    } catch (error) {
+      console.error('Phantom login error:', error);
+      if (error.code === 4001) {
+        setErrors({ general: 'Connection rejected. Please approve the connection in Phantom.' });
+      } else {
+        setErrors({ general: error.response?.data?.message || 'Failed to connect wallet. Please try again.' });
+      }
+    } finally {
+      setWalletLoading(false);
+    }
+  }, [navigate, setPresentUserName, onClose]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -195,6 +245,18 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
                     <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
                     <p className="text-gray-400">Sign in to continue to ChatMate</p>
                   </div>
+
+                  {/* Phantom Wallet Login Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handlePhantomLogin}
+                    disabled={walletLoading}
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-3 transition-all mb-3 shadow-lg"
+                  >
+                    <Wallet size={20} />
+                    {walletLoading ? 'Connecting...' : 'Continue with Phantom'}
+                  </motion.button>
 
                   {/* Google Login Button */}
                   <motion.button

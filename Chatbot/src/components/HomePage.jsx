@@ -227,10 +227,10 @@ const HomePage = ({ onLogout }) => {
 
         {/* Right Panel - Admin/Settings */}
         <motion.div 
-          className="bg-gray-900/80 border-l border-gray-800/50 flex flex-col"
+          className="bg-gray-900/80 border-l border-gray-800/50 flex flex-col overflow-y-scroll"
           initial={false}
           animate={{ 
-            width: showAdminPanel ? 420 : 280,
+            width: showAdminPanel ? 720 : 280,
           }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
@@ -305,7 +305,7 @@ const HomePage = ({ onLogout }) => {
             </div>
           ) : (
             // Admin Panel State - Expanded view
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col ">
               <div className="p-4 border-b border-gray-800/50 flex items-center justify-between">
                 <h2 className="text-white font-medium">Admin Panel</h2>
                 <button
