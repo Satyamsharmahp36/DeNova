@@ -54,6 +54,11 @@ import EmailCatchup from "./EmailCatchup";
 import LinkedInPosting from "./LinkedInPosting";
 import TwitterPosting from "./TwitterPosting";
 import AddIntegration from "./AddIntegration";
+import ChatBot from "./ChatBot";
+import DataManagementTab from "./AdminComponents/DataManagementTab";
+import ResponseStyleTab from "./AdminComponents/ResponseStyleTab";
+import ContributionsTab from "./AdminComponents/ContributionsTab";
+import SelfTaskForm from "./AdminComponents/SelfTaskForm";
 
 const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline = false }) => {
   const { userData, refreshUserData } = useAppContext();
@@ -91,9 +96,17 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
   const [showEmailIntegration, setShowEmailIntegration] = useState(false);
   const [showEmailCatchup, setShowEmailCatchup] = useState(false);
   const [reminders, setReminders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // States for chatbot settings views
+  const [promptContent, setPromptContent] = useState('');
+  const [responseStyleContent, setResponseStyleContent] = useState('');
+  const [contributions, setContributions] = useState([]);
+  const [contributionStatusFilter, setContributionStatusFilter] = useState('');
+  const [contributionSortOrder, setContributionSortOrder] = useState('newest');
 
   // New state for UI improvements
-  const [activeView, setActiveView] = useState("tasks"); // 'tasks', 'workflow', 'analytics'
+  const [activeView, setActiveView] = useState("assistant"); // 'assistant', 'tasks', 'workflow', 'analytics', 'prompt', 'responseStyle', 'contributions'
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
   const [taskCategories, setTaskCategories] = useState({
     all: true,
@@ -105,8 +118,8 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
 
   const scrollbarStyles = `
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   
   ::-webkit-scrollbar-track {
@@ -126,6 +139,48 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
   * {
     scrollbar-width: thin;
     scrollbar-color: #4b5563 #1f2937; 
+  }
+  
+  /* Force inline rendering for integration modals */
+  .admin-inline-content .fixed {
+    position: relative !important;
+  }
+  
+  .admin-inline-content .inset-0 {
+    inset: auto !important;
+  }
+  
+  .admin-inline-content [class*="z-50"],
+  .admin-inline-content [class*="z-["] {
+    z-index: auto !important;
+  }
+  
+  .admin-inline-content .bg-black,
+  .admin-inline-content [class*="bg-opacity"] {
+    background: transparent !important;
+  }
+  
+  .admin-inline-content > div > div:first-child {
+    position: relative !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: block !important;
+    height: 100% !important;
+  }
+  
+  .admin-inline-content .max-w-2xl,
+  .admin-inline-content .max-w-4xl,
+  .admin-inline-content .max-w-6xl {
+    max-width: 100% !important;
+  }
+  
+  .admin-inline-content .max-h-\[90vh\] {
+    max-height: 100% !important;
+  }
+  
+  .admin-inline-content .rounded-xl,
+  .admin-inline-content .rounded-2xl {
+    border-radius: 0.5rem !important;
   }
 `;
 
@@ -170,6 +225,15 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
     }
   }, [userData?.user?.tasks]);
 
+  // Initialize chatbot settings data from userData
+  useEffect(() => {
+    if (userData?.user) {
+      setPromptContent(userData.user.prompt || '');
+      setResponseStyleContent(userData.user.userPrompt || '');
+      setContributions(userData.user.contributions || []);
+    }
+  }, [userData]);
+
   const handleLogin = () => {
     if (password === userData.user.password) {
       setIsAuthenticated(true);
@@ -186,8 +250,16 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
       setRefreshing(true);
       toast.info("Refreshing user data...");
 
-      await refreshUserData();
-      setTasks(userData.user.tasks || []);
+      // Force refresh to bypass cache
+      const result = await refreshUserData(true);
+      
+      // Wait for userData to be updated and then set tasks
+      if (result && result.user && result.user.tasks) {
+        setTasks(result.user.tasks);
+      } else if (userData?.user?.tasks) {
+        setTasks(userData.user.tasks);
+      }
+      
       toast.success("User data refreshed successfully");
     } catch (error) {
       console.error("Error refreshing user data:", error);
@@ -297,33 +369,6 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
     setShowSelfTask(!showSelfTask);
   };
 
-  const handleChatIntegration = () => {
-    setShowIntegrationDashboard(true);
-  };
-
-  const handleWhatsAppIntegration = () => {
-    setShowWhatsAppIntegration(true);
-  };
-
-  const handleLinkedInPosting = () => {
-    setShowLinkedInPosting(true);
-  };
-
-  const handleTwitterPosting = () => {
-    setShowTwitterPosting(true);
-  };
-
-  const handleAddIntegration = () => {
-    setShowAddIntegration(true);
-  };
-
-  const handleEmailIntegration = () => {
-    setShowEmailIntegration(true);
-  };
-
-  const handleEmailCatchup = () => {
-    setShowEmailCatchup(true);
-  };
 
   const handleAccessManagementUpdate = async (updatedData) => {
     try {
@@ -711,24 +756,56 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
   // Inline mode - render without modal wrapper
   if (isInline) {
     return (
-      <div className="h-full flex flex-col bg-gray-900 text-white overflow-hidden">
+      <div className="h-full flex bg-gray-950 text-white overflow-hidden">
         <style>{scrollbarStyles}</style>
-        {/* Main Content Area */}
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {/* Sidebar Navigation */}
-          <MainTabNavigator
-            activeView={activeView}
-            handleTabChange={handleTabChange}
-            userData={userData}
-            handleSelfTaskToggle={handleSelfTaskToggle}
-            setShowCalendarScheduler={setShowCalendarScheduler}
-            handleChatIntegration={handleChatIntegration}
-            handleEmailDashboard={() => setShowEmailDashboard(true)}
-            handleWhatsAppIntegration={handleWhatsAppIntegration}
-          />
+        
+        {/* Left Sidebar Navigation */}
+        <MainTabNavigator
+          activeView={activeView}
+          handleTabChange={handleTabChange}
+          userData={userData}
+          handleSelfTaskToggle={handleSelfTaskToggle}
+          setShowCalendarScheduler={setShowCalendarScheduler}
+        />
 
-          {/* Content Area */}
-          <div className="flex-1 overflow-auto p-3">
+        {/* Right Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden bg-gray-900">
+          {/* Content Header */}
+          <div className="px-6 py-4 border-b border-gray-800/50 bg-gray-900/50 flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-white">
+              {activeView === "assistant" && "My Assistant"}
+              {activeView === "prompt" && "Enter Data / Prompt"}
+              {activeView === "responseStyle" && "Response Style"}
+              {activeView === "contributions" && "User Contributions"}
+              {activeView === "tasks" && "Task Management"}
+              {activeView === "workflow" && "Daily Workflow"}
+              {activeView === "access" && "Access Management"}
+              {activeView === "analytics" && "Visitor Analytics"}
+              {activeView === "reminders" && "Reminders"}
+              {activeView === "createTask" && "Create Self Task"}
+              {activeView === "whatsapp" && "WhatsApp Integration"}
+              {activeView === "linkedin" && "LinkedIn Posting"}
+              {activeView === "twitter" && "Twitter/X Posting"}
+              {activeView === "addIntegration" && "Add Integration"}
+              {activeView === "emailCatchup" && "AI Email Catchup"}
+            </h2>
+            
+            {/* Header Controls */}
+            <div className="flex items-center gap-3">
+              {activeView === "tasks" && renderTaskSchedulingButton()}
+              <button
+                onClick={handleRefreshUserData}
+                disabled={refreshing}
+                className="p-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+                title="Refresh Data"
+              >
+                <RefreshCw className={`w-5 h-5 ${refreshing ? "animate-spin" : ""}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Scrollable Content Area */}
+          <div className={`flex-1 overflow-auto admin-inline-content ${activeView === "assistant" ? "p-0" : "p-6"}`}>
             {error && (
               <NotificationMessage type="error" title="Error" message={error} />
             )}
@@ -796,24 +873,18 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
               />
             )}
 
-            {activeView === "access" && showAccessManagement && (
+            {activeView === "access" && (
               <AccessManagement
                 userData={userData}
                 onUpdate={handleAccessManagementUpdate}
-                onClose={() => {
-                  setActiveView("tasks");
-                  setShowAccessManagement(false);
-                }}
+                onClose={() => setActiveView("assistant")}
               />
             )}
 
-            {activeView === "analytics" && showVisitorAnalytics && (
+            {activeView === "analytics" && (
               <VisitorAnalytics
                 userData={userData}
-                onClose={() => {
-                  setShowVisitorAnalytics(false);
-                  setActiveView("tasks");
-                }}
+                onClose={() => setActiveView("assistant")}
               />
             )}
 
@@ -823,6 +894,197 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                 reminders={reminders}
                 onAddReminder={handleAddReminder}
               />
+            )}
+            
+            {activeView === "assistant" && (
+              <ChatBot hideSettings={true} />
+            )}
+            
+            {activeView === "prompt" && (
+              <DataManagementTab
+                promptContent={promptContent}
+                setPromptContent={setPromptContent}
+                updatePrompt={async () => {
+                  setIsLoading(true);
+                  try {
+                    await apiService.updatePrompt(promptContent, userData.user.username);
+                    await refreshUserData();
+                    setSuccessMessage('Prompt updated successfully');
+                    setTimeout(() => setSuccessMessage(''), 3000);
+                  } catch (err) {
+                    setError('Failed to update prompt');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                clearPrompt={async () => {
+                  if (window.confirm('Are you sure you want to clear the prompt?')) {
+                    setIsLoading(true);
+                    try {
+                      await apiService.clearPrompt(userData.user.username);
+                      await refreshUserData();
+                      setPromptContent('');
+                      setSuccessMessage('Prompt cleared successfully');
+                      setTimeout(() => setSuccessMessage(''), 3000);
+                    } catch (err) {
+                      setError('Failed to clear prompt');
+                      setTimeout(() => setError(''), 3000);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }
+                }}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {activeView === "responseStyle" && (
+              <ResponseStyleTab
+                responseStyleContent={responseStyleContent}
+                setResponseStyleContent={setResponseStyleContent}
+                updateResponseStyle={async () => {
+                  setIsLoading(true);
+                  try {
+                    await apiService.updateUserPrompt(responseStyleContent, userData.user.username);
+                    await refreshUserData();
+                    setSuccessMessage('Response style updated successfully');
+                    setTimeout(() => setSuccessMessage(''), 3000);
+                  } catch (err) {
+                    setError('Failed to update response style');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                clearResponseStyle={async () => {
+                  if (window.confirm('Are you sure you want to clear the response style?')) {
+                    setIsLoading(true);
+                    try {
+                      await apiService.clearUserPrompt(userData.user.username);
+                      await refreshUserData();
+                      setResponseStyleContent('');
+                      setSuccessMessage('Response style cleared successfully');
+                      setTimeout(() => setSuccessMessage(''), 3000);
+                    } catch (err) {
+                      setError('Failed to clear response style');
+                      setTimeout(() => setError(''), 3000);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }
+                }}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {activeView === "contributions" && (
+              <ContributionsTab
+                contributions={contributions}
+                statusFilter={contributionStatusFilter}
+                setStatusFilter={setContributionStatusFilter}
+                sortOrder={contributionSortOrder}
+                setSortOrder={setContributionSortOrder}
+                refreshContributions={async () => {
+                  setRefreshing(true);
+                  try {
+                    await refreshUserData();
+                    const filteredContributions = contributionStatusFilter
+                      ? userData.user.contributions.filter(c => c.status === contributionStatusFilter)
+                      : userData.user.contributions || [];
+                    setContributions(filteredContributions);
+                  } catch (err) {
+                    setError('Failed to refresh contributions');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setRefreshing(false);
+                  }
+                }}
+                updateContributionStatus={async (contributionId, newStatus) => {
+                  setIsLoading(true);
+                  try {
+                    await apiService.updateContributionStatus(contributionId, newStatus, userData.user.username);
+                    await refreshUserData();
+                    const filteredContributions = contributionStatusFilter
+                      ? userData.user.contributions.filter(c => c.status === contributionStatusFilter)
+                      : userData.user.contributions || [];
+                    setContributions(filteredContributions);
+                    setSuccessMessage('Contribution status updated');
+                    setTimeout(() => setSuccessMessage(''), 3000);
+                  } catch (err) {
+                    setError('Failed to update contribution status');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                isLoading={isLoading}
+                refreshing={refreshing}
+              />
+            )}
+            
+            {activeView === "whatsapp" && (
+              <div className="h-full">
+                <WhatsAppIntegration
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                />
+              </div>
+            )}
+            
+            {activeView === "linkedin" && (
+              <div className="h-full">
+                <LinkedInPosting
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                />
+              </div>
+            )}
+            
+            {activeView === "twitter" && (
+              <div className="h-full">
+                <TwitterPosting
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                />
+              </div>
+            )}
+            
+            {activeView === "addIntegration" && (
+              <div className="h-full">
+                <AddIntegration
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                />
+              </div>
+            )}
+            
+            {activeView === "email" && (
+              <div className="h-full">
+                <EmailIntegration
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                />
+              </div>
+            )}
+            
+            {activeView === "emailCatchup" && (
+              <div className="h-full">
+                <EmailCatchup
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                />
+              </div>
+            )}
+            
+            {activeView === "createTask" && (
+              <div className="bg-gray-800 rounded-lg p-6">
+                <SelfTaskForm
+                  onClose={() => setActiveView("assistant")}
+                  onSuccess={handleRefreshUserData}
+                  userData={userData}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -843,23 +1105,6 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
           showMeetingDetailsPopup={showMeetingDetailsPopup}
           selectedMeeting={selectedMeeting}
           setShowMeetingDetailsPopup={setShowMeetingDetailsPopup}
-        />
-
-        <IntegrationDashboard
-          isOpen={showIntegrationDashboard}
-          onClose={() => setShowIntegrationDashboard(false)}
-          userData={userData}
-        />
-
-        <EmailDashboard
-          isOpen={showEmailDashboard}
-          onClose={() => setShowEmailDashboard(false)}
-          userData={userData}
-        />
-
-        <WhatsAppIntegration
-          isOpen={showWhatsAppIntegration}
-          onClose={() => setShowWhatsAppIntegration(false)}
         />
 
         <NotificationToast
@@ -1008,6 +1253,133 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                 userId={userData.user.id}
                 reminders={reminders}
                 onAddReminder={handleAddReminder}
+              />
+            )}
+            
+            {activeView === "assistant" && (
+              <ChatBot hideSettings={true} />
+            )}
+            
+            {activeView === "prompt" && (
+              <DataManagementTab
+                promptContent={promptContent}
+                setPromptContent={setPromptContent}
+                updatePrompt={async () => {
+                  setIsLoading(true);
+                  try {
+                    await apiService.updatePrompt(promptContent, userData.user.username);
+                    await refreshUserData();
+                    setSuccessMessage('Prompt updated successfully');
+                    setTimeout(() => setSuccessMessage(''), 3000);
+                  } catch (err) {
+                    setError('Failed to update prompt');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                clearPrompt={async () => {
+                  if (window.confirm('Are you sure you want to clear the prompt?')) {
+                    setIsLoading(true);
+                    try {
+                      await apiService.clearPrompt(userData.user.username);
+                      await refreshUserData();
+                      setPromptContent('');
+                      setSuccessMessage('Prompt cleared successfully');
+                      setTimeout(() => setSuccessMessage(''), 3000);
+                    } catch (err) {
+                      setError('Failed to clear prompt');
+                      setTimeout(() => setError(''), 3000);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }
+                }}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {activeView === "responseStyle" && (
+              <ResponseStyleTab
+                responseStyleContent={responseStyleContent}
+                setResponseStyleContent={setResponseStyleContent}
+                updateResponseStyle={async () => {
+                  setIsLoading(true);
+                  try {
+                    await apiService.updateUserPrompt(responseStyleContent, userData.user.username);
+                    await refreshUserData();
+                    setSuccessMessage('Response style updated successfully');
+                    setTimeout(() => setSuccessMessage(''), 3000);
+                  } catch (err) {
+                    setError('Failed to update response style');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                clearResponseStyle={async () => {
+                  if (window.confirm('Are you sure you want to clear the response style?')) {
+                    setIsLoading(true);
+                    try {
+                      await apiService.clearUserPrompt(userData.user.username);
+                      await refreshUserData();
+                      setResponseStyleContent('');
+                      setSuccessMessage('Response style cleared successfully');
+                      setTimeout(() => setSuccessMessage(''), 3000);
+                    } catch (err) {
+                      setError('Failed to clear response style');
+                      setTimeout(() => setError(''), 3000);
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }
+                }}
+                isLoading={isLoading}
+              />
+            )}
+            
+            {activeView === "contributions" && (
+              <ContributionsTab
+                contributions={contributions}
+                statusFilter={contributionStatusFilter}
+                setStatusFilter={setContributionStatusFilter}
+                sortOrder={contributionSortOrder}
+                setSortOrder={setContributionSortOrder}
+                refreshContributions={async () => {
+                  setRefreshing(true);
+                  try {
+                    await refreshUserData();
+                    const filteredContributions = contributionStatusFilter
+                      ? userData.user.contributions.filter(c => c.status === contributionStatusFilter)
+                      : userData.user.contributions || [];
+                    setContributions(filteredContributions);
+                  } catch (err) {
+                    setError('Failed to refresh contributions');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setRefreshing(false);
+                  }
+                }}
+                updateContributionStatus={async (contributionId, newStatus) => {
+                  setIsLoading(true);
+                  try {
+                    await apiService.updateContributionStatus(contributionId, newStatus, userData.user.username);
+                    await refreshUserData();
+                    const filteredContributions = contributionStatusFilter
+                      ? userData.user.contributions.filter(c => c.status === contributionStatusFilter)
+                      : userData.user.contributions || [];
+                    setContributions(filteredContributions);
+                    setSuccessMessage('Contribution status updated');
+                    setTimeout(() => setSuccessMessage(''), 3000);
+                  } catch (err) {
+                    setError('Failed to update contribution status');
+                    setTimeout(() => setError(''), 3000);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                isLoading={isLoading}
+                refreshing={refreshing}
               />
             )}
           </div>
