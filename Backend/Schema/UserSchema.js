@@ -98,6 +98,10 @@ const userSchema = new mongoose.Schema({
     walletAddress: { type: String, unique: true, sparse: true },
     accessFee: { type: Number, default: 0 }, // Fee in SOL for pay-to-connect (0 = free)
     totalEarnings: { type: Number, default: 0 }, // Total SOL earned from tips/access fees
+    profileImage: { type: String, default: null }, // URL to profile image
+    isPeopleAssistant: { type: Boolean, default: false }, // true = People Assistant, false = Knowledge Assistant
+    role: { type: String, default: null }, // For People Assistants: "Developer", "Designer", etc.
+    topic: { type: String, default: null }, // For Knowledge Assistants: "Blockchain", "AI/ML", etc.
     createdAt: { type: Date, default: Date.now }
   });
   

@@ -260,6 +260,13 @@ const DiscoverPage = () => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }, []);
 
+
+  for( let i = 0; i < users.length; i++) {
+    console.log(users[i])
+  } 
+
+
+
   return (
     <div className="min-h-screen bg-neutral-950 flex">
       {/* Sidebar */}

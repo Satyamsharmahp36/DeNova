@@ -274,7 +274,11 @@ router.post('/wallet-auth', async (req, res) => {
           google:user.google,
           walletAddress: user.walletAddress,
           accessFee: user.accessFee,
-          totalEarnings: user.totalEarnings
+          totalEarnings: user.totalEarnings,
+          profileImage: user.profileImage,
+          isPeopleAssistant: user.isPeopleAssistant,
+          role: user.role,
+          topic: user.topic
         } 
       });
     } catch (error) {
@@ -644,7 +648,7 @@ router.post('/record-payment', async (req, res) => {
       
       // Fetch users with only required fields for cards
       const users = await User.find(query)
-        .select('username name createdAt visitorAnalytics.totalVisits visitorAnalytics.uniqueVisitors')
+        .select('username name createdAt visitorAnalytics.totalVisits visitorAnalytics.uniqueVisitors profileImage isPeopleAssistant role topic walletAddress')
         .sort(sortOption)
         .skip(parseInt(skip))
         .limit(parseInt(limit))
@@ -658,6 +662,11 @@ router.post('/record-payment', async (req, res) => {
         username: user.username,
         name: user.name,
         createdAt: user.createdAt,
+        profileImage: user.profileImage,
+        isPeopleAssistant: user.isPeopleAssistant,
+        role: user.role,
+        topic: user.topic,
+        walletAddress: user.walletAddress,
         stats: {
           totalVisits: user.visitorAnalytics?.totalVisits || 0,
           uniqueVisitors: user.visitorAnalytics?.uniqueVisitors || 0
