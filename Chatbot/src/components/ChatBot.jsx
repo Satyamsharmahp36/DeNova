@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import ReactDOM from "react-dom";
 import {
   Send,
   User,
@@ -907,11 +908,14 @@ const ChatBot = ({ hideSettings = false }) => {
         </div>
       </div>
 
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm px-4">
+      {showDeleteModal && ReactDOM.createPortal(
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] px-4"
+          onClick={handleCloseDeleteModal}
+        >
           <div
             ref={modalRef}
-            className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-700"
+            className="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full p-6 border border-gray-700"
             onClick={(e) => e.stopPropagation()}
             data-testid="delete-modal-content"
           >
@@ -925,7 +929,7 @@ const ChatBot = ({ hideSettings = false }) => {
                 className="p-1 rounded-full hover:bg-gray-700 transition-colors"
                 aria-label="Close modal"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 text-gray-400 hover:text-white" />
               </button>
             </div>
 
@@ -952,7 +956,8 @@ const ChatBot = ({ hideSettings = false }) => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <AnimatePresence>

@@ -34,9 +34,9 @@ const ResponseStyleTab = ({
   return (
     <div className="space-y-6">
       <div className="bg-gray-800 border border-gray-700 rounded-xl overflow-y-auto shadow-lg">
-        <div className="bg-gray-900 px-4 py-3 border-b border-gray-700 flex justify-between items-center">
+        <div className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex justify-between items-center">
           <h3 className="text-white font-medium flex items-center">
-            <MessageCircle className="w-5 h-5 mr-2 text-purple-400" />
+            <MessageCircle className="w-5 h-5 mr-2 text-blue-400" />
             Response Style Configuration
           </h3>
           <div className="flex items-center text-xs text-gray-400">
@@ -48,7 +48,7 @@ const ResponseStyleTab = ({
         <div className="bg-gray-800 border border-gray-700 overflow-y-auto shadow-lg max-h-72 flex flex-col">
           <div className="bg-gray-900 px-4 py-3 border-b border-gray-700">
             <h3 className="text-white font-medium flex items-center">
-              <Settings className="w-5 h-5 mr-2 text-purple-400" />
+              <Settings className="w-5 h-5 mr-2 text-blue-400" />
               Quick Templates
             </h3>
           </div>
@@ -61,7 +61,7 @@ const ResponseStyleTab = ({
                 onClick={() => setResponseStyleContent(prevContent => 
                   `${template.name.toUpperCase()} STYLE: ${template.desc}. ${prevContent ? '\n\nAdditional instructions: ' + prevContent : ''}`
                 )}
-                className="bg-gray-900 border border-gray-700 hover:border-purple-500 rounded-lg p-3 cursor-pointer transition-all"
+                className="bg-gray-900 border border-gray-700 hover:border-blue-500 rounded-lg p-3 cursor-pointer transition-all"
               >
                 <div className="font-medium text-white mb-1">{template.name}</div>
                 <div className="text-sm text-gray-400">{template.desc}</div>
@@ -80,7 +80,7 @@ const ResponseStyleTab = ({
           <textarea
             value={responseStyleContent}
             onChange={(e) => setResponseStyleContent(e.target.value)}
-            className="w-full p-3 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-lg h-48 resize-none font-mono text-sm border border-gray-700"
+            className="w-full p-3 bg-gray-800 text-white focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-lg h-48 resize-none font-mono text-sm border border-gray-700"
             placeholder="Define how you want the AI to respond (e.g., funny, precise, strict, etc.)..."
             disabled={isLoading}
           />
@@ -93,7 +93,7 @@ const ResponseStyleTab = ({
           whileTap={{ scale: 0.98 }}
           onClick={handleUpdate}
           disabled={isLoading}
-          className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg shadow-lg hover:shadow-purple-500/30 transition-all font-medium flex items-center justify-center"
+          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all font-medium flex items-center justify-center"
         >
           <Save className="w-5 h-5 mr-2" />
           <span>{isLoading ? 'Saving...' : 'Save Response Style'}</span>
@@ -104,7 +104,7 @@ const ResponseStyleTab = ({
           whileTap={{ scale: 0.98 }}
           onClick={handleClear}
           disabled={isLoading}
-          className="py-4 px-6 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:from-red-700 hover:to-red-600 shadow-lg hover:shadow-red-500/30 transition-all font-medium flex items-center justify-center"
+          className="py-4 px-6 bg-gray-700 hover:bg-gray-600 text-white rounded-lg shadow-lg transition-all font-medium flex items-center justify-center"
         >
           <X className="w-5 h-5 mr-2" />
           <span>{isLoading ? 'Clearing...' : 'Clear'}</span>

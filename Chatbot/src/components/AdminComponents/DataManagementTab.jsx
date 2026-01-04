@@ -46,7 +46,7 @@ const DataManagementTab = ({ promptContent, setPromptContent, updatePrompt, clea
           whileTap={{ scale: 0.98 }}
           onClick={handleUpdate}
           disabled={isLoading}
-          className="flex-1 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all font-medium flex items-center justify-center"
+          className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all font-medium flex items-center justify-center"
         >
           <Save className="w-5 h-5 mr-2" />
           <span>{isLoading ? 'Saving...' : 'Save Changes'}</span>
@@ -57,7 +57,7 @@ const DataManagementTab = ({ promptContent, setPromptContent, updatePrompt, clea
           whileTap={{ scale: 0.98 }}
           onClick={handleClear}
           disabled={isLoading}
-          className="py-4 px-6 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:from-red-700 hover:to-red-600 shadow-lg hover:shadow-red-500/30 transition-all font-medium flex items-center justify-center"
+          className="py-4 px-6 bg-gray-700 hover:bg-gray-600 text-white rounded-lg shadow-lg transition-all font-medium flex items-center justify-center"
         >
           <X className="w-5 h-5 mr-2" />
           <span>{isLoading ? 'Clearing...' : 'Clear'}</span>
