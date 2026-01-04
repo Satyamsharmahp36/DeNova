@@ -6,21 +6,33 @@ import { useAppContext } from '../../Appcontext';
 const ContributionsTab = ({
   contributions,
   statusFilter,
+  setStatusFilter,
   sortOrder,
-  handleFilterChange,
-  handleSortChange,
+  setSortOrder,
+  refreshContributions,
   updateContributionStatus,
-  refreshAllData,
   refreshing
 }) => {
   const { userData } = useAppContext();
+
+  const handleFilterChange = (value) => {
+    if (setStatusFilter) setStatusFilter(value);
+  };
+
+  const handleSortChange = (value) => {
+    if (setSortOrder) setSortOrder(value);
+  };
+
+  if (!contributions) {
+    return <div className="text-white p-4">Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between bg-gray-800 p-4 rounded-lg shadow-md">
         <h3 className="text-lg font-medium text-white flex items-center">
           <User className="w-5 h-5 mr-2 text-blue-400" />
-          User Contributions
+          User Contributions ({contributions?.length || 0})
         </h3>
         
         <div className="flex items-center space-x-3">
@@ -28,7 +40,7 @@ const ContributionsTab = ({
             <div className="flex items-center space-x-3 bg-gray-900 rounded-full px-4 py-2 border border-gray-700 hover:border-blue-500 transition-colors cursor-pointer">
               <Filter className="w-4 h-4 text-blue-400 group-hover:text-blue-300 transition-colors" />
               <select
-                value={statusFilter}
+                value={statusFilter || ""}
                 onChange={(e) => handleFilterChange(e.target.value)}
                 className="border-none p-1 text-center text-white bg-gray-800 rounded focus:outline-none text-sm font-medium cursor-pointer appearance-none w-full"
               >
@@ -43,9 +55,9 @@ const ContributionsTab = ({
           
           <div className="relative group">
             <div className="flex items-center space-x-3 bg-gray-900 rounded-full px-4 py-2 border border-gray-700 hover:border-blue-500 transition-colors cursor-pointer">
-              <Clock className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+              <Clock className="w-4 h-4 text-blue-400 group-hover:text-blue-300 transition-colors" />
               <select
-                value={sortOrder}
+                value={sortOrder || "newest"}
                 onChange={(e) => handleSortChange(e.target.value)}
                 className="border-none p-1 text-center text-white bg-gray-800 rounded focus:outline-none text-sm font-medium cursor-pointer appearance-none w-full"
               >
@@ -58,8 +70,8 @@ const ContributionsTab = ({
         </div>
       </div>   
       
-      <div className="space-y-4 max-h-[calc(60vh-100px)] overflow-y-auto pr-2">
-        {contributions.length === 0 ? (
+      <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
+        {!contributions || contributions.length === 0 ? (
           <div className="text-center py-12 bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700">
             <motion.div 
               animate={{ 
@@ -80,92 +92,112 @@ const ContributionsTab = ({
               key={contribution._id || index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`border rounded-xl overflow-hidden shadow-lg ${
-                contribution.status === 'approved' 
-                  ? 'border-green-600 bg-gradient-to-r from-gray-900 to-green-900 bg-opacity-10' 
-                  : contribution.status === 'rejected'
-                    ? 'border-red-600 bg-gradient-to-r from-gray-900 to-red-900 bg-opacity-10'
-                    : 'border-yellow-600 bg-gradient-to-r from-gray-900 to-yellow-900 bg-opacity-10'
-              } ${index === contributions.length - 1 ? 'mb-4' : ''}`}
+              transition={{ delay: index * 0.05 }}
+              className="bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden hover:border-gray-600 transition-all"
             >
-              <div className="flex justify-between items-center p-4 border-b border-gray-700">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-blue-900 bg-opacity-30 rounded-full p-2">
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-800/80 border-b border-gray-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
                     <User className="w-5 h-5 text-blue-400" />
                   </div>
-                  <div>
-                    <span className="font-medium text-white">{contribution.name}</span>
-                    <div className="text-xs text-gray-400 mt-1">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-white truncate">{contribution.name}</p>
+                    <p className="text-xs text-gray-400">
                       {contribution.createdAt 
-                        ? new Date(contribution.createdAt).toLocaleDateString() + ' • ' + 
-                          new Date(contribution.createdAt).toLocaleTimeString()
+                        ? new Date(contribution.createdAt).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
                         : 'Date not available'}
-                    </div>
+                    </p>
                   </div>
                 </div>
-                <div>
+                <div className="flex-shrink-0">
                   <span 
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
                       contribution.status === 'approved'
-                        ? 'bg-green-900 bg-opacity-30 text-green-300 border border-green-600' 
+                        ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
                         : contribution.status === 'rejected'
-                          ? 'bg-red-900 bg-opacity-30 text-red-300 border border-red-600'
-                          : 'bg-yellow-900 bg-opacity-30 text-yellow-300 border border-yellow-600'
+                          ? 'bg-red-500/10 text-red-400 border border-red-500/20'
+                          : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
                     }`}
                   >
-                    {contribution.status === 'approved' ? '✓ Approved' : 
-                    contribution.status === 'rejected' ? '× Rejected' : 
-                    '○ Pending'}
+                    {contribution.status === 'approved' ? (
+                      <>
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        Approved
+                      </>
+                    ) : contribution.status === 'rejected' ? (
+                      <>
+                        <XCircle className="w-3.5 h-3.5" />
+                        Rejected
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="w-3.5 h-3.5" />
+                        Pending
+                      </>
+                    )}
                   </span>
                 </div>
               </div>
               
-              <div className="p-4 space-y-4">
-                <div className="border-l-4 border-blue-500 pl-4 py-1">
-                  <div className="text-xs text-blue-400 mb-1 font-semibold uppercase tracking-wider">Question</div>
-                  <div className="text-white">{contribution.question}</div>
+              {/* Content */}
+              <div className="p-4 space-y-3">
+                <div className="bg-blue-500/5 border-l-4 border-blue-500 rounded-r-lg p-3">
+                  <div className="text-xs text-blue-400 mb-2 font-semibold uppercase tracking-wide flex items-center gap-1.5">
+                    Question
+                  </div>
+                  <div className="text-white text-sm leading-relaxed break-words">{contribution.question}</div>
                 </div>
                 
-                <div className="border-l-4 border-green-500 pl-4 py-1 bg-gray-800 bg-opacity-40 rounded-r-lg">
-                  <div className="text-xs text-green-400 mb-1 font-semibold uppercase tracking-wider">Contribution</div>
-                  <div className="text-white whitespace-pre-wrap">{contribution.answer}</div>
+                <div className="bg-green-500/5 border-l-4 border-green-500 rounded-r-lg p-3">
+                  <div className="text-xs text-green-400 mb-2 font-semibold uppercase tracking-wide flex items-center gap-1.5">
+                    Contribution
+                  </div>
+                  <div className="text-white text-sm leading-relaxed whitespace-pre-wrap break-words">{contribution.answer}</div>
                 </div>
               </div>
               
-              <div className="bg-opacity-100 p-3 flex justify-end space-x-3 border-t border-gray-700">
+              {/* Actions */}
+              <div className="p-3 bg-gray-900/50 border-t border-gray-700 flex justify-end gap-2">
                 {contribution.status === 'pending' && (
                   <>
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => updateContributionStatus(contribution._id, 'approved')}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2 shadow-lg hover:shadow-green-500/20"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors flex items-center gap-2"
                     >
                       <CheckCircle className="w-4 h-4" />
-                      <span>Approve</span>
+                      Approve
                     </motion.button>
                     
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => updateContributionStatus(contribution._id, 'rejected')}
-                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2 shadow-lg hover:shadow-red-500/20"
+                      className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg transition-colors flex items-center gap-2"
                     >
                       <XCircle className="w-4 h-4" />
-                      <span>Reject</span>
+                      Reject
                     </motion.button>
                   </>
                 )}
                 
                 {contribution.status !== 'pending' && (
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => updateContributionStatus(contribution._id, 'pending')}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-2 shadow-lg"
+                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg transition-colors flex items-center gap-2"
                   >
                     <Clock className="w-4 h-4" />
-                    <span>Reset to Pending</span>
+                    Reset to Pending
                   </motion.button>
                 )}
               </div>
@@ -173,24 +205,6 @@ const ContributionsTab = ({
           ))
         )}
       </div>
-      
-      {contributions.length > 5 && (
-        <div className="flex justify-center py-3 mt-2 bg-gray-800 bg-opacity-30 rounded-lg">
-          <motion.div
-            animate={{ 
-              rotate: 360,
-            }}
-            transition={{ 
-              duration: 1.5, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
-          >
-            <RefreshCw className="w-6 h-6 text-blue-400" />
-          </motion.div>
-          <span className="ml-2 text-gray-400">Loading more...</span>
-        </div>
-      )}
     </div>
   );
 };
