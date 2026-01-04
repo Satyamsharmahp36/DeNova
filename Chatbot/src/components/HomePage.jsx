@@ -26,6 +26,7 @@ import {
 import ChatBot from './ChatBot';
 import AdminPanel from './AdminPanel';
 import TipButton from './TipButton';
+import AIActionLogs from './AIActionLogs';
 import { useSolana } from '../hooks/useSolana';
 
 const HomePage = ({ onLogout }) => {
@@ -53,6 +54,7 @@ const HomePage = ({ onLogout }) => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isProfileOwner, setIsProfileOwner] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showActionLogs, setShowActionLogs] = useState(false);
   const hasLoadedProfileRef = useRef(false);
   const profileMenuRef = useRef(null);
   const { walletAddress, isConnected, connect, disconnect, balance, formatAddress, isPhantomInstalled } = useSolana();
@@ -416,8 +418,32 @@ const HomePage = ({ onLogout }) => {
             </div>
           </section>
 
+          {/* AI Action Logs Section - Only visible to profile owner */}
+          {isProfileOwner && (
+            <section className="mb-10">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-white">AI Action Logs</h2>
+                <button
+                  onClick={() => setShowActionLogs(!showActionLogs)}
+                  className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  {showActionLogs ? 'Hide' : 'View All'}
+                </button>
+              </div>
+              {showActionLogs ? (
+                <AIActionLogs username={username} isOwner={isProfileOwner} />
+              ) : (
+                <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
+                  <p className="text-neutral-400 text-sm">
+                    Track all AI-powered actions with wallet signature verification. Click "View All" to see your action history.
+                  </p>
+                </div>
+              )}
+            </section>
+          )}
+
           {/* Quick Info Cards */}
-          <section>
+          <section className="mb-10">
             <h2 className="text-lg font-semibold text-white mb-4">Quick Info</h2>
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4">

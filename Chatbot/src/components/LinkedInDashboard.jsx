@@ -96,9 +96,10 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
     }
     
     setIsSigningAction(true);
+    let signatureData = null;
     try {
       // Request wallet signature before posting
-      await signAction('LINKEDIN_POST', `Publishing post: "${generatedPost.substring(0, 50)}..."`);
+      signatureData = await signAction('LINKEDIN_POST', `Publishing post: "${generatedPost.substring(0, 50)}..."`);
       toast.success('Action authorized!');
     } catch (signError) {
       console.error('Signature rejected:', signError);
@@ -117,6 +118,34 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
 
       if (response.data.success) {
         toast.success('Published to LinkedIn!');
+        
+        // Log the action
+        try {
+          await axios.post(`${import.meta.env.VITE_BACKEND}/ai-actions/log`, {
+            username: walletAddress,
+            actionType: 'LINKEDIN_POST',
+            actionDetails: {
+              content: generatedPost,
+              platform: 'linkedin',
+              metadata: { topic }
+            },
+            walletSignature: signatureData ? {
+              signature: signatureData.signature,
+              publicKey: signatureData.publicKey,
+              message: signatureData.message,
+              timestamp: new Date()
+            } : null,
+            status: 'executed',
+            executionResult: {
+              success: true,
+              message: 'Post published to LinkedIn',
+              executedAt: new Date()
+            }
+          });
+        } catch (logError) {
+          console.error('Failed to log action:', logError);
+        }
+        
         setGeneratedPost('');
         setTopic('');
       }

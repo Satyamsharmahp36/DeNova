@@ -103,9 +103,10 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
     }
     
     setIsSigningAction(true);
+    let signatureData = null;
     try {
       // Request wallet signature before posting
-      await signAction('TWITTER_POST', `Publishing tweet: "${generatedTweet.substring(0, 50)}..."`);
+      signatureData = await signAction('TWITTER_POST', `Publishing tweet: "${generatedTweet.substring(0, 50)}..."`);
       toast.success('Action authorized!');
     } catch (signError) {
       console.error('Signature rejected:', signError);
@@ -123,6 +124,34 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
 
       if (response.data.success) {
         toast.success('Posted to Twitter/X!');
+        
+        // Log the action
+        try {
+          await axios.post(`${import.meta.env.VITE_BACKEND}/ai-actions/log`, {
+            username: walletAddress,
+            actionType: 'TWITTER_POST',
+            actionDetails: {
+              content: generatedTweet,
+              platform: 'twitter',
+              metadata: { context, characterCount, url: response.data.data.url }
+            },
+            walletSignature: signatureData ? {
+              signature: signatureData.signature,
+              publicKey: signatureData.publicKey,
+              message: signatureData.message,
+              timestamp: new Date()
+            } : null,
+            status: 'executed',
+            executionResult: {
+              success: true,
+              message: 'Tweet posted successfully',
+              executedAt: new Date()
+            }
+          });
+        } catch (logError) {
+          console.error('Failed to log action:', logError);
+        }
+        
         setGeneratedTweet('');
         setContext('');
         setCharacterCount(0);

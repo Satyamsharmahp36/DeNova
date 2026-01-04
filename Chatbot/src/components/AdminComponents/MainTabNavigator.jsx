@@ -209,6 +209,19 @@ const MainTabNavigator = ({
               <span className="text-sm">Visitor Analytics</span>
             </button>
           </li>
+          <li>
+            <button
+              onClick={() => handleTabChange("actionLogs")}
+              className={`w-full text-left px-4 py-2.5 rounded-lg flex items-center gap-3 transition-all font-medium ${
+                activeView === "actionLogs"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/50"
+                  : "text-gray-400 hover:bg-neutral-900 hover:text-emerald-300 hover:border hover:border-emerald-500/20"
+              }`}
+            >
+              <Activity className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm">AI Action Logs</span>
+            </button>
+          </li>
         </ul>
         </div>
 

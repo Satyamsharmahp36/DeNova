@@ -17,6 +17,7 @@ app.use('/',require('./Routes/UserRoutes'));
 app.use('/',require('./Routes/TaskRoutes'));
 app.use('/',require('./Routes/PromptNBotRoutes'));
 app.use('/whatsapp',require('./Routes/WhatsAppRoutes'));
+app.use('/',require('./Routes/AIActionLogRoutes'));
 
 //mongodb connection
 mongoose.connect(process.env.MONGO_URI, {

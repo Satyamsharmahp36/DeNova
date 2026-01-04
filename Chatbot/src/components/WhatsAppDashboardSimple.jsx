@@ -243,12 +243,13 @@ const WhatsAppDashboardSimple = ({ isOpen, onClose, username }) => {
     }
     
     setIsSigningAction(true);
+    let signatureData = null;
     try {
       // Request wallet signature before sending
       const recipient = sendMessageForm.sendMode === 'contact' 
         ? sendMessageForm.recipient 
         : sendMessageForm.phoneNumber;
-      await signAction('WHATSAPP_SEND_MESSAGE', `Sending message to ${recipient}`);
+      signatureData = await signAction('WHATSAPP_SEND_MESSAGE', `Sending message to ${recipient}`);
       toast.success('Action authorized!');
     } catch (signError) {
       console.error('Signature rejected:', signError);
@@ -329,6 +330,34 @@ const WhatsAppDashboardSimple = ({ isOpen, onClose, username }) => {
         
         if (response.data.success) {
           toast.success('Message sent');
+          
+          // Log the action
+          try {
+            await axios.post(`${BACKEND_API_BASE}/ai-actions/log`, {
+              username,
+              actionType: 'WHATSAPP_SEND_MESSAGE',
+              actionDetails: {
+                recipient: phoneNumber,
+                content: messageContent,
+                platform: 'whatsapp'
+              },
+              walletSignature: signatureData ? {
+                signature: signatureData.signature,
+                publicKey: signatureData.publicKey,
+                message: signatureData.message,
+                timestamp: new Date()
+              } : null,
+              status: 'executed',
+              executionResult: {
+                success: true,
+                message: 'Message sent successfully',
+                executedAt: new Date()
+              }
+            });
+          } catch (logError) {
+            console.error('Failed to log action:', logError);
+          }
+          
           setSendMessageForm({
             sendMode: 'number',
             recipient: '',
