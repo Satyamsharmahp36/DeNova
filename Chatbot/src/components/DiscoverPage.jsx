@@ -34,14 +34,7 @@ import { useAppContext } from '../Appcontext';
 import { useSolana } from '../hooks/useSolana';
 
 // Avatar gradient colors for icons
-const AVATAR_GRADIENTS = [
-  'from-emerald-400 to-cyan-500',
-  'from-violet-400 to-purple-500',
-  'from-rose-400 to-pink-500',
-  'from-amber-400 to-orange-500',
-  'from-blue-400 to-indigo-500',
-  'from-teal-400 to-emerald-500',
-];
+// Removed gradient system - using solid colors for minimalist design
 
 // Background colors for avatar containers
 const AVATAR_BG_COLORS = [
@@ -205,10 +198,7 @@ const DiscoverPage = () => {
       .slice(0, 2);
   }, []);
 
-  const getAvatarGradient = useCallback((username) => {
-    const index = username.charCodeAt(0) % AVATAR_GRADIENTS.length;
-    return AVATAR_GRADIENTS[index];
-  }, []);
+  // Removed gradient function - using solid white text
 
   const getAvatarBg = useCallback((username) => {
     const index = username.charCodeAt(0) % AVATAR_BG_COLORS.length;
@@ -261,19 +251,13 @@ const DiscoverPage = () => {
   }, []);
 
 
-  for( let i = 0; i < users.length; i++) {
-    console.log(users[i])
-  } 
-
-
-
   return (
-    <div className="min-h-screen bg-neutral-950 flex">
+    <div className="min-h-screen bg-black flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-neutral-900 border-r border-neutral-800 flex flex-col fixed h-full">
+      <aside className="w-64 bg-neutral-900 border-r border-neutral-800/50 flex flex-col fixed h-full">
         <div className="p-5 border-b border-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -302,7 +286,7 @@ const DiscoverPage = () => {
         {/* Wallet Connection */}
         <div className="p-3 border-t border-neutral-800">
           {isConnected ? (
-            <div className="p-3 rounded-lg bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20">
+            <div className="p-3 rounded-lg bg-neutral-800 border border-neutral-700">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-md bg-violet-500/20 flex items-center justify-center">
                   <Wallet className="w-4 h-4 text-violet-400" />
@@ -320,7 +304,7 @@ const DiscoverPage = () => {
           ) : isPhantomInstalled ? (
             <button
               onClick={connect}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-medium transition-all shadow-lg shadow-emerald-500/20"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-medium transition-all"
             >
               <Wallet className="w-4 h-4" />
               Connect Wallet
@@ -412,7 +396,7 @@ const DiscoverPage = () => {
       {/* Main Content */}
       <main className="flex-1 ml-64">
         {/* Header - ChatGPT Style */}
-        <header className="sticky top-0 z-10 bg-neutral-950/95 backdrop-blur-md border-b border-neutral-800">
+        <header className="sticky top-0 z-10 bg-black/95 backdrop-blur-md border-b border-neutral-800/50">
           <div className="max-w-7xl mx-auto px-8 pt-6 pb-4">
             {/* Title */}
             <h1 className="text-2xl font-semibold text-white mb-6">Explore Assistants</h1>
@@ -504,12 +488,13 @@ const DiscoverPage = () => {
                 <section>
                   <h2 className="text-2xl font-bold text-white mb-2">Featured Assistants</h2>
                   <p className="text-sm text-neutral-400 mb-6">Curated top picks from this week</p>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
                     {users.slice(0, 4).map((user) => {
                       const assistantType = getAssistantType(user);
                       const isPeople = assistantType === 'people';
                       
-                      return (
+                      return isPeople ? (
+                        // People Assistant - Thumbnail Card
                         <motion.div
                           key={user.username}
                           whileHover={{ y: -4, scale: 1.02 }}
@@ -530,51 +515,97 @@ const DiscoverPage = () => {
                                   }}
                                 />
                                 <div className="hidden w-full h-full items-center justify-center">
-                                  <span className={`text-6xl font-black bg-gradient-to-br ${getAvatarGradient(user.username)} bg-clip-text text-transparent`}>
+                                  <span className="text-6xl font-black text-white">
                                     {getInitials(user.name)}
                                   </span>
                                 </div>
                               </>
                             ) : (
-                              <span className={`text-6xl font-black bg-gradient-to-br ${getAvatarGradient(user.username)} bg-clip-text text-transparent relative z-10`}>
+                              <span className="text-6xl font-black text-white relative z-10">
                                 {getInitials(user.name)}
                               </span>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-900/80" />
                             
-                            {/* Type Badge - Prominent */}
-                            <div className={`absolute top-3 right-3 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 backdrop-blur-sm z-20 ${
-                              isPeople 
-                                ? 'bg-emerald-500/90 text-white shadow-lg shadow-emerald-500/50' 
-                                : 'bg-violet-500/90 text-white shadow-lg shadow-violet-500/50'
-                            }`}>
-                              {isPeople ? <UserCircle className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
-                              {isPeople ? 'PERSON' : 'KNOWLEDGE'}
+                            {/* Type Badge */}
+                            <div className="absolute top-3 right-3 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 backdrop-blur-sm z-20 bg-emerald-500 text-white">
+                              <UserCircle className="w-3.5 h-3.5" />
+                              PERSON
                             </div>
-
-                            {/* Tipping Badge */}
-                            {!isPeople && user.walletAddress && (
-                              <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-full bg-violet-500/90 backdrop-blur-sm text-white text-xs font-semibold flex items-center gap-1 shadow-lg z-20">
-                                <Wallet className="w-3 h-3" />
-                                Tips enabled
-                              </div>
-                            )}
                           </div>
 
                           {/* Content */}
                           <div className="p-4">
                             <h3 className="font-bold text-white text-base mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">{user.name}</h3>
-                            {isPeople ? (
-                              <p className="text-sm text-emerald-400 font-medium mb-2">{getAssistantRole(user)}</p>
-                            ) : (
-                              <p className="text-sm text-violet-400 font-medium mb-2">{getKnowledgeTopic(user)}</p>
-                            )}
+                            <p className="text-sm text-emerald-400 font-medium mb-2">{user.role || getAssistantRole(user)}</p>
                             <p className="text-xs text-neutral-400 line-clamp-2 mb-3">
                               {getDescription(user.username)}
                             </p>
                             <div className="flex items-center justify-between">
                               <p className="text-xs text-neutral-600">By {user.username}</p>
                               <ChevronRight className="w-4 h-4 text-neutral-600 group-hover:text-emerald-400 transition-colors" />
+                            </div>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        // Knowledge Assistant - Compact Icon Card with Header
+                        <motion.div
+                          key={user.username}
+                          whileHover={{ y: -2 }}
+                          onClick={() => handleCardClick(user.username)}
+                          className="group relative bg-neutral-900 hover:bg-neutral-800/80 border border-neutral-800 hover:border-violet-700/50 rounded-xl overflow-hidden cursor-pointer transition-all h-full flex flex-col"
+                        >
+                          {/* Colored Header Section */}
+                          <div className="bg-violet-500/10 border-b border-violet-500/20 p-3 flex items-center gap-3">
+                            {/* Circular Icon */}
+                            <div className={`relative flex-shrink-0 w-12 h-12 rounded-full ${!user.profileImage ? getAvatarBg(user.username) : 'bg-neutral-800'} flex items-center justify-center overflow-hidden ring-2 ring-violet-500/30`}>
+                              {user.profileImage ? (
+                                <>
+                                  <img 
+                                    src={user.profileImage} 
+                                    alt={user.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
+                                      e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                  <div className="hidden w-full h-full items-center justify-center">
+                                    <span className="text-base font-black text-white">
+                                      {getInitials(user.name)}
+                                    </span>
+                                  </div>
+                                </>
+                              ) : (
+                                <span className="text-base font-black text-white">
+                                  {getInitials(user.name)}
+                                </span>
+                              )}
+                            </div>
+                            
+                            {/* Header Content */}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold text-white text-sm mb-0.5 line-clamp-1 group-hover:text-violet-400 transition-colors">{user.name}</h3>
+                              <div className="flex items-center gap-1.5">
+                                <Sparkles className="w-3 h-3 text-violet-400" />
+                                <p className="text-xs text-violet-400 font-semibold">{user.topic || getKnowledgeTopic(user)}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Content Section */}
+                          <div className="p-3 flex-1 flex flex-col">
+                            <p className="text-xs text-neutral-400 line-clamp-3 leading-relaxed flex-1 mb-3">
+                              {getDescription(user.username)}
+                            </p>
+                            <div className="flex items-center justify-between gap-2 pt-2 border-t border-neutral-800">
+                              <p className="text-xs text-neutral-600 truncate">By {user.username}</p>
+                              {user.walletAddress && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                                  <Wallet className="w-2.5 h-2.5" />
+                                  <span className="text-[10px] font-semibold">Tips</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </motion.div>
@@ -596,14 +627,15 @@ const DiscoverPage = () => {
                   }
                 </p>
                 
-                {/* Three column grid with larger cards */}
-                <div className="grid grid-cols-3 gap-4">
+                {/* Mixed grid - People get thumbnail cards, Knowledge get compact cards */}
+                <div className="grid grid-cols-4 gap-4">
                   {users.slice(searchQuery ? 0 : 4).map((user, index) => {
-                    const displayIndex = searchQuery ? index + 1 : index + 1;
+                    const displayIndex = searchQuery ? index + 1 : index + 5;
                     const assistantType = getAssistantType(user);
                     const isPeople = assistantType === 'people';
                     
-                    return (
+                    return isPeople ? (
+                      // People Assistant - Thumbnail Card with Rank
                       <motion.div
                         key={user.username}
                         initial={{ opacity: 0, y: 10 }}
@@ -632,45 +664,102 @@ const DiscoverPage = () => {
                                 }}
                               />
                               <div className="hidden w-full h-full items-center justify-center">
-                                <span className={`text-5xl font-black bg-gradient-to-br ${getAvatarGradient(user.username)} bg-clip-text text-transparent`}>
+                                <span className="text-5xl font-black text-white">
                                   {getInitials(user.name)}
                                 </span>
                               </div>
                             </>
                           ) : (
-                            <span className={`text-5xl font-black bg-gradient-to-br ${getAvatarGradient(user.username)} bg-clip-text text-transparent relative z-10`}>
+                            <span className="text-5xl font-black text-white relative z-10">
                               {getInitials(user.name)}
                             </span>
                           )}
                           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-neutral-900/70" />
                           
                           {/* Type indicator badge */}
-                          <div className={`absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center z-20 shadow-lg ${
-                            isPeople ? 'bg-emerald-500' : 'bg-violet-500'
-                          }`}>
-                            {isPeople ? <UserCircle className="w-4 h-4 text-white" /> : <Sparkles className="w-4 h-4 text-white" />}
+                          <div className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center z-20 shadow-lg bg-emerald-500">
+                            <UserCircle className="w-4 h-4 text-white" />
                           </div>
-
-                          {/* Tipping indicator */}
-                          {!isPeople && user.walletAddress && (
-                            <div className="absolute bottom-2 right-2 p-1.5 rounded-full bg-violet-500/90 backdrop-blur-sm z-20 shadow-lg">
-                              <Wallet className="w-3.5 h-3.5 text-white" />
-                            </div>
-                          )}
                         </div>
                         
                         {/* Content */}
                         <div className="p-3">
                           <h3 className="font-bold text-white text-sm mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">{user.name}</h3>
-                          {isPeople ? (
-                            <p className="text-xs text-emerald-400 font-medium mb-1">{getAssistantRole(user)}</p>
-                          ) : (
-                            <p className="text-xs text-violet-400 font-medium mb-1">{getKnowledgeTopic(user)}</p>
-                          )}
+                          <p className="text-xs text-emerald-400 font-medium mb-1">{user.role || getAssistantRole(user)}</p>
                           <p className="text-xs text-neutral-400 line-clamp-2 mb-2">
                             {getDescription(user.username)}
                           </p>
                           <p className="text-xs text-neutral-600">By {user.username}</p>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      // Knowledge Assistant - Compact Icon Card with Header
+                      <motion.div
+                        key={user.username}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.02 }}
+                        whileHover={{ y: -2 }}
+                        onClick={() => handleCardClick(user.username)}
+                        className="group relative bg-neutral-900 hover:bg-neutral-800/80 border border-neutral-800 hover:border-violet-700/50 rounded-xl overflow-hidden cursor-pointer transition-all h-full flex flex-col"
+                      >
+                        {/* Rank Badge */}
+                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-violet-500 flex items-center justify-center z-20 shadow-lg">
+                          <span className="text-xs font-bold text-white">{displayIndex}</span>
+                        </div>
+
+                        {/* Colored Header Section */}
+                        <div className="bg-violet-500/10 border-b border-violet-500/20 p-3 flex items-center gap-3">
+                          {/* Circular Icon */}
+                          <div className={`relative flex-shrink-0 w-12 h-12 rounded-full ${!user.profileImage ? getAvatarBg(user.username) : 'bg-neutral-800'} flex items-center justify-center overflow-hidden ring-2 ring-violet-500/30`}>
+                            {user.profileImage ? (
+                              <>
+                                <img 
+                                  src={user.profileImage} 
+                                  alt={user.name}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                  }}
+                                />
+                                <div className="hidden w-full h-full items-center">
+                                  <span className="text-base font-black text-white">
+                                    {getInitials(user.name)}
+                                  </span>
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-base font-black text-white">
+                                {getInitials(user.name)}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Header Content */}
+                          <div className="flex-1 min-w-0 pr-7">
+                            <h3 className="font-bold text-white text-sm mb-0.5 line-clamp-1 group-hover:text-violet-400 transition-colors">{user.name}</h3>
+                            <div className="flex items-center gap-1.5">
+                              <Sparkles className="w-3 h-3 text-violet-400" />
+                              <p className="text-xs text-violet-400 font-semibold">{user.topic || getKnowledgeTopic(user)}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Content Section */}
+                        <div className="p-3 flex-1 flex flex-col">
+                          <p className="text-xs text-neutral-400 line-clamp-3 leading-relaxed flex-1 mb-3">
+                            {getDescription(user.username)}
+                          </p>
+                          <div className="flex items-center justify-between gap-2 pt-2 border-t border-neutral-800">
+                            <p className="text-xs text-neutral-600 truncate">By {user.username}</p>
+                            {user.walletAddress && (
+                              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                                <Wallet className="w-2.5 h-2.5" />
+                                <span className="text-[10px] font-semibold">Tips</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     );

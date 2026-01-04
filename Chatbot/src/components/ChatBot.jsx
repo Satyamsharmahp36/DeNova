@@ -39,7 +39,7 @@ import languages from "../services/languages";
 import { useAppContext } from "../Appcontext";
 import TipButton from "./TipButton";
 
-const ChatBot = ({ hideSettings = false }) => {
+const ChatBot = ({ hideSettings = false, hideHeader = false }) => {
   const {
     userData,
     userName,
@@ -553,25 +553,26 @@ const ChatBot = ({ hideSettings = false }) => {
 
   if (!isInitialized || !currentUserData?.user) {
     return (
-      <div className="flex flex-col h-full w-full bg-neutral-950 text-white overflow-hidden items-center justify-center">
+      <div className="flex flex-col h-full w-full bg-black text-white overflow-hidden items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
           <Loader2 className="w-8 h-8 text-emerald-500" />
         </motion.div>
-        <p className="mt-4 text-neutral-400">Initializing chat...</p>
+        <p className="mt-4 text-gray-400">Initializing chat...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full w-full bg-gray-900 text-white">
+    <div className="flex flex-col h-full w-full bg-black text-white">
       <style>{scrollbarStyles}</style>
 
-      <div className="bg-gray-800 py-4 rounded-t-xl px-6 flex justify-between items-center border-b border-gray-700 flex-shrink-0">
+      {!hideHeader && (
+      <div className="bg-neutral-900 py-4 px-6 flex justify-between items-center border-b border-neutral-800/50 flex-shrink-0">
         <div className="flex items-center">
-          <Bot className="w-6 h-6 text-blue-400 mr-2" />
+          <Bot className="w-6 h-6 text-emerald-400 mr-2" />
           <h1 className="text-xl font-bold">
             {" "}
             {currentUserData.user.name}'s AI Assistant
@@ -583,7 +584,7 @@ const ChatBot = ({ hideSettings = false }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={toggleLanguageDropdown}
-              className="px-3 py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors flex items-center gap-2 text-sm"
+              className="px-3 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm"
             >
               <Globe className="w-4 h-4" />
               <span className="hidden sm:inline">{selectedLanguage.name}</span>
@@ -591,23 +592,23 @@ const ChatBot = ({ hideSettings = false }) => {
             </motion.button>
 
             {showLanguageDropdown && (
-              <div className="absolute right-0 mt-2 w-56 bg-neutral-800 rounded-lg shadow-xl border border-neutral-700 overflow-hidden z-10">
+              <div className="absolute right-0 mt-2 w-56 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden z-10">
                 <div className="max-h-64 overflow-y-auto">
                   {languages.map((language) => (
                     <button
                       key={language.code}
                       onClick={() => handleLanguageSelect(language)}
-                      className={`w-full px-4 py-2 text-left hover:bg-neutral-700 flex items-center text-sm transition-colors ${
+                      className={`w-full px-4 py-2 text-left hover:bg-gray-700 flex items-center text-sm transition-colors ${
                         selectedLanguage.code === language.code
                           ? "bg-emerald-500/10 text-emerald-400"
-                          : "text-neutral-300"
+                          : "text-gray-300"
                       }`}
                     >
                       {language.code === selectedLanguage.code && (
                         <CheckCircle className="w-4 h-4 mr-2 text-emerald-400" />
                       )}
                       <span className="mr-1">{language.name}</span>
-                      <span className="text-xs text-neutral-500">
+                      <span className="text-xs text-gray-500">
                         ({language.native})
                       </span>
                     </button>
@@ -622,7 +623,7 @@ const ChatBot = ({ hideSettings = false }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowContributionForm(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-400 transition-colors flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">Contribute</span>
@@ -630,11 +631,9 @@ const ChatBot = ({ hideSettings = false }) => {
           )}
         </div>
       </div>
+      )}
 
-      <div
-        className="flex-1 overflow-y-auto p-4 space-y-4"
-        id="chat-messages-container"
-      >
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
         <AnimatePresence>
           {promptUpdated && (
             <motion.div
@@ -656,14 +655,14 @@ const ChatBot = ({ hideSettings = false }) => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 text-blue-400 flex items-center"
+              className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3 text-violet-400 flex items-center"
             >
               <Info className="w-5 h-5 mr-2" />
               Detected {detectedLanguage.name} ({detectedLanguage.native}).
               Translation is active.
               <button
                 onClick={() => setShowTranslationInfo(false)}
-                className="ml-auto text-blue-400 hover:text-blue-200"
+                className="ml-auto text-violet-400 hover:text-violet-300"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -684,8 +683,8 @@ const ChatBot = ({ hideSettings = false }) => {
             <div
               className={`max-w-[80%] rounded-lg p-3 shadow-md ${
                 message.type === "user"
-                  ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-br-none"
-                  : "bg-neutral-900 text-white rounded-bl-none border border-neutral-800"
+                  ? "bg-emerald-500 text-white rounded-br-none"
+                  : "bg-neutral-900 text-white rounded-bl-none border border-neutral-800/50"
               }`}
             >
               <div className="flex items-center mb-1">
@@ -708,7 +707,7 @@ const ChatBot = ({ hideSettings = false }) => {
                   )}
                   {message.originalLanguage &&
                     message.originalLanguage !== "en" && (
-                      <span className="ml-2 text-xs bg-blue-500/20 px-2 py-0.5 rounded-full">
+                      <span className="ml-2 text-xs bg-violet-500/20 px-2 py-0.5 rounded-full">
                         {languages.find(
                           (l) => l.code === message.originalLanguage
                         )?.name || message.originalLanguage}
@@ -743,7 +742,7 @@ const ChatBot = ({ hideSettings = false }) => {
             transition={{ duration: 0.3 }}
             className="flex items-start justify-start"
           >
-            <div className="max-w-[80%] rounded-lg p-3 shadow-md bg-neutral-900 text-white rounded-bl-none border border-neutral-800">
+            <div className="max-w-[80%] rounded-lg p-3 shadow-md bg-neutral-900 text-white rounded-bl-none border border-neutral-800/50">
               <div className="flex items-center mb-1">
                 <Bot className="w-4 h-4 mr-2 text-emerald-400" />
                 <div className="text-xs opacity-70">Assistant</div>
@@ -766,8 +765,8 @@ const ChatBot = ({ hideSettings = false }) => {
       </div>
 
       <div className="flex-shrink-0">
-        <div className="flex items-end p-4 border-t border-gray-700">
-          <div className="relative flex items-center w-full rounded-lg bg-gray-800 p-2">
+        <div className="flex items-end p-4 border-t border-neutral-800/50">
+          <div className="relative flex items-center w-full rounded-lg bg-neutral-900 p-2 border border-neutral-800/50">
             <textarea
               ref={inputRef}
               value={input}
@@ -777,7 +776,7 @@ const ChatBot = ({ hideSettings = false }) => {
               }}
               onKeyDown={handleKeyPress}
               placeholder={`Ask me anything about ${currentUserData.user.name} ...`}
-              className="flex-1 bg-transparent outline-none resize-none text-white placeholder-neutral-500 max-h-32"
+              className="flex-1 bg-transparent outline-none resize-none text-white placeholder-gray-500 max-h-32"
               rows={1}
               disabled={isActivelyListening} // Only disable when actively listening
             />
@@ -790,7 +789,7 @@ const ChatBot = ({ hideSettings = false }) => {
                 onClick={handleMicClick}
                 disabled={isLoading || !browserSupportsSpeechRecognition}
                 className={`p-2 rounded-lg ${
-                  listening ? "bg-gradient-to-r from-emerald-500 to-emerald-600" : "bg-neutral-800"
+                  listening ? "bg-gradient-to-r from-emerald-500 to-emerald-600" : "bg-gray-800"
                 } text-white hover:bg-emerald-600 transition-all`}
                 aria-label={
                   listening ? "Stop voice input" : "Start voice input"
@@ -811,7 +810,7 @@ const ChatBot = ({ hideSettings = false }) => {
                   }
                 }}
                 className={`p-2 rounded-lg ${
-                  voiceEnabled ? "bg-emerald-600" : "bg-neutral-700"
+                  voiceEnabled ? "bg-emerald-600" : "bg-gray-700"
                 } text-white hover:bg-emerald-700 transition-colors`}
                 aria-pressed={voiceEnabled}
                 aria-label={
@@ -865,7 +864,7 @@ const ChatBot = ({ hideSettings = false }) => {
                 </button>
                 <button
                   onClick={handleVoiceCancel}
-                  className="px-3 py-1 bg-neutral-800 text-white rounded-lg hover:bg-neutral-700 transition-colors"
+                  className="px-3 py-1 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -905,13 +904,12 @@ const ChatBot = ({ hideSettings = false }) => {
             </button>
           </div>
         </div>
-      </div>
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm px-4">
           <div
             ref={modalRef}
-            className="bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 border border-gray-700"
+            className="bg-neutral-900 rounded-lg shadow-xl max-w-md w-full p-6 border border-neutral-800/50"
             onClick={(e) => e.stopPropagation()}
             data-testid="delete-modal-content"
           >
@@ -922,7 +920,7 @@ const ChatBot = ({ hideSettings = false }) => {
               </h2>
               <button
                 onClick={handleCloseDeleteModal}
-                className="p-1 rounded-full hover:bg-gray-700 transition-colors"
+                className="p-1 rounded-full hover:bg-gray-800 transition-colors"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -937,7 +935,7 @@ const ChatBot = ({ hideSettings = false }) => {
             <div className="flex justify-end space-x-3">
               <button
                 onClick={handleCloseDeleteModal}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
                 data-testid="delete-modal-cancel"
               >
                 Cancel
@@ -985,6 +983,8 @@ const ChatBot = ({ hideSettings = false }) => {
         onContriUpdated={handleContriUpdated}
       />
 
+        
+    </div>
     </div>
   );
 };
