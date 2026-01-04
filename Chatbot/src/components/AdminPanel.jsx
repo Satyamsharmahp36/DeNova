@@ -334,7 +334,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
     if (!taskSchedulingLoaded) {
       return (
         <motion.button
-          className="px-3 py-2 bg-gray-600 text-white rounded-lg flex items-center gap-2 transition-all text-sm"
+          className="px-4 py-2.5 bg-gray-800 text-gray-400 rounded-lg flex items-center gap-2 transition-all text-sm border border-gray-700"
           disabled={true}
         >
           <Calendar className="w-4 h-4 animate-pulse" />
@@ -345,15 +345,15 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
 
     return (
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={toggleTaskScheduling}
         disabled={toggleSchedulingLoading}
-        className={`px-3 py-2 ${
+        className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all text-sm font-medium border ${
           taskSchedulingEnabled
-            ? "bg-green-600 hover:bg-green-700"
-            : "bg-red-600 hover:bg-red-700"
-        } text-white rounded-lg flex items-center gap-2 transition-all text-sm`}
+            ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+            : "bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700"
+        }`}
       >
         <Calendar
           className={`w-4 h-4 ${toggleSchedulingLoading ? "animate-spin" : ""}`}
@@ -361,8 +361,8 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
         {toggleSchedulingLoading
           ? "Updating..."
           : taskSchedulingEnabled
-          ? "Task Scheduling: On"
-          : "Task Scheduling: Off"}
+          ? "Scheduling: On"
+          : "Scheduling: Off"}
       </motion.button>
     );
   };
@@ -636,7 +636,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             href={part}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
+            className="text-emerald-400 hover:underline"
           >
             {part}
           </a>
@@ -675,7 +675,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
   const getMeetingCardStyle = (meetingStatus) => {
     switch (meetingStatus) {
       case "scheduled":
-        return "border-blue-600 bg-blue-900/20";
+        return "border-emerald-500/30 bg-emerald-500/5";
       case "completed":
         return "border-green-600 bg-green-900/20";
       default: // pending
@@ -701,9 +701,9 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 p-4"
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       >
-        <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-xl border border-gray-700">
+        <div className="bg-neutral-900 rounded-lg p-6 max-w-md w-full shadow-xl border border-emerald-500/30">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-white">Admin Panel</h2>
             <button
@@ -730,7 +730,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleLogin();
                 }}
-                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-neutral-800 border border-emerald-500/30 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 placeholder="Enter password"
               />
               {passwordError && (
@@ -743,7 +743,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLogin}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg shadow-emerald-500/20"
               >
                 <LogIn className="w-4 h-4" />
                 Login
@@ -758,7 +758,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
   // Inline mode - render without modal wrapper
   if (isInline) {
     return (
-      <div className="h-full flex bg-gray-950 text-white overflow-hidden">
+      <div className="h-full flex bg-neutral-950 text-white overflow-hidden">
         <style>{scrollbarStyles}</style>
         
         {/* Left Sidebar Navigation */}
@@ -771,43 +771,64 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
         />
 
         {/* Right Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-gray-900">
+        <div className="flex-1 flex flex-col overflow-hidden bg-neutral-900">
           {/* Content Header */}
-          <div className="px-6 py-4 border-b border-gray-800/50 bg-gray-900/50 flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white">
-              {activeView === "assistant" && "My Assistant"}
-              {activeView === "prompt" && "Enter Data / Prompt"}
-              {activeView === "responseStyle" && "Response Style"}
-              {activeView === "contributions" && "User Contributions"}
-              {activeView === "tasks" && "Task Management"}
-              {activeView === "workflow" && "Daily Workflow"}
-              {activeView === "access" && "Access Management"}
-              {activeView === "analytics" && "Visitor Analytics"}
-              {activeView === "reminders" && "Reminders"}
-              {activeView === "createTask" && "Create Self Task"}
-              {activeView === "whatsapp" && "WhatsApp Integration"}
-              {activeView === "linkedin" && "LinkedIn Posting"}
-              {activeView === "twitter" && "Twitter/X Posting"}
-              {activeView === "addIntegration" && "Add Integration"}
-              {activeView === "emailCatchup" && "AI Email Catchup"}
-            </h2>
-            
-            {/* Header Controls */}
-            <div className="flex items-center gap-3">
-              {activeView === "tasks" && renderTaskSchedulingButton()}
-              <button
-                onClick={handleRefreshUserData}
-                disabled={refreshing}
-                className="p-2 text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
-                title="Refresh Data"
-              >
-                <RefreshCw className={`w-5 h-5 ${refreshing ? "animate-spin" : ""}`} />
-              </button>
+          <div className="flex-shrink-0 px-6 py-4 border-b border-gray-800 bg-neutral-900/95 backdrop-blur-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-1">
+                  {activeView === "assistant" && "My Assistant"}
+                  {activeView === "prompt" && "Enter Data / Prompt"}
+                  {activeView === "responseStyle" && "Response Style"}
+                  {activeView === "contributions" && "User Contributions"}
+                  {activeView === "tasks" && "Task Management"}
+                  {activeView === "workflow" && "Daily Workflow"}
+                  {activeView === "access" && "Access Management"}
+                  {activeView === "analytics" && "Visitor Analytics"}
+                  {activeView === "reminders" && "Reminders"}
+                  {activeView === "createTask" && "Create Self Task"}
+                  {activeView === "whatsapp" && "WhatsApp Integration"}
+                  {activeView === "linkedin" && "LinkedIn Posting"}
+                  {activeView === "twitter" && "Twitter/X Posting"}
+                  {activeView === "addIntegration" && "Add Integration"}
+                  {activeView === "emailCatchup" && "AI Email Catchup"}
+                </h2>
+                <p className="text-sm text-gray-400">
+                  {activeView === "assistant" && "Chat with your AI assistant"}
+                  {activeView === "prompt" && "Manage your assistant's knowledge base"}
+                  {activeView === "responseStyle" && "Customize how your assistant responds"}
+                  {activeView === "contributions" && "Review and manage user submissions"}
+                  {activeView === "tasks" && "Organize and track your tasks"}
+                  {activeView === "workflow" && "Manage your daily workflow"}
+                  {activeView === "access" && "Control user access and permissions"}
+                  {activeView === "analytics" && "Monitor visitor interactions"}
+                  {activeView === "reminders" && "Set and manage reminders"}
+                  {activeView === "createTask" && "Create a new personal task"}
+                  {activeView === "whatsapp" && "Connect and manage WhatsApp"}
+                  {activeView === "linkedin" && "Schedule and post to LinkedIn"}
+                  {activeView === "twitter" && "Schedule and post to Twitter/X"}
+                  {activeView === "addIntegration" && "Connect new integrations"}
+                  {activeView === "emailCatchup" && "AI-powered email summaries"}
+                </p>
+              </div>
+              
+              {/* Header Controls */}
+              <div className="flex items-center gap-2">
+                {activeView === "tasks" && renderTaskSchedulingButton()}
+                <button
+                  onClick={handleRefreshUserData}
+                  disabled={refreshing}
+                  className="p-2.5 text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-all border border-gray-700 hover:border-gray-600"
+                  title="Refresh Data"
+                >
+                  <RefreshCw className={`w-5 h-5 ${refreshing ? "animate-spin" : ""}`} />
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Scrollable Content Area */}
-          <div className={`flex-1 overflow-auto admin-inline-content ${activeView === "assistant" ? "p-0" : "p-6"}`}>
+          <div className={`flex-1 overflow-auto admin-inline-content bg-neutral-900 ${activeView === "assistant" ? "p-0" : "p-6"}`}>
             {error && (
               <NotificationMessage type="error" title="Error" message={error} />
             )}
@@ -899,7 +920,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             )}
             
             {activeView === "assistant" && (
-              <ChatBot hideSettings={true} />
+              <ChatBot hideSettings={true} hideHeader={true} />
             )}
             
             {activeView === "prompt" && (
@@ -1090,7 +1111,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             )}
             
             {activeView === "createTask" && (
-              <div className="bg-gray-800 rounded-lg p-6">
+              <div className="bg-neutral-900 rounded-lg p-6 border border-emerald-500/20">
                 <SelfTaskForm
                   onClose={() => setActiveView("assistant")}
                   onSuccess={handleRefreshUserData}
@@ -1269,7 +1290,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             )}
             
             {activeView === "assistant" && (
-              <ChatBot hideSettings={true} />
+              <ChatBot hideSettings={true} hideHeader={true} />
             )}
             
             {activeView === "prompt" && (
