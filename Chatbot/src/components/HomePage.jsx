@@ -2,14 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import VisitorAnalytics from './AdminComponents/VisitorAnalytics';
 import PropTypes from 'prop-types';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Cookies from 'js-cookie';
 import { useAppContext } from '../Appcontext';
 import { 
   ArrowLeft,
   LogOut,
   Home,
-  Wallet
+  Wallet,
+  Settings,
+  ChevronUp,
+  Bot,
+  Compass
 } from 'lucide-react';
 import ChatBot from './ChatBot';
 import AdminPanel from './AdminPanel';
@@ -39,7 +43,10 @@ const HomePage = ({ onLogout }) => {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isProfileOwner, setIsProfileOwner] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const hasLoadedProfileRef = useRef(false);
+  const profileMenuRef = useRef(null);
+  const { walletAddress, isConnected, connect, disconnect, balance, formatAddress, isPhantomInstalled } = useSolana();
 
 
   const fetchProfileOwner = async (username) => {
@@ -164,6 +171,7 @@ const HomePage = ({ onLogout }) => {
   const handleLogout = async () => {
     // Remove cookies and refresh context
     Cookies.remove('presentUserName');
+    setPresentUserName(null);
     await refreshPresentUserData(); // Wait for context to update
     
     if (onLogout) {
@@ -171,12 +179,48 @@ const HomePage = ({ onLogout }) => {
     }
     
     setShowChatBot(false);
-    setPresentUserName('');
+    setShowProfileMenu(false);
+    navigate('/');
   };
 
   const navigateToDiscover = () => {
     navigate('/discover');
   };
+
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getAvatarBg = (username) => {
+    const colors = [
+      'bg-blue-600',
+      'bg-purple-600',
+      'bg-green-600',
+      'bg-orange-600',
+      'bg-pink-600',
+      'bg-indigo-600',
+    ];
+    const index = username ? username.charCodeAt(0) % colors.length : 0;
+    return colors[index];
+  };
+
+  // Close profile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleToggleAdminPanel = () => {
     setShowAdminPanel(!showAdminPanel);
@@ -191,33 +235,8 @@ const HomePage = ({ onLogout }) => {
 
   const chatBotView = (
     <div className="h-screen flex bg-neutral-950">
-      {/* Left Sidebar - Minimal Navigation */}
-      <div className="w-16 bg-neutral-900 border-r border-neutral-800 flex flex-col items-center py-4 gap-2">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={navigateToDiscover}
-          className="text-neutral-400 hover:text-white p-3 rounded-lg hover:bg-neutral-800 transition-all group"
-          title="Back to Discover"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </motion.button>
-        
-        <div className="flex-1" />
-        
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleLogout}
-          className="text-neutral-400 hover:text-red-400 p-3 rounded-lg hover:bg-red-500/10 transition-all"
-          title="Logout"
-        >
-          <LogOut className="w-5 h-5" />
-        </motion.button>
-      </div>
-
       {/* Main Content Area */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         {isProfileOwner && showAdminPanel ? (
           // Profile Owner with Admin Panel - Show AdminPanel only
           <div className="flex-1">
