@@ -8,10 +8,13 @@ import { useAppContext } from '../Appcontext';
 import { 
   ArrowLeft,
   LogOut,
-  Home
+  Home,
+  Wallet
 } from 'lucide-react';
 import ChatBot from './ChatBot';
 import AdminPanel from './AdminPanel';
+import TipButton from './TipButton';
+import { useSolana } from '../hooks/useSolana';
 
 const HomePage = ({ onLogout }) => {
   const { username } = useParams(); 
@@ -191,6 +194,10 @@ const HomePage = ({ onLogout }) => {
 
 
 
+  // Check if current user is viewing someone else's assistant (for tip button)
+  const isViewingOthersAssistant = presentUserName && username && presentUserName !== username;
+  const assistantOwnerWallet = profileOwnerData?.user?.walletAddress;
+
   const chatBotView = (
     <div className="h-screen flex bg-gray-950">
       {/* Left Sidebar - Minimal Navigation */}
@@ -206,6 +213,19 @@ const HomePage = ({ onLogout }) => {
         </motion.button>
         
         <div className="flex-1" />
+
+        {/* Tip Button in sidebar - only show when viewing others' assistant */}
+        {isViewingOthersAssistant && assistantOwnerWallet && (
+          <div className="mb-3">
+            <TipButton 
+              recipientWallet={assistantOwnerWallet}
+              recipientName={profileOwnerName}
+              onSuccess={(amount, sig) => {
+                console.log(`Tipped ${amount} SOL, tx: ${sig}`);
+              }}
+            />
+          </div>
+        )}
         
         <motion.button
           whileHover={{ scale: 1.1 }}
