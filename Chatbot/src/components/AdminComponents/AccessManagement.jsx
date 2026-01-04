@@ -603,7 +603,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
 
   // Loading overlay component
   const LoadingOverlay = () => (
-    <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-10 rounded-lg">
+    <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 rounded-lg">
       <div className="flex flex-col items-center">
         <Loader className="w-10 h-10 text-blue-500 animate-spin" />
         <p className="mt-2 text-white">Loading...</p>
@@ -651,19 +651,11 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="text-white fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
-    >
+    <div className="text-white h-full flex flex-col">
       {showConfirmDialog && <ConfirmDialog />}
 
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="bg-gray-800 rounded-xl w-full max-w-4xl mx-4 border border-gray-700 shadow-xl overflow-hidden"
-      >
+      <div className="bg-gray-800 rounded-xl w-full h-full border border-gray-700 shadow-xl overflow-hidden flex flex-col">
+
         {/* Header */}
         <div className="bg-gray-900 px-6 py-4 flex items-center justify-between border-b border-gray-700">
           <h2 className="text-xl font-bold flex items-center">
@@ -1251,8 +1243,8 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
             </div>
           )}
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };
 

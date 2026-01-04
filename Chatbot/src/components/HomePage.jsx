@@ -38,9 +38,7 @@ const HomePage = ({ onLogout }) => {
   const [showChatBot, setShowChatBot] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
-  const [adminPassword, setAdminPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [isProfileOwner, setIsProfileOwner] = useState(false);
   const hasLoadedProfileRef = useRef(false);
 
 
@@ -97,6 +95,15 @@ const HomePage = ({ onLogout }) => {
     
     // If user is already logged in (has presentUserName from cookie/context)
     if (presentUserName && presentUserData) {
+      // Check if user is the profile owner
+      const isOwner = presentUserName === profileOwnerData?.user?.username;
+      setIsProfileOwner(isOwner);
+      
+      // Auto-open admin panel if user is profile owner
+      if (isOwner) {
+        setShowAdminPanel(true);
+      }
+      
       // Auto-start chat for logged-in users
       setShowChatBot(true);
       trackVisitor();
@@ -171,24 +178,8 @@ const HomePage = ({ onLogout }) => {
     navigate('/discover');
   };
 
-  const handleSettingsClick = () => {
-    // Check if user is the profile owner
-    if (presentUserName === profileOwnerData?.user?.username) {
-      setShowPasswordPrompt(true);
-    }
-  };
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    if (adminPassword === profileOwnerData?.user?.password) {
-      setShowAdminPanel(true);
-      setShowPasswordPrompt(false);
-      setAdminPassword('');
-      setPasswordError('');
-    } else {
-      setPasswordError('Incorrect password');
-      setTimeout(() => setPasswordError(''), 3000);
-    }
+  const handleToggleAdminPanel = () => {
+    setShowAdminPanel(!showAdminPanel);
   };
 
 
@@ -227,109 +218,49 @@ const HomePage = ({ onLogout }) => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex">
-        {/* Chat Area - Takes remaining space */}
-        <div className={`flex-1 flex flex-col transition-all duration-300 ${showAdminPanel ? 'mr-0' : 'mr-0'}`}>
-          <ChatBot />
-        </div>
-
-        {/* Right Panel - Admin/Settings */}
-        <motion.div 
-          className="bg-neutral-900 border-l border-neutral-800 flex flex-col overflow-y-scroll"
-          initial={false}
-          animate={{ 
-            width: showAdminPanel ? 720 : 280,
-          }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-        >
-          {!showAdminPanel && !showPasswordPrompt ? (
-            // Settings Button State - Collapsed view
+        {isProfileOwner && showAdminPanel ? (
+          // Profile Owner with Admin Panel - Show AdminPanel only
+          <div className="flex-1">
+            <AdminPanel onClose={() => setShowAdminPanel(false)} isAuthenticated={true} isInline={true} />
+          </div>
+        ) : (
+          // Regular users or collapsed admin - Show ChatBot
+          <>
             <div className="flex-1 flex flex-col">
-              <div className="p-4 border-b border-neutral-800">
-                <h3 className="text-neutral-500 text-xs font-semibold uppercase tracking-wider">Quick Actions</h3>
-              </div>
-              <div className="flex-1 flex flex-col items-center justify-center p-6 gap-4">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 flex items-center justify-center mb-2">
-                  <Home className="w-8 h-8 text-emerald-400" />
-                </div>
-                <p className="text-neutral-400 text-sm text-center mb-4">Access admin settings and manage your assistant</p>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSettingsClick}
-                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg transition-all font-medium shadow-lg shadow-emerald-500/20"
-                >
-                  Open Settings
-                </motion.button>
-              </div>
+              <ChatBot />
             </div>
-          ) : showPasswordPrompt ? (
-            // Password Prompt State
-            <div className="flex-1 flex flex-col">
-              <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
-                <h3 className="text-white font-semibold">Authentication</h3>
-                <button
-                  onClick={() => {
-                    setShowPasswordPrompt(false);
-                    setAdminPassword('');
-                    setPasswordError('');
-                  }}
-                  className="text-neutral-400 hover:text-white p-1.5 rounded-lg hover:bg-neutral-800 transition-all"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="flex-1 flex items-center justify-center p-6">
-                <div className="w-full max-w-xs">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 border border-violet-500/30 flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-8 h-8 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
+            
+            {isProfileOwner && (
+              // Collapsed Admin Panel button for profile owner
+              <motion.div 
+                className="bg-gray-900/80 border-l border-gray-800/50 flex flex-col"
+                initial={false}
+                animate={{ width: 280 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <div className="flex-1 flex flex-col">
+                  <div className="p-4 border-b border-gray-800/50">
+                    <h3 className="text-gray-400 text-xs font-medium uppercase tracking-wider">Admin</h3>
                   </div>
-                  <p className="text-neutral-400 text-sm text-center mb-6">Enter your admin password to access settings</p>
-                  <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                    <input
-                      type="password"
-                      value={adminPassword}
-                      onChange={(e) => setAdminPassword(e.target.value)}
-                      placeholder="Enter password"
-                      className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
-                      autoFocus
-                    />
-                    {passwordError && (
-                      <p className="text-red-400 text-sm text-center">{passwordError}</p>
-                    )}
-                    <button
-                      type="submit"
-                      className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg transition-all font-medium shadow-lg shadow-emerald-500/20"
+                  <div className="flex-1 flex flex-col items-center justify-center p-6 gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gray-800/50 flex items-center justify-center mb-2">
+                      <Home className="w-8 h-8 text-gray-500" />
+                    </div>
+                    <p className="text-gray-500 text-sm text-center mb-4">Manage your assistant settings</p>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleToggleAdminPanel}
+                      className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all font-medium shadow-lg shadow-blue-600/20"
                     >
-                      Unlock
-                    </button>
-                  </form>
+                      Open Admin Panel
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ) : (
-            // Admin Panel State - Expanded view
-            <div className="flex-1 flex flex-col">
-              <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
-                <h2 className="text-white font-semibold">Admin Panel</h2>
-                <button
-                  onClick={() => setShowAdminPanel(false)}
-                  className="text-neutral-400 hover:text-white p-1.5 rounded-lg hover:bg-neutral-800 transition-all"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <AdminPanel onClose={() => setShowAdminPanel(false)} isAuthenticated={true} isInline={true} />
-              </div>
-            </div>
-          )}
-        </motion.div>
+              </motion.div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

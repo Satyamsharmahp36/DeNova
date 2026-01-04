@@ -39,7 +39,7 @@ import languages from "../services/languages";
 import { useAppContext } from "../Appcontext";
 import TipButton from "./TipButton";
 
-const ChatBot = () => {
+const ChatBot = ({ hideSettings = false }) => {
   const {
     userData,
     userName,
@@ -566,34 +566,18 @@ const ChatBot = () => {
   }
 
   return (
-    <div className="flex flex-col h-full w-full bg-neutral-950 text-white overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-gray-900 text-white">
       <style>{scrollbarStyles}</style>
 
-      <div className="bg-neutral-900 py-4 px-6 flex justify-between items-center border-b border-neutral-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-            <Bot className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold text-white">
-              {currentUserData.user.name}'s Assistant
-            </h1>
-            <p className="text-xs text-neutral-500">AI-powered chat</p>
-          </div>
+      <div className="bg-gray-800 py-4 rounded-t-xl px-6 flex justify-between items-center border-b border-gray-700 flex-shrink-0">
+        <div className="flex items-center">
+          <Bot className="w-6 h-6 text-blue-400 mr-2" />
+          <h1 className="text-xl font-bold">
+            {" "}
+            {currentUserData.user.name}'s AI Assistant
+          </h1>
         </div>
-        <div className="flex gap-2 items-center">
-          {/* Show TipButton when viewing someone else's assistant */}
-          {presentUserName && currentUserData?.user?.username && presentUserName !== currentUserData.user.username && currentUserData.user.walletAddress && (
-            <TipButton 
-              recipientWallet={currentUserData.user.walletAddress}
-              recipientName={currentUserData.user.name}
-              onSuccess={(amount, sig) => {
-                console.log(`Successfully tipped ${amount} SOL to ${currentUserData.user.name}`);
-                console.log(`Transaction signature: ${sig}`);
-              }}
-            />
-          )}
-          
+        <div className="flex gap-2">
           <div className="relative" ref={languageDropdownRef}>
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -633,23 +617,17 @@ const ChatBot = () => {
             )}
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowContributionForm(true)}
-            className="px-3 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg transition-all flex items-center gap-2 text-sm font-medium shadow-lg shadow-emerald-500/20"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Contribute</span>
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowSettings(true)}
-            className="p-2 bg-neutral-800 text-neutral-400 hover:text-white rounded-lg hover:bg-neutral-700 transition-colors"
-          >
-            <Settings className="w-5 h-5" />
-          </motion.button>
+          {!hideSettings && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowContributionForm(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Contribute</span>
+            </motion.button>
+          )}
         </div>
       </div>
 
@@ -787,9 +765,9 @@ const ChatBot = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div>
-        <div className="flex items-end p-4 border-t border-neutral-800">
-          <div className="relative flex items-center w-full rounded-lg bg-neutral-900 border border-neutral-800 p-3">
+      <div className="flex-shrink-0">
+        <div className="flex items-end p-4 border-t border-gray-700">
+          <div className="relative flex items-center w-full rounded-lg bg-gray-800 p-2">
             <textarea
               ref={inputRef}
               value={input}
