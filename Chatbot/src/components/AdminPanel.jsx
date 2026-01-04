@@ -49,11 +49,12 @@ import IntegrationDashboard from "./AdminComponents/IntegrationDashboard";
 import EmailDashboard from "./AdminComponents/EmailDashboard";
 import ReminderPanel from "./AdminComponents/ReminderPanel";
 import WhatsAppIntegration from "./WhatsAppIntegration";
+import WhatsAppDashboard from "./WhatsAppDashboardSimple";
 import EmailIntegration from "./EmailIntegration";
-import EmailCatchup from "./EmailCatchup";
-import LinkedInPosting from "./LinkedInPosting";
-import TwitterPosting from "./TwitterPosting";
-import AddIntegration from "./AddIntegration";
+import EmailCatchupDashboard from "./EmailCatchupDashboard";
+import LinkedInDashboard from "./LinkedInDashboard";
+import TwitterDashboard from "./TwitterDashboard";
+import AddIntegrationDashboard from "./AddIntegrationDashboard";
 import ChatBot from "./ChatBot";
 import DataManagementTab from "./AdminComponents/DataManagementTab";
 import ResponseStyleTab from "./AdminComponents/ResponseStyleTab";
@@ -90,8 +91,9 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
     useState(false);
   const [showEmailDashboard, setShowEmailDashboard] = useState(false);
   const [showWhatsAppIntegration, setShowWhatsAppIntegration] = useState(false);
-  const [showLinkedInPosting, setShowLinkedInPosting] = useState(false);
-  const [showTwitterPosting, setShowTwitterPosting] = useState(false);
+  const [showWhatsAppDashboard, setShowWhatsAppDashboard] = useState(false);
+  const [showLinkedInDashboard, setShowLinkedInDashboard] = useState(false);
+  const [showTwitterDashboard, setShowTwitterDashboard] = useState(false);
   const [showAddIntegration, setShowAddIntegration] = useState(false);
   const [showEmailIntegration, setShowEmailIntegration] = useState(false);
   const [showEmailCatchup, setShowEmailCatchup] = useState(false);
@@ -1032,9 +1034,19 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
               </div>
             )}
             
+            {activeView === "whatsapp-dashboard" && (
+              <div className="h-full">
+                <WhatsAppDashboard
+                  isOpen={true}
+                  onClose={() => setActiveView("assistant")}
+                  username={userData?.user?.username}
+                />
+              </div>
+            )}
+            
             {activeView === "linkedin" && (
               <div className="h-full">
-                <LinkedInPosting
+                <LinkedInDashboard
                   isOpen={true}
                   onClose={() => setActiveView("assistant")}
                 />
@@ -1043,7 +1055,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             
             {activeView === "twitter" && (
               <div className="h-full">
-                <TwitterPosting
+                <TwitterDashboard
                   isOpen={true}
                   onClose={() => setActiveView("assistant")}
                 />
@@ -1052,7 +1064,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             
             {activeView === "addIntegration" && (
               <div className="h-full">
-                <AddIntegration
+                <AddIntegrationDashboard
                   isOpen={true}
                   onClose={() => setActiveView("assistant")}
                 />
@@ -1070,7 +1082,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             
             {activeView === "emailCatchup" && (
               <div className="h-full">
-                <EmailCatchup
+                <EmailCatchupDashboard
                   isOpen={true}
                   onClose={() => setActiveView("assistant")}
                 />
@@ -1144,8 +1156,8 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
             setShowCalendarScheduler={setShowCalendarScheduler}
             handleChatIntegration={handleChatIntegration}
             handleWhatsAppIntegration={handleWhatsAppIntegration}
-            handleLinkedInPosting={handleLinkedInPosting}
-            handleTwitterPosting={handleTwitterPosting}
+            handleLinkedInPosting={handleLinkedInDashboard}
+            handleTwitterPosting={handleTwitterDashboard}
             handleAddIntegration={handleAddIntegration}
             handleEmailIntegration={handleEmailIntegration}
             handleEmailCatchup={handleEmailCatchup}
@@ -1424,20 +1436,20 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
         onClose={() => setShowWhatsAppIntegration(false)}
       />
 
-      {/* LinkedIn Posting */}
-      <LinkedInPosting
-        isOpen={showLinkedInPosting}
-        onClose={() => setShowLinkedInPosting(false)}
+      {/* LinkedIn Dashboard */}
+      <LinkedInDashboard
+        isOpen={showLinkedInDashboard}
+        onClose={() => setShowLinkedInDashboard(false)}
       />
 
-      {/* Twitter Posting */}
-      <TwitterPosting
-        isOpen={showTwitterPosting}
-        onClose={() => setShowTwitterPosting(false)}
+      {/* Twitter Dashboard */}
+      <TwitterDashboard
+        isOpen={showTwitterDashboard}
+        onClose={() => setShowTwitterDashboard(false)}
       />
 
       {/* Add Integration */}
-      <AddIntegration
+      <AddIntegrationDashboard
         isOpen={showAddIntegration}
         onClose={() => setShowAddIntegration(false)}
       />
@@ -1449,7 +1461,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
       />
 
       {/* Email Catchup */}
-      <EmailCatchup
+      <EmailCatchupDashboard
         isOpen={showEmailCatchup}
         onClose={() => setShowEmailCatchup(false)}
       />

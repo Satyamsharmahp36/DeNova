@@ -224,11 +224,11 @@ const MainTabNavigator = ({
             <span>Create Self Task</span>
           </button>
           <button
-            onClick={() => handleTabChange("whatsapp")}
+            onClick={() => handleTabChange("whatsapp-dashboard")}
             className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 text-sm font-medium transition-all shadow-sm hover:shadow-md"
           >
             <MessageCircle className="w-4 h-4 flex-shrink-0" />
-            <span>WhatsApp</span>
+            <span>WhatsApp Dashboard</span>
           </button>
           <button
             onClick={() => handleTabChange("linkedin")}
@@ -245,18 +245,18 @@ const MainTabNavigator = ({
             <span>Twitter/X</span>
           </button>
           <button
-            onClick={() => handleTabChange("addIntegration")}
-            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md"
-          >
-            <Plus className="w-4 h-4 flex-shrink-0" />
-            <span>⚡ Add Integration</span>
-          </button>
-          <button
             onClick={() => handleTabChange("emailCatchup")}
             className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md"
           >
             <Mail className="w-4 h-4 flex-shrink-0" />
             <span>✨ AI Email Catchup</span>
+          </button>
+          <button
+            onClick={() => handleTabChange("addIntegration")}
+            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md"
+          >
+            <Plus className="w-4 h-4 flex-shrink-0" />
+            <span>⚡ Add Integration</span>
           </button>
           </div>
         </div>

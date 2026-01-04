@@ -220,7 +220,7 @@ app.get('/api/whatsapp/groups', async (req, res) => {
 app.get('/api/whatsapp/groups/:groupId/messages', async (req, res) => {
     try {
         const { groupId } = req.params;
-        const { limit = 50, offset = 0, since } = req.query;
+        const { limit = 20, offset = 0, since } = req.query;
         
         const result = await whatsappService.getGroupMessages(groupId, {
             limit: parseInt(limit),
@@ -1198,7 +1198,7 @@ app.post('/api/whatsapp/groups/messages/fetch', async (req, res) => {
     try {
         const { 
             groupName, 
-            limit = 50, 
+            limit = 20, 
             offset = 0, 
             since, 
             until, 
