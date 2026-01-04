@@ -1258,19 +1258,6 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
               />
             )}
 
-            {activeView === "access" && showAccessManagement && (
-              <div>
-                <AccessManagement
-                  userData={userData}
-                  onUpdate={handleAccessManagementUpdate}
-                  onClose={() => {
-                    setActiveView("tasks");
-                    setShowAccessManagement(false);
-                  }}
-                />
-              </div>
-            )}
-
             {activeView === "analytics" && showVisitorAnalytics && (
               <div>
                 <VisitorAnalytics
