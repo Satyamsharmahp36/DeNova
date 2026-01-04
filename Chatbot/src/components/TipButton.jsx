@@ -67,10 +67,10 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
   return (
     <>
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={() => setShowModal(true)}
-        className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white text-sm rounded-lg transition-all"
+        className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-emerald-400 hover:text-emerald-300 text-sm rounded-lg transition-all border border-emerald-500/30 hover:border-emerald-500/50"
       >
         <Wallet className="w-4 h-4" />
         <span>Tip</span>
@@ -85,7 +85,7 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={resetModal}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
             />
 
             {/* Modal */}
@@ -94,16 +94,16 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                className="relative w-full max-w-sm bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl overflow-hidden"
+                className="relative w-full max-w-sm bg-neutral-900 rounded-xl border border-emerald-500/30 shadow-2xl overflow-hidden"
               >
                 {/* Header */}
-                <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+                <div className="p-4 border-b border-emerald-500/20 flex items-center justify-between">
                   <h3 className="text-lg font-semibold text-white">
                     {txSignature ? 'Tip Sent!' : `Tip ${recipientName || 'Assistant'}`}
                   </h3>
                   <button
                     onClick={resetModal}
-                    className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition-colors"
+                    className="text-gray-400 hover:text-emerald-400 p-1 rounded-lg hover:bg-neutral-800 transition-colors"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -114,15 +114,15 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                   {!isPhantomInstalled ? (
                     // Phantom not installed
                     <div className="text-center py-6">
-                      <div className="w-16 h-16 bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Wallet className="w-8 h-8 text-purple-400" />
+                      <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                        <Wallet className="w-8 h-8 text-emerald-400" />
                       </div>
                       <p className="text-gray-400 mb-4">Phantom wallet is required to send tips</p>
                       <a
                         href="https://phantom.app/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors border border-emerald-500/50"
                       >
                         Install Phantom
                         <ExternalLink className="w-4 h-4" />
@@ -131,13 +131,13 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                   ) : !isConnected ? (
                     // Not connected
                     <div className="text-center py-6">
-                      <div className="w-16 h-16 bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Wallet className="w-8 h-8 text-purple-400" />
+                      <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                        <Wallet className="w-8 h-8 text-emerald-400" />
                       </div>
                       <p className="text-gray-400 mb-4">Connect your wallet to send a tip</p>
                       <button
                         onClick={handleConnect}
-                        className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                        className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors border border-emerald-500/50"
                       >
                         Connect Wallet
                       </button>
@@ -145,8 +145,8 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                   ) : txSignature ? (
                     // Success state
                     <div className="text-center py-6">
-                      <div className="w-16 h-16 bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="w-8 h-8 text-green-400" />
+                      <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                        <CheckCircle className="w-8 h-8 text-emerald-400" />
                       </div>
                       <p className="text-white font-medium mb-2">
                         {amount} SOL sent successfully!
@@ -155,7 +155,7 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                         href={`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-purple-400 hover:text-purple-300 text-sm flex items-center justify-center gap-1"
+                        className="text-emerald-400 hover:text-emerald-300 text-sm flex items-center justify-center gap-1"
                       >
                         View transaction
                         <ExternalLink className="w-3 h-3" />
@@ -180,10 +180,10 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                           <button
                             key={preset}
                             onClick={() => setAmount(preset.toString())}
-                            className={`py-2 rounded-lg text-sm font-medium transition-colors ${
+                            className={`py-2 rounded-lg text-sm font-medium transition-colors border ${
                               amount === preset.toString()
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+                                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50'
+                                : 'bg-neutral-800 text-gray-400 hover:bg-neutral-700 hover:text-emerald-300 border-emerald-500/20'
                             }`}
                           >
                             {preset} SOL
@@ -202,7 +202,7 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                             placeholder="0.00"
                             step="0.01"
                             min="0"
-                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+                            className="w-full px-4 py-3 bg-neutral-800 border border-emerald-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-colors"
                           />
                           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">SOL</span>
                         </div>
@@ -217,7 +217,7 @@ const TipButton = ({ recipientWallet, recipientName, onSuccess }) => {
                       <button
                         onClick={handleTip}
                         disabled={isProcessing || !amount}
-                        className="w-full py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-xl flex items-center justify-center gap-2 transition-all"
+                        className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20 border border-emerald-500/50"
                       >
                         {isProcessing ? (
                           <>

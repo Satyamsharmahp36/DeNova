@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { 
   MessageCircle, X, Send, Users, RefreshCw, Plus, Trash2, 
-  Phone, User, Search, ChevronRight
+  Phone, User, Search, ChevronRight, Wallet, Shield, Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useSolana } from '../hooks/useSolana';
 
 const WHATSAPP_API_BASE = import.meta.env.VITE_WHATSAPP_API_BASE || 'http://localhost:3002/api/whatsapp';
 const BACKEND_API_BASE = import.meta.env.VITE_BACKEND_API_BASE || 'http://localhost:5000';
 
 const WhatsAppDashboardSimple = ({ isOpen, onClose, username }) => {
+  const { isConnected, walletAddress, connect, signAction, formatAddress } = useSolana();
   const [activeTab, setActiveTab] = useState('groups');
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [isSigningAction, setIsSigningAction] = useState(false);
   
   const [availableGroups, setAvailableGroups] = useState([]);
   const [whatsappConnected, setWhatsappConnected] = useState(false);
@@ -232,6 +235,30 @@ const WhatsAppDashboardSimple = ({ isOpen, onClose, username }) => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    
+    // Wallet signature gate for security
+    if (!isConnected) {
+      toast.error('Please connect your wallet to authorize this action');
+      return;
+    }
+    
+    setIsSigningAction(true);
+    let signatureData = null;
+    try {
+      // Request wallet signature before sending
+      const recipient = sendMessageForm.sendMode === 'contact' 
+        ? sendMessageForm.recipient 
+        : sendMessageForm.phoneNumber;
+      signatureData = await signAction('WHATSAPP_SEND_MESSAGE', `Sending message to ${recipient}`);
+      toast.success('Action authorized!');
+    } catch (signError) {
+      console.error('Signature rejected:', signError);
+      toast.error('Action cancelled - wallet signature required');
+      setIsSigningAction(false);
+      return;
+    }
+    setIsSigningAction(false);
+    
     setLoading(true);
     
     try {
@@ -303,6 +330,34 @@ const WhatsAppDashboardSimple = ({ isOpen, onClose, username }) => {
         
         if (response.data.success) {
           toast.success('Message sent');
+          
+          // Log the action
+          try {
+            await axios.post(`${BACKEND_API_BASE}/ai-actions/log`, {
+              username,
+              actionType: 'WHATSAPP_SEND_MESSAGE',
+              actionDetails: {
+                recipient: phoneNumber,
+                content: messageContent,
+                platform: 'whatsapp'
+              },
+              walletSignature: signatureData ? {
+                signature: signatureData.signature,
+                publicKey: signatureData.publicKey,
+                message: signatureData.message,
+                timestamp: new Date()
+              } : null,
+              status: 'executed',
+              executionResult: {
+                success: true,
+                message: 'Message sent successfully',
+                executedAt: new Date()
+              }
+            });
+          } catch (logError) {
+            console.error('Failed to log action:', logError);
+          }
+          
           setSendMessageForm({
             sendMode: 'number',
             recipient: '',

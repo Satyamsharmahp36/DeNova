@@ -55,7 +55,8 @@ import EmailCatchupDashboard from "./EmailCatchupDashboard";
 import LinkedInDashboard from "./LinkedInDashboard";
 import TwitterDashboard from "./TwitterDashboard";
 import AddIntegrationDashboard from "./AddIntegrationDashboard";
-import ChatBot from "./ChatBot";
+import ChatBot from './ChatBot';
+import AIActionLogs from './AIActionLogs';
 import DataManagementTab from "./AdminComponents/DataManagementTab";
 import ResponseStyleTab from "./AdminComponents/ResponseStyleTab";
 import ContributionsTab from "./AdminComponents/ContributionsTab";
@@ -784,6 +785,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                   {activeView === "workflow" && "Daily Workflow"}
                   {activeView === "access" && "Access Management"}
                   {activeView === "analytics" && "Visitor Analytics"}
+                  {activeView === "actionLogs" && "AI Action Logs"}
                   {activeView === "reminders" && "Reminders"}
                   {activeView === "createTask" && "Create Self Task"}
                   {activeView === "whatsapp" && "WhatsApp Integration"}
@@ -800,6 +802,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                   {activeView === "workflow" && "Manage your daily workflow"}
                   {activeView === "access" && "Control user access and permissions"}
                   {activeView === "analytics" && "Monitor visitor interactions"}
+                  {activeView === "actionLogs" && "Track AI-powered actions with wallet verification"}
                   {activeView === "reminders" && "Set and manage reminders"}
                   {activeView === "createTask" && "Create a new personal task"}
                   {activeView === "whatsapp" && "Connect and manage WhatsApp"}
@@ -906,6 +909,13 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
               <VisitorAnalytics
                 userData={userData}
                 onClose={() => setActiveView("assistant")}
+              />
+            )}
+
+            {activeView === "actionLogs" && (
+              <AIActionLogs
+                username={userData?.user?.username}
+                isOwner={true}
               />
             )}
 

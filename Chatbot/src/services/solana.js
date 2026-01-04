@@ -151,6 +151,33 @@ export const checkOnChainPermission = async (assistantOwnerWallet, visitorWallet
 };
 
 /**
+ * Sign a message with the connected wallet (for authorization)
+ * Returns the signature as a base58 string
+ */
+export const signMessage = async (message) => {
+  const provider = getPhantomProvider();
+  if (!provider) {
+    throw new Error('Phantom wallet not found');
+  }
+
+  if (!provider.publicKey) {
+    throw new Error('Wallet not connected');
+  }
+
+  const encodedMessage = new TextEncoder().encode(message);
+  const signedMessage = await provider.signMessage(encodedMessage, 'utf8');
+  
+  // Convert signature to base58 string
+  const signature = btoa(String.fromCharCode(...signedMessage.signature));
+  
+  return {
+    signature,
+    publicKey: provider.publicKey.toString(),
+    message
+  };
+};
+
+/**
  * Format wallet address for display
  */
 export const formatWalletAddress = (address, chars = 4) => {
@@ -181,6 +208,7 @@ export default {
   sendTip,
   payForAccess,
   checkOnChainPermission,
+  signMessage,
   formatWalletAddress,
   lamportsToSol,
   solToLamports,

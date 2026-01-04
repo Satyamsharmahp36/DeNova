@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { 
   X, Send, Sparkles, Loader2, Calendar, Clock, Plus, Trash2, 
-  RefreshCw, Twitter, Edit3, Check, AlertCircle
+  RefreshCw, Twitter, Edit3, Check, AlertCircle, Wallet, Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useSolana } from '../hooks/useSolana';
 
 const TWITTER_API_BASE = import.meta.env.VITE_TWITTER_API_BASE || 'http://localhost:9000';
 
 const TwitterDashboard = ({ isOpen, onClose }) => {
+  const { isConnected, walletAddress, connect, signAction, formatAddress } = useSolana();
   const [activeTab, setActiveTab] = useState('post');
   const [context, setContext] = useState('');
   const [generatedTweet, setGeneratedTweet] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPosting, setIsPosting] = useState(false);
+  const [isSigningAction, setIsSigningAction] = useState(false);
   const [characterCount, setCharacterCount] = useState(0);
   
   // Scheduling state
@@ -93,6 +96,26 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
       return;
     }
 
+    // Wallet signature gate for security
+    if (!isConnected) {
+      toast.error('Please connect your wallet to authorize this action');
+      return;
+    }
+    
+    setIsSigningAction(true);
+    let signatureData = null;
+    try {
+      // Request wallet signature before posting
+      signatureData = await signAction('TWITTER_POST', `Publishing tweet: "${generatedTweet.substring(0, 50)}..."`);
+      toast.success('Action authorized!');
+    } catch (signError) {
+      console.error('Signature rejected:', signError);
+      toast.error('Action cancelled - wallet signature required');
+      setIsSigningAction(false);
+      return;
+    }
+    setIsSigningAction(false);
+
     setIsPosting(true);
     try {
       const response = await axios.post(`${TWITTER_API_BASE}/api/twitter/post`, {
@@ -101,6 +124,34 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
 
       if (response.data.success) {
         toast.success('Posted to Twitter/X!');
+        
+        // Log the action
+        try {
+          await axios.post(`${import.meta.env.VITE_BACKEND}/ai-actions/log`, {
+            username: walletAddress,
+            actionType: 'TWITTER_POST',
+            actionDetails: {
+              content: generatedTweet,
+              platform: 'twitter',
+              metadata: { context, characterCount, url: response.data.data.url }
+            },
+            walletSignature: signatureData ? {
+              signature: signatureData.signature,
+              publicKey: signatureData.publicKey,
+              message: signatureData.message,
+              timestamp: new Date()
+            } : null,
+            status: 'executed',
+            executionResult: {
+              success: true,
+              message: 'Tweet posted successfully',
+              executedAt: new Date()
+            }
+          });
+        } catch (logError) {
+          console.error('Failed to log action:', logError);
+        }
+        
         setGeneratedTweet('');
         setContext('');
         setCharacterCount(0);

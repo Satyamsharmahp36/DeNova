@@ -8,6 +8,7 @@ import {
   sendTip,
   payForAccess,
   checkOnChainPermission,
+  signMessage,
   formatWalletAddress,
 } from '../services/solana';
 
@@ -153,6 +154,29 @@ export const useSolana = () => {
     }
   }, [walletAddress]);
 
+  /**
+   * Sign a message for authorization (security gate for AI actions)
+   * @param {string} actionType - Type of action (e.g., 'whatsapp_send', 'linkedin_post', 'twitter_post')
+   * @param {string} details - Brief description of the action
+   * @returns {Promise<{signature, publicKey, message}>}
+   */
+  const signAction = useCallback(async (actionType, details = '') => {
+    if (!walletAddress) {
+      throw new Error('Wallet not connected');
+    }
+    
+    const timestamp = new Date().toISOString();
+    const message = `DeNova AI Action Authorization\n\nAction: ${actionType}\nDetails: ${details}\nTimestamp: ${timestamp}\nWallet: ${walletAddress}`;
+    
+    try {
+      const result = await signMessage(message);
+      return result;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  }, [walletAddress]);
+
   return {
     walletAddress,
     balance,
@@ -166,6 +190,7 @@ export const useSolana = () => {
     payAccess,
     checkPermission,
     refreshBalance,
+    signAction,
     formatAddress: (chars) => formatWalletAddress(walletAddress, chars),
   };
 };
