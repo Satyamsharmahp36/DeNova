@@ -128,20 +128,7 @@ const MainTabNavigator = ({
               }`}
             >
               <FileText className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">Enter Data / Prompt</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleTabChange("responseStyle")}
-              className={`w-full text-left px-4 py-2.5 rounded-lg flex items-center gap-3 transition-all font-medium ${
-                activeView === "responseStyle"
-                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/50"
-                  : "text-gray-400 hover:bg-neutral-900 hover:text-emerald-300 hover:border hover:border-emerald-500/20"
-              }`}
-            >
-              <Palette className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">Response Style</span>
+              <span className="text-sm">Knowledge & Workflow</span>
             </button>
           </li>
           <li>
@@ -168,19 +155,6 @@ const MainTabNavigator = ({
             >
               <ListChecks className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm">Task Management</span>
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleTabChange("workflow")}
-              className={`w-full text-left px-4 py-2.5 rounded-lg flex items-center gap-3 transition-all font-medium ${
-                activeView === "workflow"
-                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/50"
-                  : "text-gray-400 hover:bg-neutral-900 hover:text-emerald-300 hover:border hover:border-emerald-500/20"
-              }`}
-            >
-              <Activity className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">Daily Workflow</span>
             </button>
           </li>
           <li>
@@ -225,9 +199,9 @@ const MainTabNavigator = ({
           </button>
           <button
             onClick={() => handleTabChange("whatsapp-dashboard")}
-            className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 text-sm font-medium transition-all shadow-sm hover:shadow-md"
+            className="w-full px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg flex items-center gap-2 text-sm font-medium transition-all border border-emerald-500/20 hover:border-emerald-500/40"
           >
-            <MessageCircle className="w-4 h-4 flex-shrink-0" />
+            <MessageCircle className="w-4 h-4 flex-shrink-0 text-emerald-400" />
             <span>WhatsApp Dashboard</span>
           </button>
           <button
@@ -246,9 +220,9 @@ const MainTabNavigator = ({
           </button>
           <button
             onClick={() => handleTabChange("emailCatchup")}
-            className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-sm hover:shadow-md"
+            className="w-full px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg flex items-center gap-2 text-sm font-medium transition-all border border-emerald-500/20 hover:border-emerald-500/40"
           >
-            <Mail className="w-4 h-4 flex-shrink-0" />
+            <Mail className="w-4 h-4 flex-shrink-0 text-emerald-400" />
             <span>✨ AI Email Catchup</span>
           </button>
           <button
@@ -257,13 +231,6 @@ const MainTabNavigator = ({
           >
             <Plus className="w-4 h-4 flex-shrink-0 text-emerald-400" />
             <span>Add Integration</span>
-          </button>
-          <button
-            onClick={() => handleTabChange("emailCatchup")}
-            className="w-full px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white rounded-lg flex items-center gap-2 text-sm font-medium transition-all border border-emerald-500/20 hover:border-emerald-500/40"
-          >
-            <Mail className="w-4 h-4 flex-shrink-0 text-emerald-400" />
-            <span>AI Email Catchup</span>
           </button>
           </div>
         </div>

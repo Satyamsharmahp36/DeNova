@@ -192,7 +192,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="bg-gray-800 border-b border-gray-700 p-5 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-600 p-2.5 rounded-lg">
+              <div className="bg-emerald-600 p-2.5 rounded-lg">
                 <Linkedin className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -236,7 +236,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="linkedinActiveTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500"
                     />
                   )}
                 </button>
@@ -259,7 +259,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder="e.g., AI innovations, Career tips, Industry insights..."
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleGeneratePost()}
                   />
                 </div>
@@ -268,7 +268,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                 <button
                   onClick={handleGeneratePost}
                   disabled={isGenerating || !topic.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isGenerating ? (
                     <>
@@ -293,13 +293,13 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                       value={generatedPost}
                       onChange={(e) => setGeneratedPost(e.target.value)}
                       rows={10}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 resize-none"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 resize-none"
                     />
 
                     <button
                       onClick={handlePostToLinkedIn}
                       disabled={isPosting}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {isPosting ? (
                         <>
@@ -329,7 +329,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                   </div>
                   <button
                     onClick={() => setShowScheduleModal(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     Add Schedule
@@ -357,7 +357,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                             <div className="flex items-center gap-2 mb-2">
                               <h4 className="text-white font-medium">{schedule.topic}</h4>
                               {schedule.aiEnhance && (
-                                <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">
+                                <span className="text-xs bg-emerald-600 text-white px-2 py-0.5 rounded">
                                   AI Enhanced
                                 </span>
                               )}
@@ -383,7 +383,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                             <button
                               onClick={() => handlePostScheduledNow(schedule)}
                               disabled={isPosting}
-                              className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                              className="text-emerald-400 hover:text-emerald-300 p-2 rounded-lg hover:bg-gray-700 transition-colors"
                               title="Post Now"
                             >
                               <Send className="w-4 h-4" />
@@ -413,7 +413,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                 {/* Info */}
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-gray-400">
                       <p className="font-medium text-gray-300 mb-1">How it works</p>
                       <p>Each scheduled post uses AI to generate unique content based on your topic. Posts are different every time to keep your feed fresh and engaging.</p>
@@ -457,7 +457,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                     type="text"
                     value={scheduleForm.topic}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, topic: e.target.value })}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                     placeholder="e.g., Tech industry trends"
                   />
                 </div>
@@ -468,7 +468,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                     <select
                       value={scheduleForm.frequency}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, frequency: e.target.value })}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                     >
                       <option value="daily">Daily</option>
                       <option value="weekly">Weekly</option>
@@ -481,7 +481,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
                       type="time"
                       value={scheduleForm.time}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, time: e.target.value })}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-blue-500"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
@@ -498,7 +498,7 @@ const LinkedInDashboard = ({ isOpen, onClose }) => {
 
                 <button
                   onClick={handleAddSchedule}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors"
                 >
                   Add Schedule
                 </button>

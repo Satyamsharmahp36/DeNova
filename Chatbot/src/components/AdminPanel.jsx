@@ -351,7 +351,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
         disabled={toggleSchedulingLoading}
         className={`px-4 py-2.5 rounded-lg flex items-center gap-2 transition-all text-sm font-medium border ${
           taskSchedulingEnabled
-            ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+            ? "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600"
             : "bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700"
         }`}
       >
@@ -778,8 +778,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
               <div>
                 <h2 className="text-2xl font-bold text-white mb-1">
                   {activeView === "assistant" && "My Assistant"}
-                  {activeView === "prompt" && "Enter Data / Prompt"}
-                  {activeView === "responseStyle" && "Response Style"}
+                  {activeView === "prompt" && "Knowledge & Workflow"}
                   {activeView === "contributions" && "User Contributions"}
                   {activeView === "tasks" && "Task Management"}
                   {activeView === "workflow" && "Daily Workflow"}
@@ -795,8 +794,7 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                 </h2>
                 <p className="text-sm text-gray-400">
                   {activeView === "assistant" && "Chat with your AI assistant"}
-                  {activeView === "prompt" && "Manage your assistant's knowledge base"}
-                  {activeView === "responseStyle" && "Customize how your assistant responds"}
+                  {activeView === "prompt" && "Manage your assistant's knowledge base and daily workflow"}
                   {activeView === "contributions" && "Review and manage user submissions"}
                   {activeView === "tasks" && "Organize and track your tasks"}
                   {activeView === "workflow" && "Manage your daily workflow"}
@@ -958,12 +956,6 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                     }
                   }
                 }}
-                isLoading={isLoading}
-              />
-            )}
-            
-            {activeView === "responseStyle" && (
-              <ResponseStyleTab
                 responseStyleContent={responseStyleContent}
                 setResponseStyleContent={setResponseStyleContent}
                 updateResponseStyle={async () => {
@@ -1322,45 +1314,6 @@ const AdminPanel = ({ onClose, isAuthenticated: externalAuth = false, isInline =
                       setTimeout(() => setSuccessMessage(''), 3000);
                     } catch (err) {
                       setError('Failed to clear prompt');
-                      setTimeout(() => setError(''), 3000);
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }
-                }}
-                isLoading={isLoading}
-              />
-            )}
-            
-            {activeView === "responseStyle" && (
-              <ResponseStyleTab
-                responseStyleContent={responseStyleContent}
-                setResponseStyleContent={setResponseStyleContent}
-                updateResponseStyle={async () => {
-                  setIsLoading(true);
-                  try {
-                    await apiService.updateUserPrompt(responseStyleContent, userData.user.username);
-                    await refreshUserData();
-                    setSuccessMessage('Response style updated successfully');
-                    setTimeout(() => setSuccessMessage(''), 3000);
-                  } catch (err) {
-                    setError('Failed to update response style');
-                    setTimeout(() => setError(''), 3000);
-                  } finally {
-                    setIsLoading(false);
-                  }
-                }}
-                clearResponseStyle={async () => {
-                  if (window.confirm('Are you sure you want to clear the response style?')) {
-                    setIsLoading(true);
-                    try {
-                      await apiService.clearUserPrompt(userData.user.username);
-                      await refreshUserData();
-                      setResponseStyleContent('');
-                      setSuccessMessage('Response style cleared successfully');
-                      setTimeout(() => setSuccessMessage(''), 3000);
-                    } catch (err) {
-                      setError('Failed to clear response style');
                       setTimeout(() => setError(''), 3000);
                     } finally {
                       setIsLoading(false);

@@ -36,7 +36,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
     switch (priority) {
       case 'high': return 'bg-red-600';
       case 'medium': return 'bg-yellow-600';
-      default: return 'bg-blue-600';
+      default: return 'bg-emerald-600';
     }
   };
 
@@ -64,7 +64,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="bg-gray-800 border-b border-gray-700 p-5 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
-              <div className="bg-blue-600 p-2.5 rounded-lg">
+              <div className="bg-emerald-600 p-2.5 rounded-lg">
                 <Mail className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -85,7 +85,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
             <button
               onClick={fetchEmailCatchup}
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               {loading ? 'Analyzing...' : 'Fetch & Analyze Emails'}
@@ -97,7 +97,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
                 <button
                   onClick={() => setShowAllEmails(!showAllEmails)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    showAllEmails ? 'bg-blue-600' : 'bg-gray-600'
+                    showAllEmails ? 'bg-emerald-600' : 'bg-gray-600'
                   }`}
                 >
                   <span
@@ -115,7 +115,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
             {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-3" />
+                  <Loader2 className="w-12 h-12 animate-spin text-emerald-500 mx-auto mb-3" />
                   <p className="text-gray-400">Analyzing emails with AI...</p>
                 </div>
               </div>
@@ -126,7 +126,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
                 <p className="text-gray-400 mb-6">Click "Fetch & Analyze Emails" to get started</p>
                 <button
                   onClick={fetchEmailCatchup}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center gap-2"
                 >
                   <Sparkles className="w-5 h-5" />
                   Start Analysis
@@ -187,9 +187,9 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* AI Insight */}
-                <div className="bg-gray-800 border border-blue-700 rounded-lg p-5">
+                <div className="bg-gray-800 border border-emerald-700 rounded-lg p-5">
                   <div className="flex items-start gap-3">
-                    <Sparkles className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <Sparkles className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                     <div>
                       <h3 className="text-sm font-medium text-gray-300 mb-2">AI Insight</h3>
                       <p className="text-gray-200 leading-relaxed">{catchupData.overallInsight}</p>
@@ -239,7 +239,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
                                     {email.from}
                                   </span>
                                   {email.isUnread && (
-                                    <span className="px-2 py-0.5 bg-blue-600 text-white text-xs rounded font-medium">
+                                    <span className="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded font-medium">
                                       Unread
                                     </span>
                                   )}
@@ -283,7 +283,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
                                     {email.from}
                                   </span>
                                   {email.isUnread && (
-                                    <span className="px-2 py-0.5 bg-blue-600 text-white text-xs rounded font-medium">
+                                    <span className="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded font-medium">
                                       Unread
                                     </span>
                                   )}
@@ -300,7 +300,7 @@ const EmailCatchupDashboard = ({ isOpen, onClose }) => {
                                 </p>
                                 {email.aiReason && (
                                   <div className="flex items-start gap-2 p-3 bg-gray-900 rounded-lg border border-gray-700">
-                                    <Sparkles className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                                    <Sparkles className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                                     <p className="text-sm text-gray-300">
                                       {email.aiReason}
                                     </p>

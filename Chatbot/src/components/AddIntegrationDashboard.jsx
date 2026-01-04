@@ -6,10 +6,10 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const PROVIDERS = [
-  { id: 'LINKEDIN', name: 'LinkedIn', icon: '💼', color: 'bg-blue-600' },
+  { id: 'LINKEDIN', name: 'LinkedIn', icon: '💼', color: 'bg-emerald-600' },
   { id: 'WHATSAPP', name: 'WhatsApp', icon: '💬', color: 'bg-green-500' },
   { id: 'GOOGLE', name: 'Gmail', icon: '📧', color: 'bg-red-500' },
-  { id: 'OUTLOOK', name: 'Outlook', icon: '📬', color: 'bg-blue-500' },
+  { id: 'OUTLOOK', name: 'Outlook', icon: '📬', color: 'bg-emerald-500' },
   { id: 'INSTAGRAM', name: 'Instagram', icon: '📸', color: 'bg-pink-500' },
   { id: 'TELEGRAM', name: 'Telegram', icon: '✈️', color: 'bg-sky-500' },
 ];
@@ -120,7 +120,7 @@ const AddIntegrationDashboard = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="bg-gray-800 border-b border-gray-700 p-5 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className="bg-purple-600 p-2.5 rounded-lg">
+            <div className="bg-emerald-600 p-2.5 rounded-lg">
               <Plus className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -154,7 +154,7 @@ const AddIntegrationDashboard = ({ isOpen, onClose }) => {
               
               {isLoadingAccounts ? (
                 <div className="flex items-center justify-center py-8 bg-gray-800 rounded-lg border border-gray-700">
-                  <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
+                  <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
                 </div>
               ) : connectedAccounts.length > 0 ? (
                 <div className="space-y-4">
@@ -247,7 +247,7 @@ const AddIntegrationDashboard = ({ isOpen, onClose }) => {
                     onClick={() => toggleProvider(provider.id)}
                     className={`relative p-3 rounded-lg border-2 transition-all ${
                       selectedProviders.includes(provider.id)
-                        ? 'border-purple-500 bg-purple-900/30'
+                        ? 'border-emerald-500 bg-emerald-900/30'
                         : 'border-gray-700 bg-gray-800 hover:border-gray-600'
                     }`}
                   >
@@ -256,7 +256,7 @@ const AddIntegrationDashboard = ({ isOpen, onClose }) => {
                       <span className="font-medium text-white text-sm">{provider.name}</span>
                     </div>
                     {selectedProviders.includes(provider.id) && (
-                      <CheckCircle className="w-4 h-4 text-purple-400 absolute top-2 right-2" />
+                      <CheckCircle className="w-4 h-4 text-emerald-400 absolute top-2 right-2" />
                     )}
                   </button>
                 ))}
@@ -265,7 +265,7 @@ const AddIntegrationDashboard = ({ isOpen, onClose }) => {
               <button
                 onClick={handleGenerateAuthLink}
                 disabled={isGenerating || selectedProviders.length === 0}
-                className="w-full px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
+                className="w-full px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
               >
                 {isGenerating ? (
                   <>

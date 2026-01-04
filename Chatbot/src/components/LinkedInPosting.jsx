@@ -74,7 +74,7 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="sticky top-0 bg-gray-900 border-b border-gray-700 p-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-blue-500" />
+            <Sparkles className="w-6 h-6 text-emerald-500" />
             LinkedIn AI Post Generator
           </h2>
           <button
@@ -97,7 +97,7 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="e.g., AI in healthcare, Web3 innovations, Career growth tips..."
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               onKeyPress={(e) => e.key === 'Enter' && handleGeneratePost()}
             />
           </div>
@@ -106,7 +106,7 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
           <button
             onClick={handleGeneratePost}
             disabled={isGenerating || !topic.trim()}
-            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="w-full px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isGenerating ? (
               <>
@@ -131,14 +131,14 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
                 value={generatedPost}
                 onChange={(e) => setGeneratedPost(e.target.value)}
                 rows={12}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
               />
 
               {/* Post to LinkedIn Button */}
               <button
                 onClick={handlePostToLinkedIn}
                 disabled={isPosting}
-                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {isPosting ? (
                   <>
@@ -156,8 +156,8 @@ const LinkedInPosting = ({ isOpen, onClose }) => {
           )}
 
           {/* Info Box */}
-          <div className="bg-blue-900/20 border border-blue-700/50 rounded-lg p-4">
-            <p className="text-sm text-blue-300">
+          <div className="bg-emerald-900/20 border border-emerald-700/50 rounded-lg p-4">
+            <p className="text-sm text-emerald-300">
               💡 <strong>Tip:</strong> The AI will generate a professional LinkedIn post with engaging content, relevant hashtags, and emojis. You can edit the generated post before publishing.
             </p>
           </div>

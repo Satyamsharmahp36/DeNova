@@ -25,7 +25,7 @@ const TaskControls = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search tasks by title, description, or user..."
-            className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="w-full bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
           />
         </div>
 
@@ -33,11 +33,11 @@ const TaskControls = ({
         <div className="flex items-center gap-2 flex-wrap lg:flex-nowrap">
           {/* Status Filter */}
           <div className="relative min-w-[140px]">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4 pointer-events-none z-10" />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-emerald-400 w-4 h-4 pointer-events-none z-10" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full appearance-none bg-gray-900 border border-gray-700 hover:border-blue-500 rounded-lg pl-9 pr-10 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+              className="w-full appearance-none bg-gray-900 border border-gray-700 hover:border-emerald-500 rounded-lg pl-9 pr-10 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer transition-all"
             >
               <option value="all">All Status</option>
               <option value="completed">✓ Completed</option>
@@ -49,11 +49,11 @@ const TaskControls = ({
 
           {/* Sort Order */}
           <div className="relative min-w-[140px]">
-            <ClockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-4 h-4 pointer-events-none z-10" />
+            <ClockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-emerald-400 w-4 h-4 pointer-events-none z-10" />
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
-              className="w-full appearance-none bg-gray-900 border border-gray-700 hover:border-blue-500 rounded-lg pl-9 pr-10 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+              className="w-full appearance-none bg-gray-900 border border-gray-700 hover:border-emerald-500 rounded-lg pl-9 pr-10 py-2.5 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer transition-all"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -64,7 +64,7 @@ const TaskControls = ({
           {/* View Mode Toggle */}
           <button
             onClick={handleViewModeToggle}
-            className="bg-gray-900 hover:bg-gray-800 border border-gray-700 hover:border-blue-500 p-2.5 rounded-lg text-gray-300 hover:text-white transition-all flex-shrink-0"
+            className="bg-gray-900 hover:bg-gray-800 border border-gray-700 hover:border-emerald-500 p-2.5 rounded-lg text-gray-300 hover:text-white transition-all flex-shrink-0"
             title={viewMode === "grid" ? "Switch to List View" : "Switch to Grid View"}
           >
             {viewMode === "grid" ? (
@@ -83,7 +83,7 @@ const TaskControls = ({
         onClick={() => handleCategoryToggle("all")}
         className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
           taskCategories.all 
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+            ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
             : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
         }`}
       >
@@ -94,7 +94,7 @@ const TaskControls = ({
         onClick={() => handleCategoryToggle("meetings")}
         className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
           taskCategories.meetings 
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+            ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
             : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
         }`}
       >
@@ -105,7 +105,7 @@ const TaskControls = ({
         onClick={() => handleCategoryToggle("selfTasks")}
         className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
           taskCategories.selfTasks 
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+            ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
             : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
         }`}
       >
@@ -116,7 +116,7 @@ const TaskControls = ({
         onClick={() => handleCategoryToggle("completed")}
         className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
           taskCategories.completed 
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+            ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
             : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
         }`}
       >
@@ -127,7 +127,7 @@ const TaskControls = ({
         onClick={() => handleCategoryToggle("pending")}
         className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
           taskCategories.pending 
-            ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+            ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
             : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
         }`}
       >

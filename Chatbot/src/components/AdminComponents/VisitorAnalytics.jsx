@@ -144,7 +144,7 @@ const VisitorAnalytics = ({ onClose }) => {
       >
         <div className="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-900 text-white">
           <div className="flex items-center gap-2">
-            <Users className="text-blue-400" />
+            <Users className="text-emerald-400" />
             <h2 className="text-xl font-bold">Visitor Analytics</h2>
           </div>
           <button 
@@ -161,7 +161,7 @@ const VisitorAnalytics = ({ onClose }) => {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full"
+                className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full"
               />
             </div>
           ) : error ? (
@@ -178,7 +178,7 @@ const VisitorAnalytics = ({ onClose }) => {
                   className="bg-gray-700 p-4 rounded-lg text-center"
                 >
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <Eye className="text-blue-400 w-5 h-5" />
+                    <Eye className="text-emerald-400 w-5 h-5" />
                     <h3 className="font-medium text-gray-300">Total Visits</h3>
                   </div>
                   <p className="text-2xl font-bold text-white">{analytics.totalVisits}</p>
@@ -228,7 +228,7 @@ const VisitorAnalytics = ({ onClose }) => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <User className="text-blue-400 w-5 h-5" />
+                    <User className="text-emerald-400 w-5 h-5" />
                     Recent Visitors
                   </h3>
                   
@@ -239,7 +239,7 @@ const VisitorAnalytics = ({ onClose }) => {
                       placeholder="Search visitors..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="bg-gray-700 border border-gray-600 rounded-full py-1 pl-9 pr-3 text-sm w-48 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="bg-gray-700 border border-gray-600 rounded-full py-1 pl-9 pr-3 text-sm w-48 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                     />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ const VisitorAnalytics = ({ onClose }) => {
                           >
                             <td className="p-3">
                               <div className="flex items-center">
-                                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-2">
+                                <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center mr-2">
                                   {visitor.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
@@ -361,7 +361,7 @@ const VisitorAnalytics = ({ onClose }) => {
                       <div className="p-3 text-center">
                         <button
                           onClick={() => setShowAllVisitors(!showAllVisitors)}
-                          className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1 mx-auto"
+                          className="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-1 mx-auto"
                         >
                           {showAllVisitors ? (
                             <>

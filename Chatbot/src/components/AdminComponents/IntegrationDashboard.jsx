@@ -227,7 +227,7 @@ const IntegrationDashboard = ({ isOpen, onClose, userData }) => {
             <div className="p-6 border-b border-gray-700">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-600 rounded-lg">
+                  <div className="p-2 bg-emerald-600 rounded-lg">
                     <Link className="w-5 h-5 text-white" />
                   </div>
                   <h2 className="text-lg font-bold text-white">Integrations</h2>
@@ -249,7 +249,7 @@ const IntegrationDashboard = ({ isOpen, onClose, userData }) => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddChat}
-                  className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-3 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center gap-3 transition-colors text-sm"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add New Chat</span>
@@ -310,7 +310,7 @@ const IntegrationDashboard = ({ isOpen, onClose, userData }) => {
                       onClick={() => setSelectedWorkspace(workspace)}
                       className={`w-full p-3 rounded-lg text-left transition-colors ${
                         selectedWorkspace?.id === workspace.id
-                          ? "bg-blue-600 text-white"
+                          ? "bg-emerald-600 text-white"
                           : "bg-gray-700 hover:bg-gray-600 text-gray-300"
                       }`}
                     >
@@ -490,7 +490,7 @@ const IntegrationDashboard = ({ isOpen, onClose, userData }) => {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={handleAddChat}
-                            className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-3 transition-colors"
+                            className="w-full px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg flex items-center gap-3 transition-colors"
                           >
                             <Plus className="w-4 h-4" />
                             <span>Add New Chat</span>
@@ -534,7 +534,7 @@ const IntegrationDashboard = ({ isOpen, onClose, userData }) => {
                 className="bg-gray-800 rounded-lg shadow-xl border border-gray-700 w-full max-w-md p-6"
               >
                 <div className="text-center">
-                  <div className="mx-auto w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-4">
+                  <div className="mx-auto w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mb-4">
                     <MessageCircle className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">Add New Chat</h3>
@@ -577,7 +577,7 @@ const IntegrationDashboard = ({ isOpen, onClose, userData }) => {
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSlackProceed}
                     disabled={isLoading}
-                    className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <>

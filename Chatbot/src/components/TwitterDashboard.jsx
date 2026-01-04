@@ -212,7 +212,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="bg-gray-800 border-b border-gray-700 p-5 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
-              <div className="bg-sky-500 p-2.5 rounded-lg">
+              <div className="bg-emerald-500 p-2.5 rounded-lg">
                 <Twitter className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -256,7 +256,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="twitterActiveTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-sky-500"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-500"
                     />
                   )}
                 </button>
@@ -279,7 +279,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                     onChange={(e) => setContext(e.target.value)}
                     placeholder="e.g., AI trends 2026, Tech startup journey, Web3 insights..."
                     rows={3}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 resize-none"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 resize-none"
                   />
                 </div>
 
@@ -287,7 +287,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                 <button
                   onClick={handleGenerateTweet}
                   disabled={isGenerating || !context.trim()}
-                  className="w-full bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isGenerating ? (
                     <>
@@ -321,7 +321,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                       value={generatedTweet}
                       onChange={handleTweetChange}
                       rows={5}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-sky-500 resize-none"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 resize-none"
                     />
 
                     {characterCount > 260 && characterCount <= 280 && (
@@ -334,7 +334,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                     <button
                       onClick={handlePostToTwitter}
                       disabled={isPosting || characterCount > 280}
-                      className="w-full bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {isPosting ? (
                         <>
@@ -364,7 +364,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                   </div>
                   <button
                     onClick={() => setShowScheduleModal(true)}
-                    className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                     Add Schedule
@@ -392,7 +392,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                             <div className="flex items-center gap-2 mb-2">
                               <h4 className="text-white font-medium">{schedule.topic}</h4>
                               {schedule.aiEnhance && (
-                                <span className="text-xs bg-sky-600 text-white px-2 py-0.5 rounded">
+                                <span className="text-xs bg-emerald-600 text-white px-2 py-0.5 rounded">
                                   AI Enhanced
                                 </span>
                               )}
@@ -418,7 +418,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                             <button
                               onClick={() => handlePostScheduledNow(schedule)}
                               disabled={isPosting}
-                              className="text-sky-400 hover:text-sky-300 p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                              className="text-emerald-400 hover:text-emerald-300 p-2 rounded-lg hover:bg-gray-700 transition-colors"
                               title="Tweet Now"
                             >
                               <Send className="w-4 h-4" />
@@ -448,7 +448,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                 {/* Info */}
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-gray-400">
                       <p className="font-medium text-gray-300 mb-1">How it works</p>
                       <p>Each scheduled tweet uses AI to generate unique content (max 280 chars). Tweets are different every time to keep your feed engaging.</p>
@@ -492,7 +492,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                     type="text"
                     value={scheduleForm.topic}
                     onChange={(e) => setScheduleForm({ ...scheduleForm, topic: e.target.value })}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-sky-500"
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
                     placeholder="e.g., Daily tech insights"
                   />
                 </div>
@@ -503,7 +503,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                     <select
                       value={scheduleForm.frequency}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, frequency: e.target.value })}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-sky-500"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                     >
                       <option value="daily">Daily</option>
                       <option value="weekly">Weekly</option>
@@ -516,7 +516,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
                       type="time"
                       value={scheduleForm.time}
                       onChange={(e) => setScheduleForm({ ...scheduleForm, time: e.target.value })}
-                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-sky-500"
+                      className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                     />
                   </div>
                 </div>
@@ -533,7 +533,7 @@ const TwitterDashboard = ({ isOpen, onClose }) => {
 
                 <button
                   onClick={handleAddSchedule}
-                  className="w-full bg-sky-500 hover:bg-sky-600 text-white px-5 py-2.5 rounded-lg font-medium transition-colors"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-medium transition-colors"
                 >
                   Add Schedule
                 </button>

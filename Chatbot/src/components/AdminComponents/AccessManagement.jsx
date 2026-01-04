@@ -605,7 +605,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
   const LoadingOverlay = () => (
     <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 rounded-lg">
       <div className="flex flex-col items-center">
-        <Loader className="w-10 h-10 text-blue-500 animate-spin" />
+        <Loader className="w-10 h-10 text-emerald-500 animate-spin" />
         <p className="mt-2 text-white">Loading...</p>
       </div>
     </div>
@@ -659,7 +659,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
         {/* Header */}
         <div className="bg-gray-900 px-6 py-4 flex items-center justify-between border-b border-gray-700">
           <h2 className="text-xl font-bold flex items-center">
-            <Users className="w-5 h-5 mr-2 text-blue-500" />
+            <Users className="w-5 h-5 mr-2 text-emerald-500" />
             Access Management
           </h2>
           <button
@@ -677,7 +677,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
             onClick={() => setActiveTab("user-access")}
             className={`flex-1 py-3 px-4 text-center transition-colors ${
               activeTab === "user-access"
-                ? "border-b-2 border-blue-500 text-blue-500"
+                ? "border-b-2 border-emerald-500 text-emerald-500"
                 : "text-gray-400 hover:text-gray-200"
             }`}
             disabled={isLoading}
@@ -691,7 +691,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
             onClick={() => setActiveTab("groups")}
             className={`flex-1 py-3 px-4 text-center transition-colors ${
               activeTab === "groups"
-                ? "border-b-2 border-blue-500 text-blue-500"
+                ? "border-b-2 border-emerald-500 text-emerald-500"
                 : "text-gray-400 hover:text-gray-200"
             }`}
             disabled={isLoading}
@@ -727,7 +727,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               {accessRestricted ? (
-                <Lock className="w-5 h-5 mr-2 text-blue-400" />
+                <Lock className="w-5 h-5 mr-2 text-emerald-400" />
               ) : (
                 <Globe className="w-5 h-5 mr-2 text-green-400" />
               )}
@@ -743,8 +743,8 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
             <button
               onClick={toggleRestriction}
               disabled={isTogglingRestriction}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                accessRestricted ? "bg-blue-600" : "bg-gray-600"
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${
+                accessRestricted ? "bg-emerald-600" : "bg-gray-600"
               }`}
             >
               <span
@@ -777,7 +777,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                       setNewUsername(e.target.value);
                       searchUsers(e.target.value);
                     }}
-                    className="w-full bg-gray-900 border border-gray-600 rounded-lg py-2 px-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    className="w-full bg-gray-900 border border-gray-600 rounded-lg py-2 px-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                     placeholder="Enter username to add access"
                     disabled={isActionLoading}
                   />
@@ -820,7 +820,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                   whileTap={{ scale: 0.97 }}
                   onClick={addUserAccess}
                   disabled={isActionLoading || !newUsername.trim()}
-                  className="py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isActionLoading ? (
                     <Loader className="w-4 h-4 mr-2 animate-spin" />
@@ -865,7 +865,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
 
                 <div className="flex items-center gap-2">
                   <select
-                    className="bg-gray-800 border border-gray-700 rounded-lg py-2 px-3 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all flex-1"
+                    className="bg-gray-800 border border-gray-700 rounded-lg py-2 px-3 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all flex-1"
                     onChange={(e) => addGroupAccess(e.target.value)}
                     value=""
                     disabled={isAddingGroup || groups.length === 0}
@@ -885,7 +885,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                   </select>
 
                   {isAddingGroup && (
-                    <Loader className="w-5 h-5 animate-spin text-blue-500" />
+                    <Loader className="w-5 h-5 animate-spin text-emerald-500" />
                   )}
                 </div>
 
@@ -984,7 +984,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                     onChange={(e) => {
                       setSearchTerm(e.target.value);
                     }}
-                    className="w-full bg-gray-900 border border-gray-600 rounded-lg py-2 px-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    className="w-full bg-gray-900 border border-gray-600 rounded-lg py-2 px-10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                     placeholder="Search groups..."
                   />
                 </div>
@@ -1007,7 +1007,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                         type="text"
                         value={newGroupName}
                         onChange={(e) => setNewGroupName(e.target.value)}
-                        className="flex-1 bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                        className="flex-1 bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
                         placeholder="New group name..."
                         disabled={isActionLoading}
                       />
@@ -1016,7 +1016,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                         whileTap={{ scale: 0.97 }}
                         onClick={createGroup}
                         disabled={isActionLoading || !newGroupName.trim()}
-                        className="py-2 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm font-medium flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors text-sm font-medium flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
                       >
                         {isActionLoading ? (
                           <Loader className="w-4 h-4 animate-spin" />
@@ -1140,7 +1140,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                               setGroupUsername(e.target.value);
                               searchUsers(e.target.value);
                             }}
-                            className="flex-1 bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
+                            className="flex-1 bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white placeholder-gray-400 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
                             placeholder="Add user to group..."
                             disabled={isActionLoading}
                           />
@@ -1182,7 +1182,7 @@ const AccessManagement = ({ onClose, userData, onUpdate }) => {
                             whileTap={{ scale: 0.97 }}
                             onClick={addUserToGroup}
                             disabled={isActionLoading || !groupUsername.trim()}
-                            className="py-2 px-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors text-sm font-medium flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
+                            className="py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors text-sm font-medium flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
                           >
                             {isActionLoading ? (
                               <Loader className="w-4 h-4 animate-spin" />

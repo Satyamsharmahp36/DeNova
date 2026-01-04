@@ -67,7 +67,7 @@ const TaskListItem = ({
               )}
 
               {task.isMeeting && task.isMeeting.title && (
-                <span className="text-xs text-blue-300 bg-blue-900 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span className="text-xs text-emerald-300 bg-emerald-900 px-2 py-0.5 rounded-full flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   Meeting
                 </span>
@@ -90,7 +90,7 @@ const TaskListItem = ({
                   ? handleOpenMeetingLink(task.isMeeting.meetingLink)
                   : handleViewMeetingDetails(task.isMeeting)
               }
-              className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded text-xs flex items-center gap-1"
             >
               {task.isMeeting.meetingLink ? (
                 <>
@@ -159,7 +159,7 @@ const TaskListItem = ({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => toggleTaskStatus(task)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
                   disabled={creatingBot}
                 >
                   <RefreshCw className="w-4 h-4" />

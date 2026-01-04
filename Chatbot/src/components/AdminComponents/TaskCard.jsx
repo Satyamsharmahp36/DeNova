@@ -74,7 +74,7 @@ const TaskCard = ({
             {task.isSelfTask ? (
               <Clipboard className="w-5 h-5 text-purple-400" />
             ) : (
-              <UserIcon className="w-5 h-5 text-blue-400" />
+              <UserIcon className="w-5 h-5 text-emerald-400" />
             )}
 
             <span className="text-white font-medium">
@@ -95,7 +95,7 @@ const TaskCard = ({
             )}
 
             {task.isMeeting && task.isMeeting.title && (
-              <span className="text-xs text-blue-300 bg-blue-900 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span className="text-xs text-emerald-300 bg-emerald-900 px-2 py-0.5 rounded-full flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
                 Meeting
               </span>
@@ -106,7 +106,7 @@ const TaskCard = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => toggleTaskStatus(task)}
-              className="p-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="p-1 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white"
               title="Toggle Status"
             >
               <RefreshCw className="w-4 h-4" />
@@ -183,7 +183,7 @@ const TaskCard = ({
                       task.isMeeting.status === "pending"
                         ? "bg-yellow-900 text-yellow-300"
                         : task.isMeeting.status === "scheduled"
-                        ? "bg-blue-900 text-blue-300"
+                        ? "bg-emerald-900 text-emerald-300"
                         : "bg-green-900 text-green-300"
                     }`}
                   >
@@ -199,7 +199,7 @@ const TaskCard = ({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleScheduleMeeting(task)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-1"
                 >
                   <Calendar className="w-4 h-4" />
                   Schedule
@@ -436,7 +436,7 @@ const TaskCard = ({
                         </div>
                       )}
                       {userInfoLoading && (
-                        <div className="mt-3 p-3 bg-gray-800 rounded border border-gray-700 text-blue-400">
+                        <div className="mt-3 p-3 bg-gray-800 rounded border border-gray-700 text-emerald-400">
                           Loading user description...
                         </div>
                       )}

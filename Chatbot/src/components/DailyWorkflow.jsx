@@ -92,7 +92,7 @@ const DailyWorkflow = ({ onRefresh }) => {
     >
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-medium text-white flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-400" />
+          <Calendar className="w-5 h-5 text-emerald-400" />
           Daily Workflow
         </h3>
         
@@ -104,14 +104,14 @@ const DailyWorkflow = ({ onRefresh }) => {
       
       {loading ? (
         <div className="flex justify-center items-center py-8">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
         <>
           <textarea
             value={dailyTasks}
             onChange={(e) => setDailyTasks(e.target.value)}
-            className="w-full h-40 bg-gray-900 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full h-40 bg-gray-900 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
             placeholder="Enter today's workflow, meetings, or tasks here..."
           />
           
@@ -121,7 +121,7 @@ const DailyWorkflow = ({ onRefresh }) => {
               whileTap={{ scale: 0.98 }}
               onClick={updateDailyTasks}
               disabled={updating}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-blue-500/30 transition-all font-medium flex items-center gap-2"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-lg transition-all font-medium flex items-center gap-2"
             >
               {updating ? (
                 <>

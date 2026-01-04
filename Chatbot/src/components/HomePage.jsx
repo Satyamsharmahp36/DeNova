@@ -219,12 +219,12 @@ const HomePage = ({ onLogout }) => {
 
   const getAvatarBg = (username) => {
     const colors = [
-      'bg-blue-600',
-      'bg-purple-600',
+      'bg-emerald-600',
+      'bg-emerald-600',
       'bg-green-600',
-      'bg-orange-600',
-      'bg-pink-600',
-      'bg-indigo-600',
+      'bg-teal-600',
+      'bg-emerald-700',
+      'bg-emerald-500',
     ];
     const index = username ? username.charCodeAt(0) % colors.length : 0;
     return colors[index];
@@ -272,7 +272,7 @@ const HomePage = ({ onLogout }) => {
   const introView = (
     <div className="min-h-screen bg-black flex">
       {/* Left Sidebar */}
-      <aside className="w-16 bg-neutral-900 border-r border-neutral-800/50 flex flex-col items-center py-4">
+      <aside className="w-16 bg-neutral-900 border-r border-neutral-800/50 flex flex-col items-center py-6 gap-4">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -285,16 +285,60 @@ const HomePage = ({ onLogout }) => {
         
         <div className="flex-1" />
         
-        {presentUserName && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleLogout}
-            className="text-neutral-400 hover:text-red-400 p-3 rounded-lg hover:bg-red-500/10 transition-all"
-            title="Logout"
-          >
-            <LogOut className="w-5 h-5" />
-          </motion.button>
+        {presentUserName && presentUserData?.user && (
+          <div className="relative w-full px-1" ref={profileMenuRef}>
+            <button
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className="w-full flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-neutral-800 transition-colors"
+              title={`${presentUserData.user.name} (@${presentUserData.user.username})`}
+            >
+              <div className={`w-10 h-10 rounded-full ${getAvatarBg(presentUserData.user.username)} flex items-center justify-center text-white font-semibold text-sm shadow-lg`}>
+                {getInitials(presentUserData.user.name)}
+              </div>
+              <ChevronUp className={`w-4 h-4 text-neutral-500 transition-transform ${showProfileMenu ? '' : 'rotate-180'}`} />
+            </button>
+
+            <AnimatePresence>
+              {showProfileMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, x: -10 }}
+                  animate={{ opacity: 1, y: 0, x: 0 }}
+                  exit={{ opacity: 0, y: 8, x: -10 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute bottom-full left-0 mb-2 w-52 bg-neutral-800 border border-neutral-700 rounded-lg shadow-xl overflow-hidden z-50"
+                >
+                  <div className="px-4 py-3 border-b border-neutral-700">
+                    <p className="text-sm font-medium text-white truncate">{presentUserData.user.name}</p>
+                    <p className="text-xs text-neutral-500 truncate">@{presentUserData.user.username}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      if (presentUserName) {
+                        // Navigate to user's own admin panel
+                        window.location.href = `/home/${presentUserName}`;
+                      }
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-neutral-300 hover:bg-neutral-700 hover:text-white transition-colors text-sm"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Settings
+                  </button>
+                  <div className="border-t border-neutral-700" />
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setShowProfileMenu(false);
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-red-400 hover:bg-red-500/10 transition-colors text-sm"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         )}
       </aside>
 
@@ -304,7 +348,7 @@ const HomePage = ({ onLogout }) => {
           {/* Header Section */}
           <div className="flex items-start gap-6 mb-8">
             {/* Avatar */}
-            <div className={`relative flex-shrink-0 w-28 h-28 rounded-2xl ${!profileImage ? getAvatarBg(username) : 'bg-neutral-800'} flex items-center justify-center overflow-hidden ring-4 ${isPeopleAssistant ? 'ring-emerald-500/30' : 'ring-violet-500/30'}`}>
+            <div className={`relative flex-shrink-0 w-28 h-28 rounded-2xl ${!profileImage ? getAvatarBg(username) : 'bg-neutral-800'} flex items-center justify-center overflow-hidden ring-4 ${isPeopleAssistant ? 'ring-emerald-500/30' : 'ring-emerald-500/30'}`}>
               {profileImage ? (
                 <img 
                   src={profileImage} 
@@ -325,13 +369,13 @@ const HomePage = ({ onLogout }) => {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-white">{profileOwnerName}</h1>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${isPeopleAssistant ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-violet-500/10 text-violet-400 border border-violet-500/20'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${isPeopleAssistant ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
                   {isPeopleAssistant ? <UserCircle className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
                   {isPeopleAssistant ? 'Person' : 'Knowledge'}
                 </span>
               </div>
               
-              <p className={`text-lg font-medium mb-3 ${isPeopleAssistant ? 'text-emerald-400' : 'text-violet-400'}`}>
+              <p className={`text-lg font-medium mb-3 ${isPeopleAssistant ? 'text-emerald-400' : 'text-emerald-400'}`}>
                 {isPeopleAssistant ? assistantRole : assistantTopic}
               </p>
               
@@ -372,7 +416,7 @@ const HomePage = ({ onLogout }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleStartChatting}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${isPeopleAssistant ? 'bg-emerald-500 hover:bg-emerald-400 text-white' : 'bg-violet-500 hover:bg-violet-400 text-white'}`}
+              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${isPeopleAssistant ? 'bg-emerald-500 hover:bg-emerald-400 text-white' : 'bg-emerald-500 hover:bg-emerald-400 text-white'}`}
             >
               <MessageSquare className="w-5 h-5" />
               Start Chatting
@@ -421,24 +465,24 @@ const HomePage = ({ onLogout }) => {
             <h2 className="text-lg font-semibold text-white mb-4">Quick Info</h2>
             <div className="grid grid-cols-3 gap-4">
               <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${isPeopleAssistant ? 'bg-emerald-500/10' : 'bg-violet-500/10'}`}>
-                  <Bot className={`w-5 h-5 ${isPeopleAssistant ? 'text-emerald-400' : 'text-violet-400'}`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${isPeopleAssistant ? 'bg-emerald-500/10' : 'bg-emerald-500/10'}`}>
+                  <Bot className={`w-5 h-5 ${isPeopleAssistant ? 'text-emerald-400' : 'text-emerald-400'}`} />
                 </div>
                 <h3 className="text-white font-medium mb-1">AI Powered</h3>
                 <p className="text-neutral-500 text-sm">Intelligent responses using advanced AI</p>
               </div>
               
               <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${isPeopleAssistant ? 'bg-emerald-500/10' : 'bg-violet-500/10'}`}>
-                  <Clock className={`w-5 h-5 ${isPeopleAssistant ? 'text-emerald-400' : 'text-violet-400'}`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${isPeopleAssistant ? 'bg-emerald-500/10' : 'bg-emerald-500/10'}`}>
+                  <Clock className={`w-5 h-5 ${isPeopleAssistant ? 'text-emerald-400' : 'text-emerald-400'}`} />
                 </div>
                 <h3 className="text-white font-medium mb-1">Always Available</h3>
                 <p className="text-neutral-500 text-sm">Get answers anytime, 24/7</p>
               </div>
               
               <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${isPeopleAssistant ? 'bg-emerald-500/10' : 'bg-violet-500/10'}`}>
-                  <MessageSquare className={`w-5 h-5 ${isPeopleAssistant ? 'text-emerald-400' : 'text-violet-400'}`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${isPeopleAssistant ? 'bg-emerald-500/10' : 'bg-emerald-500/10'}`}>
+                  <MessageSquare className={`w-5 h-5 ${isPeopleAssistant ? 'text-emerald-400' : 'text-emerald-400'}`} />
                 </div>
                 <h3 className="text-white font-medium mb-1">Natural Chat</h3>
                 <p className="text-neutral-500 text-sm">Conversational and easy to use</p>
